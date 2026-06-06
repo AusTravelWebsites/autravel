@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: tenant.tagline,
       url: SITE_URL,
       images: [{ url: tenant.ogImage, width: 1200, height: 630, alt: tenant.name }],
-      locale: 'en_AU',
+      locale: (tenant.locale ?? 'en-AU').replace('-', '_'),
     },
     twitter: {
       card: 'summary_large_image',

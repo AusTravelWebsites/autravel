@@ -26,6 +26,21 @@ const DESTINATIONS = {
   nt:   { id: 121, name: 'Northern Territory', country: 'Australia', iso2: 'AU', state_code: 'nt'   },
   // aunz aggregator imports from the country-level Australia destination.
   aunz: { id: 22,  name: 'Australia',          country: 'Australia', iso2: 'AU', state_code: null   },
+
+  // ── United Kingdom (New Forest National Park tenant) ───────────────────
+  // All tagged state_code 'uk' and priced in GBP. The country node (60457)
+  // returns tours across the whole UK (~11.8k); the home-nation + iconic
+  // region nodes are here for targeted top-ups. currency/lang per-dest drives
+  // the Viator request + the AI rewrite spelling. IDs verified live against
+  // the Viator /destinations catalogue 2026-06-06.
+  uk:           { id: 60457, name: 'United Kingdom',     country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
+  england:      { id: 731,   name: 'England',            country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
+  scotland:     { id: 732,   name: 'Scotland',           country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
+  wales:        { id: 5157,  name: 'Wales',              country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
+  nireland:     { id: 40330, name: 'Northern Ireland',   country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
+  lakedistrict: { id: 822,   name: 'Lake District',      country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
+  snowdonia:    { id: 24144, name: 'Snowdonia',          country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
+  peakdistrict: { id: 33079, name: 'Peak District',      country: 'United Kingdom', iso2: 'GB', state_code: 'uk', currency: 'GBP', lang: 'en-GB' },
 }
 
 const args = process.argv.slice(2)
@@ -41,7 +56,22 @@ if (!dests.length) {
 
 const VIATOR_BASE = 'https://api.viator.com/partner'
 const ANTHROPIC_MODEL = 'claude-haiku-4-5-20251001'
-const CURRENCY = 'AUD'
+// Currency + language are taken from the destination being imported (UK dests
+// carry currency:'GBP', lang:'en-GB'). AU dests omit them → default AUD/en-AU.
+// Resolved from the first requested dest below, after `dests` is parsed.
+let CURRENCY = 'AUD'
+let LANG = 'en-AU'
+// Resolve currency/language from the first requested destination. A run only
+// ever mixes destinations of one country in practice (e.g. all UK), so the
+// first dest is authoritative.
+{
+  const first = DESTINATIONS[dests[0]]
+  if (first?.currency) CURRENCY = first.currency
+  if (first?.lang) LANG = first.lang
+}
+const SPELLING = LANG === 'en-GB'
+  ? 'British English (UK spellings: colour, centre, organise, traveller).'
+  : 'British Australian English. No American spellings.'
 
 const CATEGORIES = [
   'food-cooking', 'culture-history', 'nature-wildlife', 'adventure-sports',
@@ -53,7 +83,7 @@ const SYSTEM = `You rewrite tour-operator blurb into fresh original BugBitten co
 
 HARD RULES:
 - Never copy phrases verbatim from the source. Paraphrase distinctive lines.
-- British Australian English. No American spellings.
+- ${SPELLING}
 - Concrete over abstract. No clichés like "immerse yourself", "once-in-a-lifetime".
 - Don't invent facts not in the source.
 - Write for a fellow traveller, not a tourist.
@@ -73,7 +103,7 @@ function viatorHeaders() {
   return {
     'exp-api-key': process.env.VIATOR_API_KEY,
     'Accept': 'application/json;version=2.0',
-    'Accept-Language': 'en-AU',
+    'Accept-Language': LANG,
     'Content-Type': 'application/json',
   }
 }

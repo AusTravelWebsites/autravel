@@ -9,7 +9,10 @@
  * filter entirely and show cross-state content with a state-picker UI.
  */
 
-export type StateCode = 'qld' | 'nsw' | 'nt' | 'wa' | 'sa' | 'tas' | 'vic' | 'aunz'
+// AU state codes + 'aunz' aggregator + 'uk' (New Forest National Park, a
+// UK-wide tours/guides tenant served from new-forest-national-park.com — see
+// the `uk` entry in TENANTS for why it lives in this AU-shaped config).
+export type StateCode = 'qld' | 'nsw' | 'nt' | 'wa' | 'sa' | 'tas' | 'vic' | 'aunz' | 'uk'
 
 export interface TenantConfig {
   state_code: StateCode
@@ -44,6 +47,15 @@ export interface TenantConfig {
   /** Verified Resend sender address used as the From: header on outgoing mail
    *  for this tenant. Must be on a domain verified in the Resend dashboard. */
   fromEmail: string
+  /** Header/footer logo path. Per-tenant so a non-AU site can ship its own
+   *  brand mark. Defaults to the shared '/brand/logo.webp' when omitted. */
+  logo?: string
+  /** ISO 4217 currency for price formatting fallbacks. Defaults to 'AUD'.
+   *  Individual tours/parks carry their own `currency` column; this is only a
+   *  fallback + drives the currency symbol shown in prices. */
+  currency?: string
+  /** BCP-47 locale for date/number formatting + OG `locale`. Defaults 'en-AU'. */
+  locale?: string
 }
 
 export const TENANTS: Record<StateCode, TenantConfig> = {
@@ -190,6 +202,34 @@ export const TENANTS: Record<StateCode, TenantConfig> = {
     aggregator: true,
     contactEmail: 'info@aunztravel.com.au',
     fromEmail: 'noreply@aunztravel.com.au',
+  },
+  // New Forest National Park — a UK tenant rebuilt from the legacy WordPress
+  // site at new-forest-national-park.com. Branded around the New Forest (keeps
+  // the domain's existing topical authority + every legacy URL via the
+  // articles legacy_path + redirects), but the /tours layer aggregates tours
+  // from right across the UK. state_code 'uk' tags all its rows; tours are
+  // imported in GBP. Not an aggregator (no state-picker) — it's a single
+  // region-scoped tenant like the AU states.
+  uk: {
+    state_code: 'uk',
+    host: 'new-forest-national-park.com',
+    aliases: ['www.new-forest-national-park.com'],
+    name: 'New Forest National Park',
+    shortName: 'New Forest',
+    stateName: 'the New Forest & the UK',
+    regionCode: 'GB',
+    viatorDestIds: [],
+    gaId: null,
+    ogImage: 'https://new-forest-national-park.com/wp-content/uploads/nfnp-og.webp',
+    heroImage: 'https://new-forest-national-park.com/wp-content/uploads/nfnp-hero.webp',
+    heroCredit: 'New Forest National Park, Hampshire',
+    tagline: 'Walks, wildlife, attractions & tours across the New Forest and the UK.',
+    aggregator: false,
+    contactEmail: 'info@new-forest-national-park.com',
+    fromEmail: 'noreply@new-forest-national-park.com',
+    logo: '/brand/uk/logo.webp',
+    currency: 'GBP',
+    locale: 'en-GB',
   },
 }
 

@@ -42,6 +42,12 @@ const STATE = (arg('state') || '').toLowerCase()
 const WP_USER = arg('wp-user')
 const DRY = args.includes('--dry-run')
 const LIMIT = Number(arg('limit', '0')) || null
+// Which WP post types to migrate. Default covers standard blog posts + pages
+// plus the New Forest site's custom directory-listing type (nfnp_dir_ltg:
+// hotels, pubs, attractions, B&Bs) so every public URL is preserved. Override
+// with --post-types post,page,foo for other sites.
+const WP_POST_TYPES = (arg('post-types') || 'post,page,nfnp_dir_ltg')
+  .split(',').map(s => s.trim()).filter(Boolean)
 
 if (!STATE) { console.error('Usage: node scripts/import-wp.mjs --state <qld|nsw|...> --wp-user <cpanel-acct> [--dry-run] [--limit N]'); process.exit(1) }
 
@@ -113,7 +119,7 @@ async function run() {
            u.display_name AS author
     FROM ${T}posts p
     LEFT JOIN ${T}users u ON u.ID = p.post_author
-    WHERE p.post_type IN ('post','page')
+    WHERE p.post_type IN (${WP_POST_TYPES.map(t => wp.escape(t)).join(',')})
     ORDER BY p.post_date_gmt DESC
     ${LIMIT ? `LIMIT ${LIMIT}` : ''}`)
 

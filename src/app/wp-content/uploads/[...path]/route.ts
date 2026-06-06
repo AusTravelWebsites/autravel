@@ -20,6 +20,10 @@ const UPLOAD_DIRS: Record<string, string> = {
   tas:  '/home/tastravel/public_html/wp-content/uploads',
   vic:  '/home/victravel/public_html/wp-content/uploads',
   aunz: '/home/aunztravelcom/public_html/wp-content/uploads',
+  // New Forest: the WP *application* is removed at cut-over but the cPanel
+  // account + wp-content/uploads dir is deliberately preserved on disk so the
+  // 3k migrated blog/listing images keep serving at their original URLs.
+  uk:   '/home/newforest/public_html/wp-content/uploads',
 }
 
 const MIME: Record<string, string> = {
