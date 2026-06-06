@@ -1,0 +1,206 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import { Avatar, Button } from '@/components/ui'
+
+interface NavProps {
+  user?: {
+    id:         string
+    username:   string
+    displayName: string
+    avatarUrl?: string
+    travelStatus: 'travelling' | 'planning' | 'home'
+  } | null
+  onSignOut?: () => void
+}
+
+const navLinks = [
+  { href: '/feed',    label: 'Feed' },
+  { href: '/explore', label: 'Explore' },
+  { href: '/meetups', label: 'Meetups' },
+]
+
+export function Navbar({ user, onSignOut }: NavProps) {
+  const pathname = usePathname()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [notifCount] = useState(3) // would come from API
+
+  return (
+    <>
+      <header className={cn(
+        'fixed top-0 left-0 right-0 z-50',
+        'bg-white/95 backdrop-blur-md',
+        'border-b border-fog',
+        'h-[var(--nav-h)]',
+      )}>
+        <div className="max-w-wide mx-auto px-4 sm:px-6 h-full flex items-center justify-between gap-4">
+
+          {/* Logo */}
+          <Link
+            href={user ? '/feed' : '/'}
+            className="font-display font-bold text-xl text-earth-800 tracking-[-0.03em] flex-shrink-0 hover:text-earth-700 transition-colors duration-fast"
+          ><img loading="lazy" decoding="async" src="/brand/logo.webp?v=2" alt="Logo" style={{height:"44px",objectFit:"contain",display:"block"}} /></Link>
+
+          {/* Desktop nav links */}
+          {user && (
+            <nav className="hidden md:flex items-center gap-1">
+              {navLinks.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    'px-3.5 py-1.5 rounded-md text-sm font-medium',
+                    'transition-all duration-fast ease-out',
+                    pathname.startsWith(href)
+                      ? 'bg-earth-50 text-earth-800'
+                      : 'text-slate hover:text-ink hover:bg-haze'
+                  )}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          )}
+
+          {/* Right side */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {user ? (
+              <>
+                {/* Check in CTA */}
+                <Link href="/check-in">
+                  <Button
+                    size="sm"
+                    className="hidden sm:inline-flex gap-1.5"
+                  >
+                    <span className="text-base leading-none">+</span>
+                    Check in
+                  </Button>
+                </Link>
+
+                {/* Notifications */}
+                <Link
+                  href="/notifications"
+                  className="relative w-9 h-9 flex items-center justify-center rounded-md text-slate hover:bg-haze transition-colors duration-fast"
+                  aria-label="Notifications"
+                >
+                  <BellIcon />
+                  {notifCount > 0 && (
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-sunset text-white text-xs rounded-full flex items-center justify-center font-medium leading-none">
+                      {notifCount > 9 ? '9+' : notifCount}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Avatar + dropdown */}
+                <Link href={`/${user.username}`}>
+                  <Avatar
+                    src={user.avatarUrl}
+                    name={user.displayName}
+                    size="sm"
+                    ring
+                    className="cursor-pointer hover:opacity-90 transition-opacity"
+                  />
+                </Link>
+
+                {/* Mobile menu toggle */}
+                <button
+                  onClick={() => setMobileOpen(!mobileOpen)}
+                  className="md:hidden w-9 h-9 flex items-center justify-center rounded-md text-slate hover:bg-haze transition-colors"
+                  aria-label="Menu"
+                >
+                  <MenuIcon open={mobileOpen} />
+                </button>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">Log in</Button>
+                </Link>
+                <Link href="/register">
+                  <Button size="sm">Join free</Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile nav drawer */}
+      {user && mobileOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-ink/20 md:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+          <nav className={cn(
+            'fixed top-[var(--nav-h)] left-0 right-0 z-40 bg-white border-b border-fog',
+            'md:hidden px-4 py-3 flex flex-col gap-1',
+            'animate-slide-in-right'
+          )}>
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileOpen(false)}
+                className={cn(
+                  'px-4 py-2.5 rounded-md text-base font-medium',
+                  'transition-colors duration-fast',
+                  pathname.startsWith(href)
+                    ? 'bg-earth-50 text-earth-800'
+                    : 'text-slate hover:bg-haze'
+                )}
+              >
+                {label}
+              </Link>
+            ))}
+            <Link
+              href="/check-in"
+              onClick={() => setMobileOpen(false)}
+              className="mt-2"
+            >
+              <Button size="md" className="w-full">
+                + Check in
+              </Button>
+            </Link>
+          </nav>
+        </>
+      )}
+
+      {/* Spacer */}
+      <div className="h-[var(--nav-h)]" />
+    </>
+  )
+}
+
+// ─── Icon components ─────────────────────────────────────────────────────────
+
+function BellIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  )
+}
+
+function MenuIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      {open ? (
+        <>
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </>
+      ) : (
+        <>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </>
+      )}
+    </svg>
+  )
+}

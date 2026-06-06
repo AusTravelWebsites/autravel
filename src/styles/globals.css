@@ -1,0 +1,416 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink:    #111827;
+  --color-slate:  #374151;
+  --color-mist:   #6b7280;
+  --color-ash:    #9ca3af;
+  --color-fog:    #e5e7eb;
+  --color-haze:   #f3f4f6;
+  --color-snow:   #ffffff;
+
+  --color-earth-50:  #f0fdfa;
+  --color-earth-100: #ccfbf1;
+  --color-earth-300: #5eead4;
+  --color-earth-500: #14b8a6;
+  --color-earth-700: #0f766e;
+  --color-earth-800: #115e59;
+  --color-earth-900: #134e4a;
+
+  --color-sand-100: #fef3c7;
+  --color-sand-500: #f59e0b;
+  --color-sand-700: #b45309;
+
+  --color-sky-100: #e0f2fe;
+  --color-sky-500: #0ea5e9;
+  --color-sky-800: #075985;
+
+  --color-sunset-100: #ffedd5;
+  --color-sunset-500: #f97316;
+  --color-sunset-700: #c2410c;
+}
+
+/* ─── BugBitten Design Tokens ──────────────────────────────────────────────── */
+:root {
+  /* Brand — Earth (primary) */
+  --earth-900: #1D1D1F;
+  --earth-800: #3d3d3f;
+  --earth-700: #6e6e73;
+  --earth-500: #00A699;
+  --earth-300: #33D1C4;
+  --earth-100: #E6F7F6;
+  --earth-50:  #F5F5F7;
+
+  /* Accent — Sand */
+  --sand-700:  #8a8a8e;
+  --sand-500:  #c7c7cc;
+  --sand-100:  #F5F5F7;
+
+  /* Support — Sky */
+  --sky-800:   #1B5FA8;
+  --sky-500:   #3A89DC;
+  --sky-100:   #E3F0FB;
+
+  /* Support — Sunset */
+  --sunset-700: #E85A25;
+  --sunset-500: #FF6B35;
+  --sunset-100: #FFF0EB;
+
+  /* Neutrals */
+  --ink:   #1D1D1F;
+  --slate: #3d3d3f;
+  --ash:   #6e6e73;
+  --mist:  #8a8a8e;
+  --fog:   #E8E8ED;
+  --haze:  #F5F5F7;
+  --primary:  #00A699;
+  --primary-d: #007A70;
+  --primary-l: #E6F7F6;
+  --mango:    #FF6B35;
+  --accent:   #FF6B35;
+  --navy:     #06263E;
+  --surface:  #F5F5F7;
+  --snow:  #FFFFFF;
+  --white: #FFFFFF;
+
+  /* Semantic */
+  --success: #16A34A;
+  --warning: #D97706;
+  --danger:  #DC2626;
+  --info:    #1B5FA8;
+
+  /* Typography */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  --font-mono:    'Fira Code', 'Cascadia Code', monospace;
+
+  /* Type scale */
+  --text-xs:   0.6875rem;  /* 11px */
+  --text-sm:   0.8125rem;  /* 13px */
+  --text-base: 0.9375rem;  /* 15px */
+  --text-lg:   1.0625rem;  /* 17px */
+  --text-xl:   1.1875rem;  /* 19px */
+  --text-2xl:  1.375rem;   /* 22px */
+  --text-3xl:  1.75rem;    /* 28px */
+  --text-4xl:  2.25rem;    /* 36px */
+  --text-5xl:  2.75rem;    /* 44px */
+
+  /* Spacing — 4px grid */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Border radius */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Motion */
+  --dur-fast:   100ms;
+  --dur-base:   200ms;
+  --dur-slow:   350ms;
+  --dur-enter:  420ms;
+  --ease-out:   cubic-bezier(0, 0, 0.2, 1);
+  --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Shadows */
+  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md:  0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+
+  /* Layout */
+  --max-w-feed: 680px;
+  --max-w-page: 1024px;
+  --max-w-wide: 1280px;
+  --nav-h: 56px;
+}
+
+/* ─── Dark mode ─────────────────────────────────────────────────────────────── */
+.dark {
+  --ink:   #FFFFFF;
+  --slate: #D1D5DB;
+  --ash:   #9CA3AF;
+  --mist:  #6B7280;
+  --fog:   #374151;
+  --haze:  #1F2937;
+  --snow:  #111827;
+  --white: #1F2937;
+
+  --earth-50:  #0f2a1c;
+  --earth-100: #1a3d29;
+
+  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md:  0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+}
+
+/* ─── Reset & Base ──────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: var(--snow);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Reduced motion ────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Focus styles ──────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--earth-700);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Page enter animation ──────────────────────────────────────────────────── */
+@keyframes bb-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bb-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bb-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bb-pulse-gps {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgb(76 175 128 / 0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgb(76 175 128 / 0); }
+}
+
+.bb-animate-fade-up {
+  animation: bb-fade-up var(--dur-enter) var(--ease-out) both;
+}
+
+.bb-animate-fade-in {
+  animation: bb-fade-in var(--dur-slow) var(--ease-out) both;
+}
+
+/* Staggered children */
+.bb-stagger > * {
+  animation: bb-fade-up var(--dur-enter) var(--ease-out) both;
+}
+.bb-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.bb-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.bb-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.bb-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.bb-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.bb-stagger > *:nth-child(6) { animation-delay: 300ms; }
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--fog);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--mist); }
+
+/* ─── Selection ─────────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--earth-100);
+  color: var(--earth-800);
+}
+
+/* ═══ Brand v2 Final Overrides (Apple x Viator) ════════════════════════ */
+/* These override @theme compiled vars to apply new palette */
+:root, [data-theme] {
+  --ink: #1D1D1F !important;
+  --sage: #00A699 !important;
+  --earth-900: #1D1D1F !important;
+  --earth-800: #3d3d3f !important;
+  --earth-700: #6e6e73 !important;
+}
+html body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Inter, sans-serif;
+  color: #1D1D1F;
+  background: #FFFFFF;
+}
+
+/* Shared tile-row grid — predictable 1/2/3/4 columns per breakpoint so any
+   LIMIT that's a multiple of 4 (or 12 ideally) always fills its rows on
+   desktop. Use this instead of `grid-template-columns: repeat(auto-fill,...)`
+   when "no dangling last row" matters. */
+.bb-row-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 480px)  { .bb-row-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 760px)  { .bb-row-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .bb-row-grid { grid-template-columns: repeat(4, 1fr); } }
+
+/* ─── Article body typography ───────────────────────────────────────────────
+   Tailwind v4's preflight removes default browser styling for headings, lists,
+   blockquotes, etc. — so WP-imported articles render flat (no h2 vs h3 size
+   hierarchy, no list bullets, no paragraph spacing). Restore real typography
+   for everything inside .article-body. */
+.article-body { font-size: 17px; line-height: 1.75; color: #1f2937; }
+.article-body > * + * { margin-top: 1.1em; }
+.article-body p { margin: 0 0 1.1em; }
+.article-body h2 {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.6em; font-weight: 800; line-height: 1.25;
+  color: #111827; margin: 1.6em 0 0.5em;
+}
+.article-body h3 {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.3em; font-weight: 700; line-height: 1.3;
+  color: #111827; margin: 1.5em 0 0.4em;
+}
+.article-body h4 {
+  font-size: 1.1em; font-weight: 700; line-height: 1.35;
+  color: #111827; margin: 1.4em 0 0.35em;
+}
+.article-body h5, .article-body h6 {
+  font-size: 1em; font-weight: 700; color: #111827; margin: 1.3em 0 0.3em;
+}
+.article-body strong, .article-body b { font-weight: 700; color: #111827; }
+.article-body em, .article-body i { font-style: italic; }
+.article-body ul, .article-body ol {
+  margin: 0.6em 0 1.2em; padding-left: 1.5em;
+}
+.article-body ul { list-style: disc; }
+.article-body ol { list-style: decimal; }
+.article-body li { margin: 0.35em 0; padding-left: 0.15em; }
+.article-body li > ul, .article-body li > ol { margin: 0.4em 0 0.4em; }
+.article-body blockquote {
+  margin: 1.3em 0; padding: 0.4em 1.1em;
+  border-left: 4px solid var(--color-earth-300, #5eead4);
+  color: #374151; font-style: italic; background: #f9fafb;
+}
+.article-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em; padding: 0.15em 0.4em;
+  background: #f3f4f6; border-radius: 4px; color: #111827;
+}
+.article-body pre {
+  margin: 1.2em 0; padding: 1em 1.1em;
+  background: #0f172a; color: #e2e8f0; border-radius: 8px;
+  overflow-x: auto; font-size: 0.92em; line-height: 1.55;
+}
+.article-body pre code { background: transparent; padding: 0; color: inherit; }
+.article-body hr { margin: 2em 0; border: 0; border-top: 1px solid #e5e7eb; }
+.article-body img { max-width: 100%; height: auto; border-radius: 10px; margin: 1em 0; }
+.article-body figure { margin: 1.5em 0; }
+.article-body figure.wp-caption img { margin: 0; }
+.article-body figcaption {
+  font-size: 13px; color: #6b7280; margin-top: 6px; text-align: center;
+}
+.article-body table {
+  border-collapse: collapse; margin: 1.4em 0; width: 100%; font-size: 0.95em;
+}
+.article-body th, .article-body td {
+  border: 1px solid #e5e7eb; padding: 0.55em 0.8em; text-align: left;
+}
+.article-body th { background: #f9fafb; font-weight: 700; }
+
+/* Inline article-body links: brand-teal underlined so readers can see them.
+   Without this rule, anchors inherit the parent's near-black text colour
+   (Tailwind v4 preflight) and become invisible inside running copy. */
+.article-body a {
+  color: var(--color-earth-700, #0f766e);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-earth-700, #0f766e) 45%, transparent);
+  text-underline-offset: 2px;
+}
+.article-body a:hover {
+  color: var(--color-earth-800, #115e59);
+  text-decoration-color: var(--color-earth-700, #0f766e);
+}
+/* Anchors that wrap a whole image (caption figures, gallery thumbs) shouldn't
+   show an underline — the image itself is the affordance. */
+.article-body a:has(> img),
+.article-body figure a,
+.article-body a:has(figure) {
+  text-decoration: none;
+}
+
+/* Mobile tightening */
+@media (max-width: 640px) {
+  .article-body { font-size: 16.5px; line-height: 1.7; }
+  .article-body h2 { font-size: 1.45em; margin: 1.3em 0 0.4em; }
+  .article-body h3 { font-size: 1.2em; margin: 1.2em 0 0.35em; }
+  .article-body h4 { font-size: 1.05em; }
+}
+
+/* ─── Tour rich-text fields (summary, what to expect, good to know) ─────────
+   Used by /tours/[slug]/page.tsx via dangerouslySetInnerHTML. Same spirit as
+   .article-body but tighter — these fields are short and live alongside
+   other panels rather than being the page's main column. */
+.tour-rich p { margin: 0 0 0.9em; }
+.tour-rich p:last-child { margin-bottom: 0; }
+.tour-rich a { color: #0d9488; text-decoration: underline; }
+.tour-rich a:hover { color: #0f766e; }
+.tour-rich ul, .tour-rich ol { margin: 0 0 0.9em 1.4em; padding: 0; }
+.tour-rich li { margin: 0.2em 0; }
+.tour-rich h2, .tour-rich h3 { font-family: Georgia, serif; font-weight: 800; margin: 1em 0 0.4em; color: #111827; }
+.tour-rich h2 { font-size: 1.15em; }
+.tour-rich h3 { font-size: 1.05em; }
+.tour-rich strong { font-weight: 700; }
+.tour-rich blockquote { border-left: 3px solid #0d9488; padding: 4px 12px; margin: 0 0 0.9em; color: #374151; background: #f0fdfa; font-style: italic; border-radius: 0 6px 6px 0; }
+.tour-rich-gtk a { color: #065f46; }
+.tour-rich-gtk a:hover { color: #064e3b; }
+
+/* ─── Print stylesheet ──────────────────────────────────────────────────────
+   Travellers print/save destination, park and distance pages as PDFs to take
+   on the road. Strip nav, footer, share buttons; keep content + key images. */
+@media print {
+  /* Hide interactive chrome */
+  header, nav, footer, .nav-mobile, [data-print-hide] { display: none !important; }
+  /* Make the body normal-flow */
+  body { background: #fff !important; color: #111 !important; font-size: 11pt; }
+  /* Cards/sections render as plain blocks with thin borders */
+  section, article { box-shadow: none !important; border-color: #ccc !important; page-break-inside: avoid; }
+  /* Hide cookie banner / save button / form controls */
+  button, input, select, [role="button"], [data-cookie-banner] { display: none !important; }
+  /* Don't break headings across pages */
+  h1, h2, h3 { page-break-after: avoid; }
+  /* Always show full URL after links */
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #666; word-wrap: break-word; }
+  /* Constrain wide hero images */
+  img { max-width: 100% !important; max-height: 320px; height: auto !important; }
+  /* Avoid printing bg colours which use ink */
+  * { background: transparent !important; box-shadow: none !important; }
+  /* Article body link colour: visible on paper */
+  a { color: #000 !important; text-decoration: underline; }
+}

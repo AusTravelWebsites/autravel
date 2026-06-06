@@ -1,0 +1,6 @@
+Contact: mailto:security@bugbitten.com
+Contact: mailto:team@bugbitten.com.au
+Expires: 2027-04-19T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://bugbitten.com/.well-known/security.txt
+Policy: https://bugbitten.com/legal/responsible-disclosure

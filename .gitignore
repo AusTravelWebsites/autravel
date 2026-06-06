@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Environment variables — NEVER commit
+.env
+.env.local
+.env.*.local
+.env.production
+.env.local.*
+.env.local.before-*
+
+# Logs (pm2 + app)
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# DB migration scratch dir (pg_dump files, one-shot)
+migration/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.pem
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local config backups
+*.bak
+*.bak.*
+next.config.js.bak
+
+# Temp working files
+tmp/
+.cache/
