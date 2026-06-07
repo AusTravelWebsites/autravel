@@ -13,20 +13,30 @@ import { Resend } from 'resend'
 import { tenantForHost } from '@/lib/tenants'
 import { rateLimit, getIP } from '@/lib/admin'
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+// Per-tenant Resend account. A tenant on its own Resend account (e.g. the UK /
+// New Forest tenant, whose domain is verified in a separate account) sets
+// RESEND_API_KEY_<STATECODE>; every other tenant falls back to the shared
+// RESEND_API_KEY. This keeps the 8 AU sites on the shared GF account (where
+// their domains are verified) while new-forest-national-park.com sends from its
+// own account + verified domain.
+function resendFor(stateCode: string): Resend | null {
+  const key = process.env[`RESEND_API_KEY_${stateCode.toUpperCase()}`] || process.env.RESEND_API_KEY
+  return key ? new Resend(key) : null
+}
 
 const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 
 export async function POST(req: NextRequest) {
   try {
-    if (!resend) {
-      console.error('[contact] RESEND_API_KEY not configured')
-      return NextResponse.json({ error: 'Email service unavailable' }, { status: 503 })
-    }
-
     const tenant = tenantForHost(req.headers.get('host'))
     const ip = getIP(req)
+
+    const resend = resendFor(tenant.state_code)
+    if (!resend) {
+      console.error('[contact] no Resend API key configured for', tenant.state_code)
+      return NextResponse.json({ error: 'Email service unavailable' }, { status: 503 })
+    }
 
     if (ip && !(await rateLimit(`contact:${ip}`, 3, 3600))) {
       return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })

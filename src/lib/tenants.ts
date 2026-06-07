@@ -219,7 +219,7 @@ export const TENANTS: Record<StateCode, TenantConfig> = {
     stateName: 'the New Forest & the UK',
     regionCode: 'GB',
     viatorDestIds: [],
-    gaId: null,
+    gaId: 'G-TRYF86WNWW',
     ogImage: 'https://new-forest-national-park.com/wp-content/uploads/nfnp-og.webp',
     heroImage: 'https://new-forest-national-park.com/wp-content/uploads/nfnp-hero.webp',
     heroCredit: 'New Forest National Park, Hampshire',
