@@ -114,5 +114,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   } catch {}
 
-  return [...staticPages, ...destinations, ...parks, ...tours, ...articles, ...distances]
+  // Park Maps — UK (New Forest) tenant only.
+  let trails: Entry[] = []
+  if (tenant.state_code === 'uk') {
+    staticPages.push({ url: `${SITE}/park-maps/`, changeFrequency: 'weekly', priority: 0.9, lastModified: now })
+    try {
+      const rows = await db`
+        SELECT slug, COALESCE(updated_at, created_at) AS lm
+        FROM autravel.trails
+        WHERE state_code = 'uk' AND active = true
+        LIMIT 5000`
+      trails = (rows as any[]).map(t => ({
+        url: `${SITE}/park-maps/${t.slug}/`,
+        lastModified: t.lm ? new Date(t.lm) : now,
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+      }))
+    } catch {}
+  }
+
+  return [...staticPages, ...destinations, ...parks, ...tours, ...articles, ...distances, ...trails]
 }

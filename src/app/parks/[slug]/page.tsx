@@ -42,6 +42,9 @@ type Park = {
   images: string[] | null
   seo_title: string | null
   seo_description: string | null
+  ai_pros: string[] | null
+  ai_cons: string[] | null
+  ai_review_summary: string | null
 }
 
 async function getPark(slug: string, state: StateCode | null): Promise<Park | null> {
@@ -301,8 +304,16 @@ export default async function ParkDetailPage({ params }: { params: Params }) {
                 ]}/>
               </div>
               <h1 style={{ color: '#fff', fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 'clamp(22px,4vw,34px)', margin: 0, lineHeight: 1.2, textShadow: '0 2px 14px rgba(0,0,0,0.4)' }}>{park.name}</h1>
-              <div style={{ color: 'rgba(255,255,255,0.9)', marginTop: 8, display: 'flex', gap: 16, flexWrap: 'wrap' as const, fontSize: 14 }}>
-                {rating != null && <span><b>★ {rating.toFixed(1)}</b>{park.review_count ? ` · ${Number(park.review_count).toLocaleString()} reviews` : ''}</span>}
+              <div style={{ color: 'rgba(255,255,255,0.95)', marginTop: 10, display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' as const, fontSize: 14 }}>
+                {rating != null && (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', padding: '6px 12px', borderRadius: 999, backdropFilter: 'blur(4px)' }}>
+                    <span aria-hidden style={{ fontSize: 16, letterSpacing: 1, color: '#fbbf24' }}>
+                      {'★'.repeat(Math.round(rating))}{'☆'.repeat(5 - Math.round(rating))}
+                    </span>
+                    <b>{rating.toFixed(1)}</b>
+                    {park.review_count ? <span style={{ opacity: 0.85 }}>· {Number(park.review_count).toLocaleString()} Google reviews</span> : null}
+                  </span>
+                )}
                 {[park.suburb, park.region].filter(Boolean).length > 0 && <span>📍 {[park.suburb, park.region].filter(Boolean).join(', ')}</span>}
                 {park.price_from && <span>💰 from {park.currency || 'AUD'} ${Number(park.price_from).toFixed(0)}/night</span>}
               </div>
@@ -348,6 +359,44 @@ export default async function ParkDetailPage({ params }: { params: Params }) {
               <p style={{ fontSize: 15, lineHeight: 1.65, color: C.text, margin: 0, whiteSpace: 'pre-wrap' as const }}>
                 {park.description_ai || park.description}
               </p>
+            </section>
+          )}
+
+          {((Array.isArray(park.ai_pros) && park.ai_pros.length > 0) || (Array.isArray(park.ai_cons) && park.ai_cons.length > 0) || park.ai_review_summary) && (
+            <section style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: '22px 24px', marginBottom: 18 }}>
+              <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 20, margin: '0 0 6px', color: C.text }}>What guests are saying</h2>
+              <p style={{ fontSize: 12, color: C.sub, margin: '0 0 16px' }}>
+                Summary distilled from {park.review_count ? Number(park.review_count).toLocaleString() : ''} Google reviews
+              </p>
+              {park.ai_review_summary && (
+                <p style={{ fontSize: 15, lineHeight: 1.65, color: C.text, margin: '0 0 18px', fontStyle: 'italic' as const }}>
+                  {park.ai_review_summary}
+                </p>
+              )}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 14 }}>
+                {Array.isArray(park.ai_pros) && park.ai_pros.length > 0 && (
+                  <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 12, padding: '14px 16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                      <span aria-hidden style={{ fontSize: 18 }}>👍</span>
+                      <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#065f46', textTransform: 'uppercase' as const, letterSpacing: 0.5 }}>What people love</h3>
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: 18, color: '#064e3b', fontSize: 14, lineHeight: 1.55 }}>
+                      {park.ai_pros.map((p, i) => <li key={i} style={{ marginBottom: 6 }}>{p}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {Array.isArray(park.ai_cons) && park.ai_cons.length > 0 && (
+                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 12, padding: '14px 16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                      <span aria-hidden style={{ fontSize: 18 }}>👎</span>
+                      <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#991b1b', textTransform: 'uppercase' as const, letterSpacing: 0.5 }}>What could be better</h3>
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: 18, color: '#7f1d1d', fontSize: 14, lineHeight: 1.55 }}>
+                      {park.ai_cons.map((c, i) => <li key={i} style={{ marginBottom: 6 }}>{c}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </section>
           )}
 

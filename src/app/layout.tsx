@@ -222,7 +222,7 @@ try {
         {bodyStartCode && (
           <div id="bb-body-start" dangerouslySetInnerHTML={{ __html: bodyStartCode }} />
         )}
-        <NavbarWrapper brand={brand} scope={scope} isAggregator={tenant.aggregator} mega={mega} />
+        <NavbarWrapper brand={brand} scope={scope} isAggregator={tenant.aggregator} mega={mega} tenantCode={tenant.state_code} />
         {children}
         <SiteFooter
           brand={{ name: tenant.name, scope, tagline: tenant.tagline }}

@@ -31,12 +31,13 @@ interface NavProps {
   scope: string         // "Queensland", "New South Wales", "Australia" etc — for menu labels
   isAggregator: boolean
   mega: MegaMenu
+  tenantCode?: string   // state_code — gates tenant-specific nav (e.g. UK Park Maps)
 }
 
 const PANELS = ['destinations', 'things', 'trains', 'guides', 'about'] as const
 type PanelKey = typeof PANELS[number]
 
-export function NavbarWrapper({ brand, scope, isAggregator, mega }: NavProps) {
+export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode }: NavProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [open, setOpen] = useState<PanelKey | null>(null)
@@ -136,6 +137,12 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega }: NavProps) {
 
         {/* Mega menu — middle */}
         <div className="bb-nav-links" style={{ display: 'flex', alignItems: 'stretch', gap: 0, justifyContent: 'center' }}>
+          {tenantCode === 'uk' && (
+            <Link href="/park-maps/" className="bb-mega-trigger" data-open={isActive('/park-maps')}
+              style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+              Park Maps
+            </Link>
+          )}
           <MegaTrigger label="Destinations"  panel="destinations" open={open} onHover={hoverOpen} onLeave={hoverClose} />
           <MegaTrigger label="Things to do"  panel="things"       open={open} onHover={hoverOpen} onLeave={hoverClose} />
           <MegaTrigger label="Trains"        panel="trains"       open={open} onHover={hoverOpen} onLeave={hoverClose} />
@@ -199,7 +206,7 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega }: NavProps) {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div style={{ borderTop: '1px solid #e5e7eb', background: '#fff', position: 'relative', zIndex: 50 }}>
-          <MobileDrawer mega={mega} scope={scope} isAggregator={isAggregator} panel={mobilePanel} setPanel={setMobilePanel} onClose={() => setMobileOpen(false)} />
+          <MobileDrawer mega={mega} scope={scope} isAggregator={isAggregator} tenantCode={tenantCode} panel={mobilePanel} setPanel={setMobilePanel} onClose={() => setMobileOpen(false)} />
         </div>
       )}
     </nav>
@@ -390,8 +397,8 @@ function PanelHeading({ title, cta }: { title: string; cta: { href: string; labe
 
 // --- Mobile drawer ---
 
-function MobileDrawer({ mega, scope, isAggregator, panel, setPanel, onClose }: {
-  mega: MegaMenu; scope: string; isAggregator: boolean;
+function MobileDrawer({ mega, scope, isAggregator, tenantCode, panel, setPanel, onClose }: {
+  mega: MegaMenu; scope: string; isAggregator: boolean; tenantCode?: string;
   panel: PanelKey | null; setPanel: (p: PanelKey | null) => void;
   onClose: () => void
 }) {
@@ -443,6 +450,9 @@ function MobileDrawer({ mega, scope, isAggregator, panel, setPanel, onClose }: {
   }
   return (
     <div>
+      {tenantCode === 'uk' && (
+        <Link href="/park-maps/" style={{ ...linkStyle, color: '#0d9488', fontWeight: 700 }} onClick={onClose}>🗺️ Park Maps</Link>
+      )}
       <button onClick={() => setPanel('destinations')} style={groupBtnStyle}>Destinations <span aria-hidden>›</span></button>
       <button onClick={() => setPanel('things')}        style={groupBtnStyle}>Things to do <span aria-hidden>›</span></button>
       <button onClick={() => setPanel('trains')}        style={groupBtnStyle}>Trains <span aria-hidden>›</span></button>
