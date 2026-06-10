@@ -9,13 +9,42 @@ export async function verifyAdmin(req: NextRequest) {
   return { id: session.email, firebaseUid: session.email };
 }
 
+// Private / loopback / link-local / CGNAT ranges (IPv4 + IPv6) — these are
+// internal proxy hops, never a real visitor.
+const PRIVATE_IP_RE = /^(?:10\.|127\.|192\.168\.|169\.254\.|172\.(?:1[6-9]|2\d|3[01])\.|::1$|fe80:|f[cd][0-9a-f]{2}:)/i;
+function normIP(ip: string): string {
+  return ip.trim().replace(/^::ffff:/i, '').replace(/^\[|\]$/g, '');
+}
+function isPublic(ip: string): boolean {
+  const n = normIP(ip);
+  return !!n && !PRIVATE_IP_RE.test(n);
+}
+
+// Resolve the real client IP. The autravel sites sit behind
+// Cloudflare → LiteSpeed (mod_rewrite [P]) → haproxy → Next, so each hop
+// appends to X-Forwarded-For and the *first* entry can be an internal LAN IP
+// (e.g. 192.168.1.3 / 127.0.0.1) rather than the visitor — which would both
+// mislabel contact-form emails and collapse per-IP rate limiting onto one
+// shared address. Prefer Cloudflare's true-client header, then the first
+// PUBLIC hop in X-Forwarded-For, skipping internal proxy IPs.
 export function getIP(req: NextRequest): string | null {
+  const cf = req.headers.get('cf-connecting-ip') || req.headers.get('true-client-ip');
+  if (cf && isPublic(cf)) return normIP(cf);
+
   const xf = req.headers.get('x-forwarded-for');
-  if (xf) return xf.split(',')[0]!.trim();
-  const cf = req.headers.get('cf-connecting-ip');
-  if (cf) return cf.trim();
+  if (xf) {
+    const pub = xf.split(',').map(s => s.trim()).find(isPublic);
+    if (pub) return normIP(pub);
+  }
+
   const real = req.headers.get('x-real-ip');
-  if (real) return real.trim();
+  if (real && isPublic(real)) return normIP(real);
+
+  // Nothing public found (e.g. local/dev or an all-internal chain) — fall back
+  // to the first available value so we still return something deterministic.
+  if (xf) return normIP(xf.split(',')[0]!);
+  if (cf) return normIP(cf);
+  if (real) return normIP(real);
   return null;
 }
 
