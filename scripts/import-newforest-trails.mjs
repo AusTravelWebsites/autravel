@@ -203,24 +203,43 @@ function run() {
     const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 4 })
     let ok = 0
     const slugSeen = new Set()
+    // Same downsampling as /park-maps/page.tsx + scripts/backfill-trail-previews.mjs.
+    // Compute up-front so new trails are immediately listable in the explorer
+    // without needing a separate backfill pass.
+    function buildPreview(geometry, bbox) {
+      if (!geometry?.length || !bbox || bbox.length < 4) return []
+      const [s, w, n, e] = bbox
+      const spanLat = (n - s) || 1e-6, spanLng = (e - w) || 1e-6
+      const flat = []
+      for (const seg of geometry) for (const p of seg) flat.push(p)
+      if (!flat.length) return []
+      const step = Math.max(1, Math.floor(flat.length / 28))
+      const out = []
+      for (let i = 0; i < flat.length; i += step) {
+        const [lat, lng] = flat[i]
+        out.push([((lng - w) / spanLng) * 100, (1 - (lat - s) / spanLat) * 60])
+      }
+      return out
+    }
     for (const t of trails.slice(0, LIMIT)) {
       // unique slug per state
       let base = slugify(t.name), slug = base, i = 2
       while (slugSeen.has(slug)) slug = `${base}-${i++}`
       slugSeen.add(slug)
+      const preview = buildPreview(t.geometry, t.bbox)
       try {
         await sql`
           INSERT INTO autravel.trails (
             state_code, slug, name, trail_type, osm_type, osm_id,
             length_m, distance_label, duration_label, difficulty, surface, area,
             waymarked, dog_friendly, accessible, bicycle_allowed, horse_allowed,
-            center_lat, center_lng, start_lat, start_lng, bbox, geometry,
+            center_lat, center_lng, start_lat, start_lng, bbox, geometry, preview_points,
             tags, source, source_raw, active
           ) VALUES (
             'uk', ${slug}, ${t.name}, ${t.trail_type}, ${t.osm_type}, ${t.osm_id},
             ${t.length_m}, ${t.distance_label}, ${t.duration_label}, ${t.difficulty}, ${t.surface}, ${t.area},
             ${t.waymarked}, ${t.dog_friendly}, ${t.accessible}, ${t.bicycle_allowed}, ${t.horse_allowed},
-            ${t.center_lat}, ${t.center_lng}, ${t.start_lat}, ${t.start_lng}, ${sql.json(t.bbox)}, ${sql.json(t.geometry)},
+            ${t.center_lat}, ${t.center_lng}, ${t.start_lat}, ${t.start_lng}, ${sql.json(t.bbox)}, ${sql.json(t.geometry)}, ${sql.json(preview)},
             ${sql.json(t.tags)}, 'osm', ${sql.json(t.source_raw)}, true
           )
           ON CONFLICT (source, osm_type, osm_id) DO UPDATE SET
@@ -233,7 +252,7 @@ function run() {
             horse_allowed = EXCLUDED.horse_allowed,
             center_lat = EXCLUDED.center_lat, center_lng = EXCLUDED.center_lng,
             start_lat = EXCLUDED.start_lat, start_lng = EXCLUDED.start_lng,
-            bbox = EXCLUDED.bbox, geometry = EXCLUDED.geometry,
+            bbox = EXCLUDED.bbox, geometry = EXCLUDED.geometry, preview_points = EXCLUDED.preview_points,
             tags = EXCLUDED.tags, updated_at = now()`
         ok++
         if (ok % 50 === 0) console.log(`  upserted ${ok}…`)

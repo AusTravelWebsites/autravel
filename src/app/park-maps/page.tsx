@@ -15,37 +15,24 @@ type Row = {
   distance_label: string | null; duration_label: string | null; length_m: number | null;
   area: string | null; surface: string | null; waymarked: boolean | null;
   dog_friendly: boolean | null; bicycle_allowed: boolean | null; horse_allowed: boolean | null;
-  bbox: number[] | null; geometry: [number, number][][] | null;
+  preview_points: [number, number][] | null;
 };
 
-// Downsample a trail's geometry into a normalised 0..100 (x) / 0..60 (y) shape
-// for the lightweight card preview. Avoids shipping full geometry to the client.
-function buildPreview(geometry: [number, number][][] | null, bbox: number[] | null): [number, number][] {
-  if (!geometry?.length || !bbox || bbox.length < 4) return [];
-  const [s, w, n, e] = bbox;
-  const spanLat = (n - s) || 1e-6, spanLng = (e - w) || 1e-6;
-  const flat: [number, number][] = [];
-  for (const seg of geometry) for (const p of seg) flat.push(p);
-  if (!flat.length) return [];
-  const step = Math.max(1, Math.floor(flat.length / 28));
-  const out: [number, number][] = [];
-  for (let i = 0; i < flat.length; i += step) {
-    const [lat, lng] = flat[i];
-    out.push([((lng - w) / spanLng) * 100, (1 - (lat - s) / spanLat) * 60]);
-  }
-  return out;
-}
-
+// preview_points is pre-computed and stored on autravel.trails (28-point
+// normalised 0..100/0..60 shape per trail). Reading it directly drops the
+// listing payload from ~3.3 MB (full geometry) to ~380 KB so the result fits
+// inside unstable_cache's 2 MB ceiling. Backfill: scripts/backfill-trail-previews.mjs.
 const getTrails = unstable_cache(
   async () => {
     return await db<Row[]>`
       SELECT slug, name, trail_type, difficulty, distance_label, duration_label, length_m,
-             area, surface, waymarked, dog_friendly, bicycle_allowed, horse_allowed, bbox, geometry
+             area, surface, waymarked, dog_friendly, bicycle_allowed, horse_allowed,
+             preview_points
         FROM autravel.trails
        WHERE state_code = 'uk' AND active = true
        ORDER BY (trail_type LIKE '%route%') DESC, length_m DESC NULLS LAST`;
   },
-  ['uk-trails-explorer'],
+  ['uk-trails-explorer', 'v2'],
   { revalidate: 600, tags: ['uk-trails'] }
 );
 
@@ -72,7 +59,7 @@ export default async function ParkMapsPage() {
     distance_label: r.distance_label, duration_label: r.duration_label, length_m: r.length_m,
     area: r.area, surface: r.surface, waymarked: r.waymarked,
     dog_friendly: r.dog_friendly, bicycle_allowed: r.bicycle_allowed, horse_allowed: r.horse_allowed,
-    preview: buildPreview(r.geometry, r.bbox),
+    preview: r.preview_points ?? [],
   }));
 
   const types = [...new Set(trails.map(t => t.trail_type))].sort();
