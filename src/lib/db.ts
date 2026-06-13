@@ -58,8 +58,12 @@ const SCHEMA = process.env.DB_SCHEMA || 'autravel'
 //   statement_timeout:12000 — was 8000. Default sort has ~400ms PG-planning
 //             time; under load planning spikes. 12s gives headroom without
 //             letting genuine runaways camp.
+// ssl: false for localhost (PG 17 over unix-domain / loopback, no TLS), 'require'
+// for everything remote. 2026-06-13 — autravel moved off Supabase to local PG on
+// this server. Keeps the SSL discipline anywhere the connection leaves the box.
+const isLocalhost = /@(127\.0\.0\.1|localhost)\b/.test(connectionString)
 const db = postgres(connectionString, {
-  ssl: 'require',
+  ssl: isLocalhost ? false : 'require',
   max: 10,
   idle_timeout: 8,
   max_lifetime: 60 * 2,
@@ -123,7 +127,7 @@ function startSelfHealer() {
     if (Date.now() < selfHealerSkipUntil) return
     let cleaner: ReturnType<typeof postgres> | null = null
     try {
-      cleaner = postgres(connectionString!, { ssl: 'require', prepare: false, max: 1, connect_timeout: 4, idle_timeout: 3 })
+      cleaner = postgres(connectionString!, { ssl: isLocalhost ? false : 'require', prepare: false, max: 1, connect_timeout: 4, idle_timeout: 3 })
       const killed = await cleaner.unsafe(`
         SELECT pid, EXTRACT(EPOCH FROM (NOW() - query_start))::int AS secs,
                LEFT(query, 80) AS q

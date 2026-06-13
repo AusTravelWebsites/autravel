@@ -7,19 +7,33 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 const CRON_TOKEN = process.env.CRON_SECRET || ''
-const PORT = process.env.PORT || '3001'
+// Probe via haproxy (3010) — that's the path real visitors take. Skips
+// CF/DNS noise but still exercises the 3-instance failover, so a single
+// wedged Next.js instance doesn't get reported as an outage when haproxy
+// has already ejected it and the other two are serving fine.
+// (Previously hit autravel-1 directly on 3001, which caused false-positive
+// "down" alerts whenever just that one instance had a transient slow moment.)
+const PROBE_PORT = process.env.UPTIME_PROBE_PORT || '3010'
 const ALERT_EMAIL = process.env.ALERT_EMAIL || ''
 const ALERT_FROM = process.env.ALERT_FROM || 'Autravel Monitor <noreply@bugbitten.com>'
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
-// Hit our own Next server with the tenant's Host header so middleware routes
-// it correctly. Avoids public DNS / TLS so a transient network issue doesn't
-// look like an outage.
+// 2026-06-13 — timeout raised 8s → 20s after a false-positive "DOWN: timeout"
+// page on new-forest. The app was never down (health probes + watchdog green
+// throughout); a single cold homepage render — fresh cross-region DB connection
+// (~1.3s to the Singapore pooler) + queries + a shared-box PHP load spike —
+// briefly exceeded 8s and tripped the alert. A 2–8s slow render is "degraded",
+// not "down"; only a sustained >20s hang is a real outage. Paired with the
+// fail_count >= 3 threshold below (3 min sustained) so a one-minute blip never
+// pages. A genuine outage (all 3 instances down) still alerts immediately —
+// haproxy returns 503 with no delay, so ok=false fires on the first probe.
+const PROBE_TIMEOUT_MS = Number(process.env.UPTIME_PROBE_TIMEOUT_MS) || 20000
+
 async function probeOne(stateCode: string, host: string) {
-  const url = `http://127.0.0.1:${PORT}/`
+  const url = `http://127.0.0.1:${PROBE_PORT}/`
   const start = Date.now()
   const ctrl = new AbortController()
-  const t = setTimeout(() => ctrl.abort(), 8000)
+  const t = setTimeout(() => ctrl.abort(), PROBE_TIMEOUT_MS)
   try {
     const r = await fetch(url, {
       method: 'GET',
@@ -75,7 +89,7 @@ async function processIncidents(probes: Array<{ state_code: string; host: string
         await db`UPDATE autravel.uptime_incidents
                  SET fail_count = ${newCount}, last_status = ${p.status_code}, last_error = ${p.error}
                  WHERE id = ${open.id}`
-        if (!open.notified && newCount >= 2) {
+        if (!open.notified && newCount >= 3) {
           const tenant = TENANTS[p.state_code as StateCode]
           const subj = `🔴 DOWN: ${tenant.name} (${p.host})`
           const sent = await sendAlert(subj, `

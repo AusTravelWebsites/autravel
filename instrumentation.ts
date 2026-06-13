@@ -1,11 +1,18 @@
 // Next.js 15 instrumentation hook — called once when the server boots.
-// Loads the appropriate Sentry config based on runtime (node vs edge).
-// No-op when SENTRY_DSN isn't set.
+// Starts the cross-region DB keep-alive (node only) and loads the appropriate
+// Sentry config based on runtime (node vs edge).
 export async function register() {
-  if (!process.env.SENTRY_DSN) return
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    await import('./sentry.server.config')
+    // Keep a few cross-region DB connections warm so visitor cache-miss renders
+    // don't pay the ~1.3s cold-connect to the Singapore pooler. See db-keepalive.ts.
+    try {
+      const { startDbKeepAlive } = await import('./src/lib/db-keepalive')
+      startDbKeepAlive()
+    } catch (e) {
+      console.error('[instrumentation] db keep-alive failed to start', e)
+    }
+    if (process.env.SENTRY_DSN) await import('./sentry.server.config')
   } else if (process.env.NEXT_RUNTIME === 'edge') {
-    await import('./sentry.edge.config')
+    if (process.env.SENTRY_DSN) await import('./sentry.edge.config')
   }
 }
