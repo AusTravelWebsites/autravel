@@ -40,12 +40,20 @@ if (DSN) {
       /contentWindow is null/i,
       /Cannot read propert(y|ies) of null \(reading ['"]document['"]\)/i,
       /null is not an object \(evaluating .*\.contentWindow/i,
-      // Transient network failures — a fetch (route prefetch, map tile, etc.)
-      // dies when a mobile user navigates away or loses signal. Page itself is
-      // fine; nothing actionable. "Load failed" = Safari, "Failed to fetch" = Chrome.
-      /^Load failed$/i,
-      /^Failed to fetch$/i,
+      // Transient network failures — a fetch (route prefetch, map tile,
+      // browser-extension sidecar, ad pixel) dies when a mobile user navigates
+      // away, loses signal, or the request is blocked. Sentry sometimes
+      // appends the URL to the message (e.g. "Failed to fetch (tausearch.com)"),
+      // so these patterns are unanchored. "Load failed" = Safari, "Failed to
+      // fetch" = Chrome, "NetworkError" = Firefox.
+      /Load failed/i,
+      /Failed to fetch/i,
       /NetworkError when attempting to fetch/i,
+      // AbortController fires when the user navigates away mid-fetch (Next.js
+      // route prefetch, in-flight data fetches). Page itself is fine.
+      /signal is aborted without reason/i,
+      /The (operation|user) (was )?aborted/i,
+      /^AbortError/i,
       // Facebook + Instagram in-app browsers inject their own performance probe
       // that calls window.webkit.messageHandlers.* to relay LCP back to the
       // native iOS app. On iOS versions where that bridge isn't present, their
