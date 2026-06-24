@@ -48,6 +48,21 @@ export async function generateMetadata({ params }: Props) {
       }
     }
   } catch {}
+  // 2026-06-24 URL flatten: destinations now canonical at /<slug>/. If no
+  // article matched the slug, check destinations and return that metadata.
+  try {
+    const { getTenant, stateFilterValue } = await import('@/lib/get-tenant')
+    const tenant = await getTenant()
+    const state = stateFilterValue(tenant)
+    const cand = decodeURIComponent(username).toLowerCase()
+    const [d] = await sql`SELECT slug FROM destinations
+      WHERE active = true AND (${state}::text IS NULL OR state_code = ${state}::text)
+        AND slug = ${cand} LIMIT 1`
+    if (d) {
+      const { generateDestinationMetadata } = await import('@/app/destinations/[slug]/page')
+      return await generateDestinationMetadata(cand)
+    }
+  } catch {}
   try {
     const rows = await sql`SELECT username, display_name, bio, avatar_url, location, visited_countries FROM users WHERE username = ${username} LIMIT 1`;
     if (rows[0]) {
@@ -132,8 +147,27 @@ export default async function ProfilePage({ params }: Props) {
       }
     } catch {}
 
+    // 2026-06-24 URL flatten: if `/<slug>/` matches a destination AND no
+    // article occupied this path, render the destination guide here. This
+    // makes `/<slug>/` the canonical URL for destinations; the old
+    // `/destinations/<slug>/` route 301-redirects here.
+    try {
+      const cand = decodeURIComponent(username).toLowerCase()
+      const [d] = await sql`
+        SELECT 1 FROM destinations
+        WHERE active = true
+          AND (${state}::text IS NULL OR state_code = ${state}::text)
+          AND slug = ${cand} LIMIT 1`
+      if (d) {
+        const { DestinationPageContent } = await import('@/app/destinations/[slug]/page')
+        return await DestinationPageContent({ params: Promise.resolve({ slug: cand }) })
+      }
+    } catch (e: any) {
+      if (e?.digest?.startsWith?.('NEXT_REDIRECT')) throw e
+    }
+
     // Dead legacy `.html` URL (pre-WP static-site era) with no article —
-    // redirect to the matching destination guide, or homepage, not 404.
+    // redirect to the matching destination guide at the new flat URL.
     if (/\.html$/i.test(username)) {
       const cand = decodeURIComponent(username).replace(/\.html$/i, '').toLowerCase()
       let dest = '/'
@@ -142,7 +176,7 @@ export default async function ProfilePage({ params }: Props) {
           SELECT slug FROM destinations
           WHERE (${state}::text IS NULL OR state_code = ${state}::text)
             AND slug = ${cand} LIMIT 1`
-        if (d?.slug) dest = `/destinations/${d.slug}/`
+        if (d?.slug) dest = `/${d.slug}/`
       } catch {}
       permanentRedirect(dest)
     }

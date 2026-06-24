@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { db } from '@/lib/db'
-import { getTenant, stateFilterValue } from '@/lib/get-tenant'
-import { StateCode } from '@/lib/tenants'
+import { getTenant, stateFilterValue, tourStatesFor } from '@/lib/get-tenant'
+import { StateCode, TENANTS } from '@/lib/tenants'
 import { SaveButton } from '@/components/features/SaveButton'
 import { DestinationWeather } from '@/components/features/DestinationWeather'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
@@ -47,6 +47,10 @@ type Article = { slug: string; legacy_path: string | null; title: string; excerp
 
 async function aggregate(d: Destination) {
   const state = d.state_code
+  // tours is shared single-tenant; a tenant may surface more than one state's
+  // tours (perth reads its own + 'wa'). Parks/places/articles stay state-only.
+  const tcfg = TENANTS[state as StateCode]
+  const tourStates = tcfg ? tourStatesFor(tcfg) : [state as StateCode]
   const lat = d.lat, lng = d.lng
   const radius = d.radius_km ? Number(d.radius_km) : 25
   // Rough degrees-per-km at mid-AU latitude (~0.009 deg/km)
@@ -62,7 +66,7 @@ async function aggregate(d: Destination) {
       SELECT slug, title, city, cover_image, rating, review_count, price_from, currency, category, summary_ai, duration_label
       FROM tours
       WHERE active = true
-        AND state_code = ${state}
+        AND state_code = ANY(${tourStates})
         AND (
           city ILIKE ${city}
           OR city ILIKE ${cityPat}
@@ -109,7 +113,7 @@ async function aggregate(d: Destination) {
     db<Tour[]>`
       SELECT slug, title, city, cover_image, rating, review_count, price_from, currency, category, summary_ai, duration_label
       FROM tours
-      WHERE active = true AND state_code = ${state}
+      WHERE active = true AND state_code = ANY(${tourStates})
       ORDER BY featured DESC, rating DESC NULLS LAST, review_count DESC NULLS LAST
       LIMIT 6`.catch(() => [] as Tour[]),
     // Sidebar: popular other destinations in the same state (or anywhere if state-thin)
@@ -173,8 +177,10 @@ async function aggregate(d: Destination) {
   return { tours, parks, attractions, landmarks, nature, food, other, articles, nearbyDests, stateTopTours, popularDests, photos }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params
+// 2026-06-24 URL flatten: destination canonical is now `/<slug>/`, served by the
+// [username] catch-all route. `/destinations/<slug>/` 301-redirects there. The
+// metadata + page logic below stays exported so the catch-all can call it.
+export async function generateDestinationMetadata(slug: string): Promise<Metadata> {
   const tenant = await getTenant()
   const d = await getDestination(slug, stateFilterValue(tenant))
   if (!d) return { title: 'Destination not found' }
@@ -182,7 +188,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = rawTitle.length > 45 ? rawTitle.slice(0, 42).replace(/\s+\S*$/, '') + '…' : rawTitle
   const rawDesc = d.seo_description || d.intro || `Everything to see and do in ${d.name}, ${tenant.stateName}: tours, attractions, activities, caravan parks and landmarks.`
   const desc = rawDesc.length > 155 ? rawDesc.slice(0, 152).replace(/\s+\S*$/, '') + '…' : rawDesc
-  const url = `https://${tenant.host}/destinations/${d.slug}/`
+  const url = `https://${tenant.host}/${d.slug}/`
   return {
     title,
     description: desc,
@@ -190,6 +196,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: { title, description: desc, type: 'website', url, images: d.hero_image ? [d.hero_image] : [] },
     twitter: { card: 'summary_large_image', title, description: desc, images: d.hero_image ? [d.hero_image] : [] },
   }
+}
+
+// /destinations/<slug>/ → 301 → /<slug>/ — single source of truth at the short URL.
+export async function generateMetadata(_: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  return { robots: { index: false, follow: true } }
 }
 
 const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
@@ -244,7 +255,16 @@ async function getDriveTimes(state: string, slug: string): Promise<DriveTime[]> 
   } catch { return [] }
 }
 
-export default async function DestinationPage({ params }: { params: Promise<{ slug: string }> }) {
+// Default export now redirects /destinations/<slug>/ → /<slug>/.
+// The actual rendering lives in `DestinationPageContent` below, which the
+// [username] catch-all route imports + calls when a single-segment URL
+// resolves to a destination slug.
+export default async function RedirectDestination({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  permanentRedirect(`/${slug}/`)
+}
+
+export async function DestinationPageContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const tenant = await getTenant()
   const d = await getDestination(slug, stateFilterValue(tenant))
@@ -256,7 +276,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
     getDriveTimes(d.state_code, d.slug),
     getDestNearby(d.id),
   ])
-  const canonical = `https://${tenant.host}/destinations/${d.slug}/`
+  const canonical = `https://${tenant.host}/${d.slug}/`
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -328,7 +348,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             {data.photos.length > 0  && <div>📷 <b style={{ color: C.text }}>{data.photos.length}</b> photo{data.photos.length === 1 ? '' : 's'}</div>}
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>View on Google Maps →</a>
             <div style={{ marginLeft: 'auto' as const }}>
-              <SaveButton type="destination" slug={d.slug} name={d.name} href={`/destinations/${d.slug}/`} image={d.hero_image} state_code={d.state_code} region={d.region}/>
+              <SaveButton type="destination" slug={d.slug} name={d.name} href={`/${d.slug}/`} image={d.hero_image} state_code={d.state_code} region={d.region}/>
             </div>
           </div>
 
@@ -471,7 +491,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
               <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 22, margin: '0 0 14px', color: '#111827' }}>Nearby destinations</h2>
               <div style={grid}>
                 {data.nearbyDests.map(n => (
-                  <Link key={n.slug} href={`/destinations/${n.slug}/`} style={cardLink}>
+                  <Link key={n.slug} href={`/${n.slug}/`} style={cardLink}>
                     <Card img={n.hero_image} title={n.name} subtitle={n.region || ''}/>
                   </Link>
                 ))}
@@ -518,7 +538,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
           {data.popularDests.length > 0 && (
             <RightRailCard title={`More ${tenant.stateName} destinations`} more={{ href: '/destinations', label: 'See all destinations →' }}>
               {data.popularDests.slice(0, 5).map((p: any) => (
-                <MiniRow key={p.slug} href={`/destinations/${p.slug}/`} img={p.hero_image} title={p.name} subtitle={p.region || ''}/>
+                <MiniRow key={p.slug} href={`/${p.slug}/`} img={p.hero_image} title={p.name} subtitle={p.region || ''}/>
               ))}
             </RightRailCard>
           )}

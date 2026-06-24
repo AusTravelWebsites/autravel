@@ -51,7 +51,7 @@ async function findHtmlFallback(segments: string[], state: StateCode | null): Pr
     const hit = new Set(rows.map(r => r.slug))
     // Prefer the earliest (most general) segment that is a destination.
     for (const c of candidates) {
-      if (hit.has(c)) return `/destinations/${c}/`
+      if (hit.has(c)) return `/${c}/`
     }
   } catch { /* fall through */ }
   return null

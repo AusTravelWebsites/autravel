@@ -167,7 +167,7 @@ export default async function PoiPage({ params }: { params: Promise<{ slug: stri
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 20px 22px' }}>
           {covering[0] && (
             <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}>
-              <Link href={`/destinations/${covering[0].slug}/`} style={{ color: '#0d9488', textDecoration: 'none' }}>← Back to {covering[0].name}</Link>
+              <Link href={`/${covering[0].slug}/`} style={{ color: '#0d9488', textDecoration: 'none' }}>← Back to {covering[0].name}</Link>
             </div>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
@@ -264,7 +264,7 @@ export default async function PoiPage({ params }: { params: Promise<{ slug: stri
             <p style={{ ...p2, marginBottom: 12 }}>Destinations that include {name} in their guide.</p>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 8 }}>
               {covering.map(d => (
-                <Link key={d.slug} href={`/destinations/${d.slug}/`} style={{ display: 'block', padding: '10px 12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, textDecoration: 'none', color: 'inherit' }}>
+                <Link key={d.slug} href={`/${d.slug}/`} style={{ display: 'block', padding: '10px 12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, textDecoration: 'none', color: 'inherit' }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{d.name}</div>
                   <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{Number(d.distance_km).toFixed(1)} km away</div>
                 </Link>

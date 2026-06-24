@@ -9,6 +9,7 @@ import db from '@/lib/db'
 import { getTenant } from '@/lib/get-tenant'
 import { TENANTS, ALL_STATE_CODES } from '@/lib/tenants'
 import { loadMegaMenu } from '@/lib/mega-menu'
+import { trailsCopy } from '@/lib/trails'
 
 const sora = Inter({ subsets: ['latin'], variable: '--font-display', display: 'swap', weight: ['400','500','600','700','800'] })
 const dmSans = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap', weight: ['300','400','500','600'] })
@@ -222,7 +223,7 @@ try {
         {bodyStartCode && (
           <div id="bb-body-start" dangerouslySetInnerHTML={{ __html: bodyStartCode }} />
         )}
-        <NavbarWrapper brand={brand} scope={scope} isAggregator={tenant.aggregator} mega={mega} tenantCode={tenant.state_code} />
+        <NavbarWrapper brand={brand} scope={scope} isAggregator={tenant.aggregator} mega={mega} tenantCode={tenant.state_code} trailsRoute={trailsCopy(tenant).enabled ? trailsCopy(tenant).base : undefined} trailsLabel={trailsCopy(tenant).navLabel} />
         {children}
         <SiteFooter
           brand={{ name: tenant.name, scope, tagline: tenant.tagline }}

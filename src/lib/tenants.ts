@@ -12,7 +12,7 @@
 // AU state codes + 'aunz' aggregator + 'uk' (New Forest National Park, a
 // UK-wide tours/guides tenant served from new-forest-national-park.com — see
 // the `uk` entry in TENANTS for why it lives in this AU-shaped config).
-export type StateCode = 'qld' | 'nsw' | 'nt' | 'wa' | 'sa' | 'tas' | 'vic' | 'aunz' | 'uk'
+export type StateCode = 'qld' | 'nsw' | 'nt' | 'wa' | 'sa' | 'tas' | 'vic' | 'aunz' | 'uk' | 'perth'
 
 export interface TenantConfig {
   state_code: StateCode
@@ -56,6 +56,18 @@ export interface TenantConfig {
   currency?: string
   /** BCP-47 locale for date/number formatting + OG `locale`. Defaults 'en-AU'. */
   locale?: string
+  /** Public path to this tenant's walks/trails explorer (e.g. '/walks', '/park-maps').
+   *  Set => the tenant exposes the trails feature (homepage section, nav link, route);
+   *  unset => the trails feature 404s for this tenant. Replaces the old hard `=== 'uk'` checks. */
+  trailsRoute?: string
+  /** State codes whose `tours` rows this tenant surfaces. Defaults to [state_code].
+   *  The shared `tours` table is keyed UNIQUE (source, source_product_code) so a
+   *  given Viator product lives under ONE state_code only. Perth Tourism is a
+   *  WA-wide brand alongside the existing wa/watravel tenant, so it reads the
+   *  shared 'wa' tour pool in addition to its own 'perth' rows rather than
+   *  duplicating (or stealing) them. Trails/parks/articles/destinations stay
+   *  perth-only — only tours are shared. */
+  tourStateCodes?: StateCode[]
 }
 
 export const TENANTS: Record<StateCode, TenantConfig> = {
@@ -230,6 +242,34 @@ export const TENANTS: Record<StateCode, TenantConfig> = {
     logo: '/brand/uk/logo.webp',
     currency: 'GBP',
     locale: 'en-GB',
+    trailsRoute: '/park-maps',
+  },
+  // Perth Tourism — a trails-first rebuild of the legacy WordPress site at
+  // perthtourism.com.au, whose whole identity was "Bike Paths, Walks & Trails".
+  // A standalone tenant (its own brand) distinct from the wa/watravel tenant; it
+  // carries its own copy of WA content tagged state_code 'perth' (Viator WA tours,
+  // OSM WA trails, Google Places parks). The walks/trails explorer at /walks is the
+  // hero feature — see trailsRoute below.
+  perth: {
+    state_code: 'perth',
+    host: 'perthtourism.com.au',
+    aliases: ['www.perthtourism.com.au'],
+    name: 'Perth Tourism',
+    shortName: 'Perth',
+    stateName: 'Western Australia',
+    regionCode: 'AU-WA',
+    viatorDestIds: [],
+    gaId: 'G-KYLCCZKCC9', // GA4 tag injected via autravel.site_snippets (head), like the other tenants
+    ogImage: 'https://perthtourism.com.au/brand/perth/logo.webp?v=1',
+    heroImage: 'https://media.bugbitten.com/autravel/hero/perth.webp',
+    heroCredit: 'Bibbulmun Track through the karri forest, Western Australia',
+    tagline: 'Bike paths, walks & trails across Western Australia.',
+    aggregator: false,
+    contactEmail: 'info@perthtourism.com.au',
+    fromEmail: 'noreply@perthtourism.com.au',
+    logo: '/brand/perth/logo.webp',
+    trailsRoute: '/walks',
+    tourStateCodes: ['perth', 'wa'],
   },
 }
 

@@ -7,13 +7,19 @@ import SortSelect from './SortSelect'
 import FilterSelect from './FilterSelect'
 import { ToursCountrySearch } from '@/components/features/ToursCountrySearch'
 import { ToursLocationSearch } from '@/components/features/ToursLocationSearch'
-import { getTenant, stateFilterValue } from '@/lib/get-tenant'
+import { getTenant, stateFilterValue, tourStatesFor } from '@/lib/get-tenant'
 import { StateCode } from '@/lib/tenants'
 
-// Aggregates are per-tenant. Cache key includes the state_code so each tenant
+// tours is a shared single-tenant table; a tenant may surface more than one
+// state's tours (e.g. perth reads its own + 'wa'). This fragment turns the
+// tour-state list into a WHERE condition (null = no filter, for the aggregator).
+const toursStateCond = (states: StateCode[] | null) => states === null ? db`true` : db`state_code = ANY(${states})`
+const toursKey = (states: StateCode[] | null) => states ? states.join('+') : 'all'
+
+// Aggregates are per-tenant. Cache key includes the tour states so each tenant
 // gets its own cached aggregate and invalidation is isolated.
-function getCountriesAgg(state: StateCode | null) {
-  const key = state ?? 'all'
+function getCountriesAgg(tourStates: StateCode[] | null) {
+  const key = toursKey(tourStates)
   return unstable_cache(
     async () => {
       try {
@@ -21,7 +27,7 @@ function getCountriesAgg(state: StateCode | null) {
           SELECT country, COUNT(*)::int AS count
           FROM tours
           WHERE active = true AND country IS NOT NULL AND country <> ''
-            AND (${state}::text IS NULL OR state_code = ${state}::text)
+            AND ${toursStateCond(tourStates)}
           GROUP BY country ORDER BY count DESC`
       } catch (e: any) {
         console.warn('[tours/countries] aggregation failed, returning empty:', e?.code || e?.message)
@@ -51,8 +57,8 @@ function getDestinationsAgg(state: StateCode | null) {
     { revalidate: 600, tags: ['destinations', `destinations:${key}`] }
   )()
 }
-function getCategoriesAgg(state: StateCode | null) {
-  const key = state ?? 'all'
+function getCategoriesAgg(tourStates: StateCode[] | null) {
+  const key = toursKey(tourStates)
   return unstable_cache(
     async () => {
       // public.tours has 43k rows / 800MB and lacks a (state_code, active, category)
@@ -67,7 +73,7 @@ function getCategoriesAgg(state: StateCode | null) {
           SELECT category AS slug, COUNT(*)::int AS count
           FROM tours
           WHERE active = true AND category IS NOT NULL
-            AND (${state}::text IS NULL OR state_code = ${state}::text)
+            AND ${toursStateCond(tourStates)}
           GROUP BY category ORDER BY count DESC`
         return rows
       } catch (e: any) {
@@ -169,16 +175,16 @@ const PRICE_BY_SLUG: Record<string, (typeof PRICES)[number]> = Object.fromEntrie
 // or single popular filter) hit cache instead of running 4 parallel DB queries
 // per request. Cache key is built from (filters, page, state); 5-min revalidate.
 // Aggregates (countries/categories) are already cached separately for longer.
-function getTours(f: Filters, page: number, state: StateCode | null) {
-  const key = JSON.stringify({ f, page, state })
+function getTours(f: Filters, page: number, tourStates: StateCode[] | null) {
+  const key = JSON.stringify({ f, page, tourStates })
   return unstable_cache(
-    () => getToursRaw(f, page, state),
+    () => getToursRaw(f, page, tourStates),
     ['tours-list', key],
-    { revalidate: 300, tags: ['tours', `tours:${state ?? 'all'}`] }
+    { revalidate: 300, tags: ['tours', `tours:${toursKey(tourStates)}`] }
   )()
 }
 
-async function getToursRaw(f: Filters, page: number, state: StateCode | null): Promise<{ tours: Tour[]; total: number; countries: Array<{ country: string; count: number }>; categories: Array<{ slug: string; count: number }> }> {
+async function getToursRaw(f: Filters, page: number, tourStates: StateCode[] | null): Promise<{ tours: Tour[]; total: number; countries: Array<{ country: string; count: number }>; categories: Array<{ slug: string; count: number }> }> {
   try {
     const country = f.country ?? null
     const city = f.city ?? null
@@ -204,7 +210,7 @@ async function getToursRaw(f: Filters, page: number, state: StateCode | null): P
                rating, review_count, cover_image, summary_ai, source
         FROM tours
         WHERE active = true
-          AND (${state}::text IS NULL OR state_code = ${state}::text)
+          AND ${toursStateCond(tourStates)}
           AND (${country}::text IS NULL OR country = ${country}::text)
           AND (${city}::text IS NULL OR city = ${city}::text)
           AND (${category}::text IS NULL OR category = ${category}::text)
@@ -221,7 +227,7 @@ async function getToursRaw(f: Filters, page: number, state: StateCode | null): P
         SELECT COUNT(*)::int AS total
         FROM tours
         WHERE active = true
-          AND (${state}::text IS NULL OR state_code = ${state}::text)
+          AND ${toursStateCond(tourStates)}
           AND (${country}::text IS NULL OR country = ${country}::text)
           AND (${city}::text IS NULL OR city = ${city}::text)
           AND (${category}::text IS NULL OR category = ${category}::text)
@@ -232,8 +238,8 @@ async function getToursRaw(f: Filters, page: number, state: StateCode | null): P
           AND (${minRating}::numeric IS NULL OR rating >= ${minRating}::numeric)
           AND (${priceLo}::numeric IS NULL OR price_from >= ${priceLo}::numeric)
           AND (${priceHi}::numeric IS NULL OR price_from < ${priceHi}::numeric)`,
-      getCountriesAgg(state),
-      getCategoriesAgg(state),
+      getCountriesAgg(tourStates),
+      getCategoriesAgg(tourStates),
     ])
     const total = totalRows[0]?.total ?? 0
     return { tours, total, countries, categories: categoryRows }
@@ -255,10 +261,11 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
   const sp = await searchParams
   const tenant = await getTenant()
   const state = stateFilterValue(tenant)
+  const tourStates = tourStatesFor(tenant)
   const filters: Filters = { country: sp.country, city: sp.city, loc: sp.loc, category: sp.category, q: sp.q, duration: sp.duration, rating: sp.rating, price: sp.price, sort: sp.sort }
   const page = Math.max(1, parseInt(sp.page || '1', 10) || 1)
   const [{ tours, total, countries, categories }, destinations] = await Promise.all([
-    getTours(filters, page, state),
+    getTours(filters, page, tourStates),
     tenant.aggregator ? Promise.resolve([] as Array<{ name: string; slug: string }>) : getDestinationsAgg(state),
   ])
   const totalPages = Math.max(1, Math.ceil(total / TOURS_PER_PAGE))

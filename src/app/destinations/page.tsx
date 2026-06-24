@@ -67,7 +67,7 @@ export default async function DestinationsPage() {
       numberOfItems: destinations.length,
       itemListElement: destinations.slice(0, 50).map((d, i) => ({
         '@type': 'ListItem', position: i + 1, name: d.name,
-        url: `https://${tenant.host}/destinations/${d.slug}/`,
+        url: `https://${tenant.host}/${d.slug}/`,
       })),
     },
   }

@@ -24,6 +24,10 @@ const UPLOAD_DIRS: Record<string, string> = {
   // account + wp-content/uploads dir is deliberately preserved on disk so the
   // 3k migrated blog/listing images keep serving at their original URLs.
   uk:   '/home/newforest/public_html/wp-content/uploads',
+  // Perth Tourism: same as New Forest — WP app removed at cut-over, but the
+  // cPanel account + wp-content/uploads dir stays on disk so every migrated
+  // blog image keeps serving at its original /wp-content/uploads/... URL.
+  perth: '/home/perth/public_html/wp-content/uploads',
 }
 
 const MIME: Record<string, string> = {

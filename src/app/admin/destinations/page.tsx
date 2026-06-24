@@ -100,7 +100,7 @@ export default function AdminDestinationsPage() {
               : rows.map(d => (
                 <tr key={d.id} style={{ borderBottom: `1px solid ${C.border}` }}>
                   <td style={td}>
-                    <Link href={`/destinations/${d.slug}`} target="_blank" style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>{d.name}</Link>
+                    <Link href={`/${d.slug}`} target="_blank" style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>{d.name}</Link>
                     <div style={{ fontSize: 11, color: C.sub }}>{d.slug}</div>
                   </td>
                   <td style={td}>{d.state_code.toUpperCase()}</td>

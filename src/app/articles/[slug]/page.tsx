@@ -151,7 +151,7 @@ export function ArticleView({ article: a, tenant, author }: { article: Article; 
         {a.destination_slug && (
           <div style={{ marginTop: 28, padding: '16px 18px', background: '#f0fdfa', border: '1px solid #a7f3d0', borderRadius: 12 }}>
             <div style={{ fontSize: 12, color: '#065f46', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>Destination</div>
-            <Link href={`/destinations/${a.destination_slug}`} style={{ color: C.teal, fontWeight: 700, textDecoration: 'none', fontSize: 16 }}>
+            <Link href={`/${a.destination_slug}`} style={{ color: C.teal, fontWeight: 700, textDecoration: 'none', fontSize: 16 }}>
               See the full {a.destination_slug.replace(/-/g, ' ')} guide →
             </Link>
           </div>

@@ -280,8 +280,8 @@ export default async function CategoryPage({ params }: Props) {
 
         <div style={{ marginTop: 40, padding: '20px 24px', background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, display: 'flex', gap: 18, flexWrap: 'wrap' as const, alignItems: 'center' }}>
           <div style={{ fontSize: 14, color: C.sub, flex: '1 1 240px' }}>Looking for something specific? Browse the full blog or explore destinations.</div>
-          <Link href="/blog" style={{ background: C.teal, color: '#fff', padding: '9px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>All posts</Link>
-          <Link href="/trips" style={{ background: '#fff', color: C.teal, padding: '9px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: 'none', border: `1.5px solid ${C.teal}` }}>Traveller trips</Link>
+          <Link href="/articles/" style={{ background: C.teal, color: '#fff', padding: '9px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>All posts</Link>
+          <Link href="/destinations/" style={{ background: '#fff', color: C.teal, padding: '9px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: 'none', border: `1.5px solid ${C.teal}` }}>Explore destinations</Link>
         </div>
       </div>
     </div>

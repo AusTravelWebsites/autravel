@@ -203,7 +203,7 @@ export default async function DistancePairPage({ params }: { params: Promise<{ s
             <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 22, margin: '0 0 14px', color: C.text }}>Stops along the way</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
               {otherDests.map(d => (
-                <Link key={d.slug} href={`/destinations/${d.slug}/`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Link key={d.slug} href={`/${d.slug}/`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <article style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' as const }}>
                     <div style={{ aspectRatio: '4/3', background: '#f1f5f9' }}>
                       {d.hero_image && <img src={d.hero_image} alt={d.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' as const }}/>}
@@ -268,8 +268,8 @@ export default async function DistancePairPage({ params }: { params: Promise<{ s
           <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 20, margin: '0 0 10px', color: C.text }}>More distance pages</h2>
           <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.8, color: C.text }}>
             <li><Link href={reverseUrl} style={{ color: C.teal }}>{toName} → {fromName} (reverse direction)</Link></li>
-            {from && <li><Link href={`/destinations/${from.slug}/`} style={{ color: C.teal }}>About {from.name}</Link></li>}
-            {to && <li><Link href={`/destinations/${to.slug}/`} style={{ color: C.teal }}>About {to.name}</Link></li>}
+            {from && <li><Link href={`/${from.slug}/`} style={{ color: C.teal }}>About {from.name}</Link></li>}
+            {to && <li><Link href={`/${to.slug}/`} style={{ color: C.teal }}>About {to.name}</Link></li>}
             <li><Link href="/distances/" style={{ color: C.teal }}>All distance pages on {tenant.name}</Link></li>
           </ul>
         </section>

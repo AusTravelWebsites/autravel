@@ -31,13 +31,15 @@ interface NavProps {
   scope: string         // "Queensland", "New South Wales", "Australia" etc — for menu labels
   isAggregator: boolean
   mega: MegaMenu
-  tenantCode?: string   // state_code — gates tenant-specific nav (e.g. UK Park Maps)
+  tenantCode?: string   // state_code — gates tenant-specific nav
+  trailsRoute?: string  // public path of the walks/trails explorer, if this tenant has one
+  trailsLabel?: string  // nav label for it, e.g. 'Walks & Trails' / 'Park Maps'
 }
 
 const PANELS = ['destinations', 'things', 'trains', 'guides', 'about'] as const
 type PanelKey = typeof PANELS[number]
 
-export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode }: NavProps) {
+export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, trailsRoute, trailsLabel }: NavProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [open, setOpen] = useState<PanelKey | null>(null)
@@ -111,14 +113,11 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode }: 
         .bb-state-card { display: block; padding: 14px 16px; border: 1px solid #e5e7eb; border-radius: 10px; text-decoration: none; color: #111827; font-weight: 700; transition: all 0.15s; }
         .bb-state-card:hover { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
         .bb-state-card small { display: block; font-weight: 400; color: #6b7280; font-size: 11px; margin-top: 4px; }
-        @media (max-width: 1100px) {
-          .bb-nav-search input { width: 180px !important; }
-        }
         @media (max-width: 1000px) {
           .bb-nav-top { min-height: 64px !important; grid-template-columns: auto 1fr auto !important; padding: 6px 12px !important; }
           .bb-nav-logo img { height: 48px !important; }
           .bb-nav-links { display: none !important; }
-          .bb-nav-search { display: none !important; }
+          .bb-nav-searchrow form { padding-left: 12px !important; padding-right: 12px !important; }
           .bb-nav-hamburger { display: inline-flex !important; }
           .bb-mega-panel { display: none !important; }
           .bb-dest-grid, .bb-state-grid { grid-template-columns: repeat(2, 1fr); }
@@ -137,10 +136,10 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode }: 
 
         {/* Mega menu — middle */}
         <div className="bb-nav-links" style={{ display: 'flex', alignItems: 'stretch', gap: 0, justifyContent: 'center' }}>
-          {tenantCode === 'uk' && (
-            <Link href="/park-maps/" className="bb-mega-trigger" data-open={isActive('/park-maps')}
+          {trailsRoute && (
+            <Link href={`${trailsRoute}/`} className="bb-mega-trigger" data-open={isActive(trailsRoute)}
               style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
-              Park Maps
+              {trailsLabel || 'Walks & Trails'}
             </Link>
           )}
           <MegaTrigger label="Destinations"  panel="destinations" open={open} onHover={hoverOpen} onLeave={hoverClose} />
@@ -150,24 +149,8 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode }: 
           <MegaTrigger label="About"         panel="about"        open={open} onHover={hoverOpen} onLeave={hoverClose} />
         </div>
 
-        {/* Right — search + saved + mobile hamburger */}
+        {/* Right — saved + mobile hamburger (search moved to its own row below) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'flex-end' }}>
-          <form onSubmit={handleSearch} className="bb-nav-search" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              style={{ position: 'absolute', left: 12, pointerEvents: 'none' }} aria-hidden>
-              <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
-            </svg>
-            <input
-              type="search"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={`Search ${brand.name}…`}
-              aria-label={`Search ${brand.name}`}
-              style={{ background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 999, padding: '8px 14px 8px 34px', fontSize: 13.5, outline: 'none', width: 260, fontFamily: 'inherit', transition: 'border-color 0.15s, background 0.15s' }}
-              onFocus={e => { e.currentTarget.style.borderColor = '#0d9488'; e.currentTarget.style.background = '#fff' }}
-              onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f3f4f6' }}
-            />
-          </form>
           <Link href="/saved/" style={{ display: 'inline-flex', alignItems: 'center', padding: '7px 12px', borderRadius: 8, color: isActive('/saved') ? '#0d9488' : '#374151', textDecoration: 'none', fontSize: 13, fontWeight: 600, position: 'relative', background: isActive('/saved') ? '#f0fdfa' : 'transparent', transition: 'background 0.15s' }}>
             <span aria-hidden style={{ marginRight: 5, fontSize: 15, lineHeight: 1 }}>♡</span> Saved <SavedCountBadge/>
           </Link>
@@ -184,6 +167,28 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode }: 
             </svg>
           </button>
         </div>
+      </div>
+
+      {/* Second row — full-width search */}
+      <div className="bb-nav-searchrow" style={{ borderTop: '1px solid #f1f5f9' }}>
+        <form onSubmit={handleSearch} style={{ maxWidth: 1240, margin: '0 auto', padding: '9px 20px 11px', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', maxWidth: 640 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              style={{ position: 'absolute', left: 14, pointerEvents: 'none' }} aria-hidden>
+              <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+            </svg>
+            <input
+              type="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder={`Search ${brand.name}…`}
+              aria-label={`Search ${brand.name}`}
+              style={{ width: '100%', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 999, padding: '9px 16px 9px 40px', fontSize: 14, outline: 'none', fontFamily: 'inherit', transition: 'border-color 0.15s, background 0.15s' }}
+              onFocus={e => { e.currentTarget.style.borderColor = '#0d9488'; e.currentTarget.style.background = '#fff' }}
+              onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f3f4f6' }}
+            />
+          </div>
+        </form>
       </div>
 
       {/* Desktop mega panel */}
@@ -206,7 +211,7 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode }: 
       {/* Mobile drawer */}
       {mobileOpen && (
         <div style={{ borderTop: '1px solid #e5e7eb', background: '#fff', position: 'relative', zIndex: 50 }}>
-          <MobileDrawer mega={mega} scope={scope} isAggregator={isAggregator} tenantCode={tenantCode} panel={mobilePanel} setPanel={setMobilePanel} onClose={() => setMobileOpen(false)} />
+          <MobileDrawer mega={mega} scope={scope} isAggregator={isAggregator} trailsRoute={trailsRoute} trailsLabel={trailsLabel} panel={mobilePanel} setPanel={setMobilePanel} onClose={() => setMobileOpen(false)} />
         </div>
       )}
     </nav>
@@ -241,7 +246,7 @@ function DestinationsGrid({ mega, scope }: { mega: MegaMenu; scope: string }) {
       />
       <div className="bb-dest-grid">
         {mega.destinations.map(d => (
-          <Link key={d.slug} href={`/destinations/${d.slug}/`} className="bb-dest-card">
+          <Link key={d.slug} href={`/${d.slug}/`} className="bb-dest-card">
             {d.cover_image
               ? <img src={d.cover_image} alt={d.name} loading="lazy" className="bb-dest-img" />
               : <div className="bb-dest-img" />}
@@ -283,6 +288,7 @@ function ThingsToDo({ scope }: { scope: string }) {
         </div>
         <div className="bb-mega-col">
           <h3>Stay overnight</h3>
+          <Link href="/caravan-park-finder/">Caravan Park Finder<small>Search & filter every park</small></Link>
           <Link href="/parks/">Caravan & holiday parks<small>Powered, cabins, glamping</small></Link>
           <Link href="/parks/?type=big-rig">Big-rig friendly<small>Drive-thru sites for larger vans</small></Link>
           <Link href="/parks/?type=pets">Pet-friendly parks<small>Bring the four-legged crew</small></Link>
@@ -397,8 +403,8 @@ function PanelHeading({ title, cta }: { title: string; cta: { href: string; labe
 
 // --- Mobile drawer ---
 
-function MobileDrawer({ mega, scope, isAggregator, tenantCode, panel, setPanel, onClose }: {
-  mega: MegaMenu; scope: string; isAggregator: boolean; tenantCode?: string;
+function MobileDrawer({ mega, scope, isAggregator, trailsRoute, trailsLabel, panel, setPanel, onClose }: {
+  mega: MegaMenu; scope: string; isAggregator: boolean; trailsRoute?: string; trailsLabel?: string;
   panel: PanelKey | null; setPanel: (p: PanelKey | null) => void;
   onClose: () => void
 }) {
@@ -416,7 +422,7 @@ function MobileDrawer({ mega, scope, isAggregator, tenantCode, panel, setPanel, 
               <a key={s.state_code} href={`https://${s.host}/`} style={{ ...linkStyle, paddingLeft: 32 }} onClick={onClose}>{s.name}</a>
             ))
           : mega.destinations.map(d => (
-              <Link key={d.slug} href={`/destinations/${d.slug}/`} style={{ ...linkStyle, paddingLeft: 32 }} onClick={onClose}>{d.name}</Link>
+              <Link key={d.slug} href={`/${d.slug}/`} style={{ ...linkStyle, paddingLeft: 32 }} onClick={onClose}>{d.name}</Link>
             ))
         )}
         {panel === 'things' && <>
@@ -450,8 +456,8 @@ function MobileDrawer({ mega, scope, isAggregator, tenantCode, panel, setPanel, 
   }
   return (
     <div>
-      {tenantCode === 'uk' && (
-        <Link href="/park-maps/" style={{ ...linkStyle, color: '#0d9488', fontWeight: 700 }} onClick={onClose}>🗺️ Park Maps</Link>
+      {trailsRoute && (
+        <Link href={`${trailsRoute}/`} style={{ ...linkStyle, color: '#0d9488', fontWeight: 700 }} onClick={onClose}>🥾 {trailsLabel || 'Walks & Trails'}</Link>
       )}
       <button onClick={() => setPanel('destinations')} style={groupBtnStyle}>Destinations <span aria-hidden>›</span></button>
       <button onClick={() => setPanel('things')}        style={groupBtnStyle}>Things to do <span aria-hidden>›</span></button>

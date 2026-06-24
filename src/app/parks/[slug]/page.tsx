@@ -558,7 +558,7 @@ function NearestDestinationsPanel({ state, parkName, dests }: { state: string; p
       <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 14px', lineHeight: 1.5 }}>Direct distance to the closest destinations. Click for the full drive-time guide and tours along the way.</p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px,1fr))', gap: 10 }}>
         {dests.map(d => (
-          <Link key={d.slug} href={`/destinations/${d.slug}/`} style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: '12px 14px', textDecoration: 'none', color: 'inherit', display: 'block' }}>
+          <Link key={d.slug} href={`/${d.slug}/`} style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: '12px 14px', textDecoration: 'none', color: 'inherit', display: 'block' }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{d.name}</div>
             <div style={{ fontSize: 12, color: '#6b7280', marginTop: 3 }}>
               {d.region && <>{d.region} · </>}{Math.round(d.distance_km)} km away

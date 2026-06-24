@@ -122,7 +122,7 @@ export function SiteFooter({
         <div className="bb-foot-col">
           <h4>Top destinations</h4>
           {topDestinations.slice(0, 8).map(d => (
-            <Link key={d.slug} href={`/destinations/${d.slug}/`}>{d.name}</Link>
+            <Link key={d.slug} href={`/${d.slug}/`}>{d.name}</Link>
           ))}
           {topDestinations.length === 0 && <Link href="/destinations/">Browse all →</Link>}
         </div>

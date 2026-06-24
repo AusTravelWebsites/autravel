@@ -30,4 +30,18 @@ export function isAggregator(tenant: TenantConfig): boolean {
   return tenant.aggregator
 }
 
+/**
+ * State codes whose `tours` rows a tenant should surface.
+ *  - aggregator (aunz) → null  (no filter; sees every state's tours)
+ *  - tenant with explicit tourStateCodes (e.g. perth → ['perth','wa']) → that list
+ *  - otherwise → [own state_code]
+ *
+ * Only the shared single-tenant `tours` table needs this; other tables hold
+ * per-tenant rows and use stateFilterValue. Use with `state_code = ANY(${list})`.
+ */
+export function tourStatesFor(tenant: TenantConfig): StateCode[] | null {
+  if (tenant.aggregator) return null
+  return tenant.tourStateCodes ?? [tenant.state_code]
+}
+
 export { DEFAULT_TENANT }

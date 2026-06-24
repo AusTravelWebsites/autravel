@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { db } from '@/lib/db'
 import { getTenant, stateFilterValue } from '@/lib/get-tenant'
+import { trailsCopy } from '@/lib/trails'
 
 export const revalidate = 3600
 
@@ -43,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       WHERE active = true AND (${state}::text IS NULL OR state_code = ${state}::text)
       LIMIT 5000`
     destinations = (rows as any[]).map(d => {
-      const e: Entry = { url: `${SITE}/destinations/${d.slug}/`, lastModified: d.lm ? new Date(d.lm) : now, changeFrequency: 'weekly', priority: 0.9 }
+      const e: Entry = { url: `${SITE}/${d.slug}/`, lastModified: d.lm ? new Date(d.lm) : now, changeFrequency: 'weekly', priority: 0.9 }
       if (d.hero_image) e.images = [d.hero_image]
       return e
     })
@@ -114,18 +115,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   } catch {}
 
-  // Park Maps — UK (New Forest) tenant only.
+  // Walks / trails explorer — any tenant with a trailsRoute (New Forest /park-maps,
+  // Perth /walks, etc.). Public URLs use the tenant's own base path.
   let trails: Entry[] = []
-  if (tenant.state_code === 'uk') {
-    staticPages.push({ url: `${SITE}/park-maps/`, changeFrequency: 'weekly', priority: 0.9, lastModified: now })
+  const tc = trailsCopy(tenant)
+  if (tc.enabled) {
+    const tState = state ?? tenant.state_code
+    staticPages.push({ url: `${SITE}${tc.base}/`, changeFrequency: 'weekly', priority: 0.9, lastModified: now })
     try {
       const rows = await db`
         SELECT slug, COALESCE(updated_at, created_at) AS lm
         FROM autravel.trails
-        WHERE state_code = 'uk' AND active = true
+        WHERE state_code = ${tState} AND active = true
         LIMIT 5000`
       trails = (rows as any[]).map(t => ({
-        url: `${SITE}/park-maps/${t.slug}/`,
+        url: `${SITE}${tc.base}/${t.slug}/`,
         lastModified: t.lm ? new Date(t.lm) : now,
         changeFrequency: 'monthly' as const,
         priority: 0.7,

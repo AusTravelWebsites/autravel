@@ -3,7 +3,12 @@ import { getTenant } from '@/lib/get-tenant'
 import { SavedListClient } from '@/components/features/SaveButton'
 import { PrintButton } from '@/components/features/PrintButton'
 
-export const dynamic = 'force-static'
+// Must be dynamic, not force-static: this is a multi-tenant app and the shared
+// layout (nav mega-menu, footer) is per-tenant. A force-static build freezes the
+// default tenant's (qld) nav onto this page and serves it to every tenant, so
+// e.g. perthtourism showed qld destination links that 404. getTenant() reads
+// headers() — keep the render per-request so the nav matches the host.
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getTenant()

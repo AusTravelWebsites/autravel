@@ -19,7 +19,7 @@ export type TrailCard = {
   preview: [number, number][]; // normalised route shape, 0..100 x / 0..60 y
 };
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' };
+const BASE = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280' };
 
 const TYPE_META: Record<string, { icon: string; color: string }> = {
   'Walking route': { icon: '🥾', color: '#0d9488' },
@@ -45,13 +45,23 @@ function RouteSvg({ pts, color }: { pts: [number, number][]; color: string }) {
   );
 }
 
-const chip = (active: boolean): React.CSSProperties => ({
+const chip = (active: boolean, accent: string): React.CSSProperties => ({
   padding: '6px 13px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-  border: `1px solid ${active ? C.teal : C.border}`, background: active ? C.teal : C.card,
-  color: active ? '#fff' : C.text, whiteSpace: 'nowrap',
+  border: `1px solid ${active ? accent : BASE.border}`, background: active ? accent : BASE.card,
+  color: active ? '#fff' : BASE.text, whiteSpace: 'nowrap',
 });
 
-export function TrailExplorer({ trails, types, areas }: { trails: TrailCard[]; types: string[]; areas: string[] }) {
+export function TrailExplorer({
+  trails, types, areas,
+  base = '/park-maps',
+  scopeText = '',
+  accent = '#0d9488',
+  accentLight = '#f0fdfa',
+}: {
+  trails: TrailCard[]; types: string[]; areas: string[];
+  base?: string; scopeText?: string; accent?: string; accentLight?: string;
+}) {
+  const C = { ...BASE, teal: accent, tealLight: accentLight };
   const [q, setQ] = useState('');
   const [type, setType] = useState<string>('');
   const [difficulty, setDifficulty] = useState<string>('');
@@ -107,9 +117,9 @@ export function TrailExplorer({ trails, types, areas }: { trails: TrailCard[]; t
 
       {/* Type chips */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
-        <span style={chip(type === '')} onClick={() => { setType(''); setShown(24); }}>All types</span>
+        <span style={chip(type === '', accent)} onClick={() => { setType(''); setShown(24); }}>All types</span>
         {types.map(t => (
-          <span key={t} style={chip(type === t)} onClick={() => { setType(type === t ? '' : t); setShown(24); }}>
+          <span key={t} style={chip(type === t, accent)} onClick={() => { setType(type === t ? '' : t); setShown(24); }}>
             {TYPE_META[t]?.icon || '•'} {t}
           </span>
         ))}
@@ -118,18 +128,18 @@ export function TrailExplorer({ trails, types, areas }: { trails: TrailCard[]; t
       {/* Difficulty + length */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18, alignItems: 'center' }}>
         {['Easy', 'Moderate', 'Challenging'].map(d => (
-          <span key={d} style={{ ...chip(difficulty === d), borderColor: difficulty === d ? DIFFICULTY_COLOR[d] : C.border, background: difficulty === d ? DIFFICULTY_COLOR[d] : C.card }}
+          <span key={d} style={{ ...chip(difficulty === d, accent), borderColor: difficulty === d ? DIFFICULTY_COLOR[d] : C.border, background: difficulty === d ? DIFFICULTY_COLOR[d] : C.card }}
             onClick={() => { setDifficulty(difficulty === d ? '' : d); setShown(24); }}>{d}</span>
         ))}
         <span style={{ width: 1, height: 22, background: C.border, margin: '0 4px' }} />
         {[2, 5, 10, 20].map(km => (
-          <span key={km} style={chip(maxKm === km)} onClick={() => { setMaxKm(maxKm === km ? 0 : km); setShown(24); }}>≤ {km} km</span>
+          <span key={km} style={chip(maxKm === km, accent)} onClick={() => { setMaxKm(maxKm === km ? 0 : km); setShown(24); }}>≤ {km} km</span>
         ))}
       </div>
 
       <div style={{ color: C.sub, fontSize: 13, marginBottom: 14 }}>
         <b style={{ color: C.text }}>{filtered.length}</b> {filtered.length === 1 ? 'route' : 'routes'}
-        {(q || type || difficulty || area || maxKm) ? ' match your search' : ' across the New Forest'}
+        {(q || type || difficulty || area || maxKm) ? ' match your search' : (scopeText ? ` ${scopeText}` : '')}
       </div>
 
       {/* Grid */}
@@ -137,7 +147,7 @@ export function TrailExplorer({ trails, types, areas }: { trails: TrailCard[]; t
         {visible.map(t => {
           const meta = TYPE_META[t.trail_type] || { icon: '•', color: C.teal };
           return (
-            <Link key={t.slug} href={`/park-maps/${t.slug}/`} style={{ textDecoration: 'none', color: 'inherit', background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <Link key={t.slug} href={`${base}/${t.slug}/`} style={{ textDecoration: 'none', color: 'inherit', background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               <RouteSvg pts={t.preview} color={meta.color} />
               <div style={{ padding: '12px 14px 14px' }}>
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>

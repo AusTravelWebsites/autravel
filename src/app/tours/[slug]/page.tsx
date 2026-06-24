@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
-import { getTenant, stateFilterValue } from '@/lib/get-tenant'
+import { getTenant, tourStatesFor } from '@/lib/get-tenant'
 import { StateCode } from '@/lib/tenants'
 import { SaveButton } from '@/components/features/SaveButton'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
@@ -49,7 +49,7 @@ type Tour = {
   source: string
 }
 
-async function getTour(slug: string, state: StateCode | null): Promise<Tour | null> {
+async function getTour(slug: string, tourStates: StateCode[] | null): Promise<Tour | null> {
   try {
     const [row] = await db<Tour[]>`
       SELECT slug, title, country, city, state_code, duration_label, duration_min,
@@ -59,7 +59,7 @@ async function getTour(slug: string, state: StateCode | null): Promise<Tour | nu
       FROM tours
       WHERE slug = ${slug}
         AND active = true
-        AND (${state}::text IS NULL OR state_code = ${state}::text)
+        AND ${tourStates === null ? db`true` : db`state_code = ANY(${tourStates})`}
       LIMIT 1`
     return row || null
   } catch {
@@ -70,7 +70,7 @@ async function getTour(slug: string, state: StateCode | null): Promise<Tour | nu
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params
   const tenant = await getTenant()
-  const tour = await getTour(slug, stateFilterValue(tenant))
+  const tour = await getTour(slug, tourStatesFor(tenant))
   if (!tour) return { title: 'Tour not found' }
   // Title: trim to ≤60 chars to avoid Google SERP truncation. Layout adds " · {tenant.name}" so budget headroom.
   const rawTitle = tour.title
@@ -93,7 +93,7 @@ const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub
 export default async function TourDetailPage({ params }: { params: Params }) {
   const { slug } = await params
   const tenant = await getTenant()
-  const tour = await getTour(slug, stateFilterValue(tenant))
+  const tour = await getTour(slug, tourStatesFor(tenant))
   if (!tour) notFound()
 
   const gallery = (tour.images || []).filter(Boolean)

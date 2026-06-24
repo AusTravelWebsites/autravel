@@ -109,7 +109,7 @@ export async function ArticleRelated({ article }: { article: Article }) {
 
       {/* Hero callout: parent destination guide */}
       {d && (
-        <Link href={`/destinations/${d.slug}/`} style={{ display: 'flex', gap: 16, padding: 14, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, marginBottom: 22, textDecoration: 'none', color: 'inherit', alignItems: 'center' }}>
+        <Link href={`/${d.slug}/`} style={{ display: 'flex', gap: 16, padding: 14, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, marginBottom: 22, textDecoration: 'none', color: 'inherit', alignItems: 'center' }}>
           {d.hero_image && (
             <img src={d.hero_image} alt={d.name} loading="lazy" style={{ width: 110, height: 80, objectFit: 'cover' as const, borderRadius: 8, flexShrink: 0 }}/>
           )}

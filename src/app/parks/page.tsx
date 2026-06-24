@@ -194,6 +194,11 @@ export default async function ParksPage({ searchParams }: { searchParams: Promis
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 15, margin: '0 auto', lineHeight: 1.55, maxWidth: 640 }}>
             Powered sites, cabins, glamping, bush camps and big-rig-friendly grounds — we keep this list current so you don't have to phone around. Beth's been scouting parks across {scope} since the van life thing was just called "going camping."
           </p>
+          <div style={{ marginTop: 18 }}>
+            <Link href="/caravan-park-finder/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: '#0f766e', padding: '11px 22px', borderRadius: 10, fontWeight: 700, fontSize: 14.5, textDecoration: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.12)' }}>
+              🔍 Open the Caravan Park Finder
+            </Link>
+          </div>
         </div>
       </section>
 

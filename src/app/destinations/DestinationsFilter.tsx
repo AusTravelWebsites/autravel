@@ -96,7 +96,7 @@ export function DestinationsFilter({ destinations }: { destinations: Destination
 
 function DestCard({ d, big }: { d: Destination; big?: boolean }) {
   return (
-    <Link href={`/destinations/${d.slug}/`} style={{ textDecoration: 'none', color: 'inherit' }}>
+    <Link href={`/${d.slug}/`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <article style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' as const, display: 'flex', flexDirection: 'column' as const, height: '100%', transition: 'transform 0.15s ease, box-shadow 0.15s ease' }}
         onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 20px -8px rgba(15,23,42,0.18)' }}
         onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '' }}>

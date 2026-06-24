@@ -21,6 +21,10 @@ const DESTINATIONS = {
   nsw:  { id: 120, name: 'New South Wales',    country: 'Australia', iso2: 'AU', state_code: 'nsw'  },
   vic:  { id: 125, name: 'Victoria',           country: 'Australia', iso2: 'AU', state_code: 'vic'  },
   wa:   { id: 126, name: 'Western Australia',  country: 'Australia', iso2: 'AU', state_code: 'wa'   },
+  // Perth Tourism — standalone WA-wide tenant (separate brand from watravel).
+  // Same Viator WA destination (126) but tagged state_code 'perth' so rows stay
+  // isolated from the wa/watravel tenant.
+  perth:{ id: 126, name: 'Western Australia',  country: 'Australia', iso2: 'AU', state_code: 'perth'},
   sa:   { id: 123, name: 'South Australia',    country: 'Australia', iso2: 'AU', state_code: 'sa'   },
   tas:  { id: 124, name: 'Tasmania',           country: 'Australia', iso2: 'AU', state_code: 'tas'  },
   nt:   { id: 121, name: 'Northern Territory', country: 'Australia', iso2: 'AU', state_code: 'nt'   },
@@ -331,8 +335,12 @@ async function importDestination(sql, destKey) {
 }
 
 async function main() {
-  const sql = postgres(process.env.DATABASE_URL_POOL || process.env.DATABASE_URL, {
-    ssl: 'require', prepare: false, max: 1,
+  // The DB moved off Supabase to local Postgres (2026-06-13); local connections
+  // must NOT use SSL. Detect a loopback host and skip TLS, matching src/lib/db.ts.
+  const CONN = process.env.DATABASE_URL_POOL || process.env.DATABASE_URL || ''
+  const isLocal = /@(127\.0\.0\.1|localhost)[:\/]/.test(CONN)
+  const sql = postgres(CONN, {
+    ssl: isLocal ? false : 'require', prepare: false, max: 1,
     connection: { search_path: 'autravel, public' },
   })
   try {

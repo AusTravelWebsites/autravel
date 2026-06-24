@@ -61,7 +61,7 @@ export default async function NotFound() {
             <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 22, margin: '0 0 14px', color: C.text }}>Popular destinations in {scope}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
               {popular.map(d => (
-                <Link key={d.slug} href={`/destinations/${d.slug}/`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Link key={d.slug} href={`/${d.slug}/`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <article style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' as const, transition: 'transform 0.15s, box-shadow 0.15s' }}
                     >
                     <div style={{ aspectRatio: '4/3', background: '#f1f5f9', overflow: 'hidden' as const }}>

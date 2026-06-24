@@ -47,7 +47,7 @@ export default async function PrivacyPage() {
           <p>We share information only when needed to provide the service: with tour operators you book through, with infrastructure providers (hosting, authentication, analytics) who process data on our behalf, or when required by law. We do not sell your personal information.</p>
 
           <H2>Your rights</H2>
-          <p>You can access, correct, or delete your personal information at any time from <Link href="/settings/" style={{ color: C.teal }}>your account settings</Link> or via our <Link href="/contact/" style={{ color: C.teal }}>contact form</Link>. If you&rsquo;re in the EU/UK you also have the right to lodge a complaint with your local data-protection authority.</p>
+          <p>You can access, correct, or delete your personal information at any time via our <Link href="/contact/" style={{ color: C.teal }}>contact form</Link>. If you&rsquo;re in the EU/UK you also have the right to lodge a complaint with your local data-protection authority.</p>
 
           <H2>Data retention</H2>
           <p>We keep account information while your account is active and for a reasonable period after to comply with legal obligations. Backup copies may exist for longer as part of routine backup retention.</p>

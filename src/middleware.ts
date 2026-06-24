@@ -44,6 +44,14 @@ function matchesPrefix(pathname: string, prefixes: string[]) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
+  // Legacy WordPress RSS: old sites served their feed at /feed/. On autravel the
+  // social "/feed" page is part of the gated community surface (404'd below), so
+  // map the legacy RSS URL straight onto the generated feed at /feed.xml. A
+  // rewrite keeps the original /feed/ URL intact (preserves old URL structure).
+  if ((req.method === 'GET' || req.method === 'HEAD') && (pathname === '/feed' || pathname === '/feed/')) {
+    return NextResponse.rewrite(new URL('/feed.xml', req.url))
+  }
+
   // Hard-404 the community surface on every method (GET/POST/PATCH/DELETE).
   if (matchesPrefix(pathname, COMMUNITY_APIS)) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -82,6 +90,28 @@ export async function middleware(req: NextRequest) {
     // + search.
     const target = `https://${tenant.host}${req.nextUrl.pathname}${req.nextUrl.search}`
     return NextResponse.redirect(target, 308)
+  }
+
+  // Trails feature routing. A trails-enabled tenant exposes the walks/trails
+  // explorer at its own public path (tenant.trailsRoute); the implementation
+  // lives at the single physical /park-maps route. Map the tenant's public path
+  // onto it, and hide the physical /park-maps path on tenants that publish under
+  // a different path so there's no duplicate-URL exposure. Tenants with no
+  // trailsRoute fall through and the page itself 404s.
+  const tr = tenant.trailsRoute
+  if (tr && tr !== '/park-maps') {
+    if (pathname === tr || pathname.startsWith(tr + '/')) {
+      const dest = req.nextUrl.clone()
+      dest.pathname = '/park-maps' + pathname.slice(tr.length)
+      const rwHeaders = new Headers(req.headers)
+      rwHeaders.set('x-tenant', tenant.state_code)
+      const r = NextResponse.rewrite(dest, { request: { headers: rwHeaders } })
+      r.headers.set('x-tenant', tenant.state_code)
+      return r
+    }
+    if (pathname === '/park-maps' || pathname.startsWith('/park-maps/')) {
+      return NextResponse.rewrite(new URL('/404', req.url))
+    }
   }
 
   // Redirect lookup. Tenant-scoped. We include `.html` / `.php` style legacy

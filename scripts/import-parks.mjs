@@ -31,6 +31,8 @@ const QUERIES_ARG = arg('queries')
 const STATE_NAMES = {
   qld: 'Queensland', nsw: 'New South Wales', nt: 'Northern Territory',
   wa: 'Western Australia', sa: 'South Australia', tas: 'Tasmania', vic: 'Victoria',
+  // Perth Tourism — WA-wide content tagged 'perth' (separate brand from watravel).
+  perth: 'Western Australia',
 }
 if (!STATE || !STATE_NAMES[STATE]) {
   console.error('Usage: node scripts/import-parks.mjs --state <qld|nsw|nt|wa|sa|tas|vic> [--queries "..."] [--pages 3] [--dry-run]')

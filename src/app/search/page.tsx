@@ -71,7 +71,7 @@ function Inner() {
         {results && results.destinations.length > 0 && (
           <Section title={`Destinations (${results.destinations.length})`}>
             {results.destinations.map(d => (
-              <Link key={d.slug} href={`/destinations/${d.slug}/`} style={linkStyle}>
+              <Link key={d.slug} href={`/${d.slug}/`} style={linkStyle}>
                 <Card img={d.hero_image} title={d.name} subtitle={d.region || ''} excerpt={d.intro || ''}/>
               </Link>
             ))}
