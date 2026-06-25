@@ -41,10 +41,10 @@ export default function AdminResetPasswordPage() {
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 26, fontWeight: 800, color: '#111827', margin: '0 0 22px' }}>Set new password</h1>
         {!token ? (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '12px 14px', color: '#dc2626', fontSize: 14, lineHeight: 1.5 }}>
-            Missing reset token. Request a new reset link from the <Link href="/admin/forgot-password/" style={{ color: '#0d9488', fontWeight: 600 }}>forgot password</Link> page.
+            Missing reset token. Request a new reset link from the <Link href="/admin/forgot-password/" style={{ color: 'var(--brand)', fontWeight: 600 }}>forgot password</Link> page.
           </div>
         ) : done ? (
-          <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, padding: '12px 14px', color: '#065f46', fontSize: 14, lineHeight: 1.5 }}>
+          <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, padding: '12px 14px', color: 'var(--brand-dark)', fontSize: 14, lineHeight: 1.5 }}>
             Password updated. Redirecting to the admin dashboard…
           </div>
         ) : (
@@ -58,7 +58,7 @@ export default function AdminResetPasswordPage() {
             <div style={{ color: '#6b7280', fontSize: 12, marginBottom: 14 }}>Minimum 12 characters.</div>
             {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '9px 12px', color: '#dc2626', fontSize: 13, marginBottom: 14 }}>{error}</div>}
             <button type="submit" disabled={loading || !password || !confirm}
-              style={{ width: '100%', padding: 12, borderRadius: 8, background: '#0d9488', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !password || !confirm ? 0.6 : 1 }}>
+              style={{ width: '100%', padding: 12, borderRadius: 8, background: 'var(--brand)', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !password || !confirm ? 0.6 : 1 }}>
               {loading ? 'Updating…' : 'Set password'}
             </button>
           </form>

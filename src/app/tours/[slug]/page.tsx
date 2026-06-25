@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   }
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
 
 export default async function TourDetailPage({ params }: { params: Params }) {
   const { slug } = await params
@@ -254,8 +254,8 @@ export default async function TourDetailPage({ params }: { params: Params }) {
           {/* Good to know */}
           {tour.good_to_know_ai && (
             <section style={{ background: C.tealLight, border: `1px solid #a7f3d0`, borderRadius: 14, padding: '18px 22px', marginBottom: 18 }}>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 17, margin: '0 0 8px', color: '#065f46' }}>Good to know</h2>
-              <div className="tour-rich tour-rich-gtk" style={{ fontSize: 14, lineHeight: 1.6, color: '#065f46' }}
+              <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 17, margin: '0 0 8px', color: 'var(--brand-dark)' }}>Good to know</h2>
+              <div className="tour-rich tour-rich-gtk" style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--brand-dark)' }}
                 dangerouslySetInnerHTML={{ __html: renderRichField(tour.good_to_know_ai) }}/>
             </section>
           )}

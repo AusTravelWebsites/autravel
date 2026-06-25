@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 export const dynamic = 'force-dynamic'
 
 type SignIn = { id:string; user_id:string; ip?:string; user_agent?:string; created_at:string; username?:string; display_name?:string; avatar_url?:string; is_banned?:boolean }
-const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'#0d9488' }
+const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'var(--brand)' }
 
 function timeAgo(iso: string) {
   const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)

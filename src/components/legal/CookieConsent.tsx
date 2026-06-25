@@ -69,7 +69,7 @@ export function CookieConsent() {
   const rejectAll = () => { savePrefs({ necessary: true, analytics: false, marketing: false }); setOpen(false); setShowPanel(false); };
   const savePanel = () => { savePrefs({ necessary: true, analytics, marketing }); setOpen(false); setShowPanel(false); };
 
-  const sub = '#6b7280', teal = '#0d9488', border = '#e5e7eb';
+  const sub = '#6b7280', teal = 'var(--brand)', border = '#e5e7eb';
 
   // Preferences panel
   if (showPanel) {

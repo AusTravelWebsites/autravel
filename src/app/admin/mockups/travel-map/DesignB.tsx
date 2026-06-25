@@ -3,7 +3,7 @@ import { useState, useRef } from 'react'
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps'
 import { MOCK_VISITED, visitedSet, lookupCountry, TOTAL_COUNTRIES, GEO_URL, MockCountry } from './mockData'
 
-const TEAL = '#0d9488'
+const TEAL = 'var(--brand)'
 const TEAL_LIGHT = '#5eead4'
 
 export default function DesignB() {
@@ -26,7 +26,7 @@ export default function DesignB() {
   return (
     <div style={{ background: '#f8fafc', borderRadius: 14, overflow: 'hidden' }}>
       {/* Top band: hero with stats + toolbar */}
-      <div style={{ background: 'linear-gradient(135deg,#0d9488 0%,#065f46 100%)', padding: '32px 24px 20px', color: '#fff' }}>
+      <div style={{ background: 'linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '32px 24px 20px', color: '#fff' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap' }}>
           <div>
             <div style={{ fontSize: 11, opacity: 0.75, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>Your travel map</div>

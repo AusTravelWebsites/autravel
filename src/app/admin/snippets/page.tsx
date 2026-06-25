@@ -99,10 +99,10 @@ export default function SnippetsPage() {
         <div key={s.id} style={{ ...S.card, borderLeft: `4px solid ${s.is_active ? '#10b981' : '#d1d5db'}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
             <div style={{ fontWeight: 600, fontSize: 14, color: '#111' }}>{s.name}</div>
-            <span style={{ ...S.tag, background: s.is_active ? '#d1fae5' : '#f3f4f6', color: s.is_active ? '#065f46' : '#6b7280' }}>{s.is_active ? 'Active' : 'Inactive'}</span>
+            <span style={{ ...S.tag, background: s.is_active ? '#d1fae5' : '#f3f4f6', color: s.is_active ? 'var(--brand-dark)' : '#6b7280' }}>{s.is_active ? 'Active' : 'Inactive'}</span>
             <span style={{ ...S.tag, background: '#eff6ff', color: '#1d4ed8' }}>{locationLabels[s.location]}</span>
             <div style={{ flex: 1 }} />
-            <button style={{ ...S.btn, background: s.is_active ? '#fef3c7' : '#d1fae5', color: s.is_active ? '#92400e' : '#065f46', padding: '4px 10px' }} onClick={() => toggle(s)}>{s.is_active ? 'Disable' : 'Enable'}</button>
+            <button style={{ ...S.btn, background: s.is_active ? '#fef3c7' : '#d1fae5', color: s.is_active ? '#92400e' : 'var(--brand-dark)', padding: '4px 10px' }} onClick={() => toggle(s)}>{s.is_active ? 'Disable' : 'Enable'}</button>
             <button style={{ ...S.btn, background: '#eff6ff', color: '#1d4ed8', padding: '4px 10px' }} onClick={() => { setForm({ ...s }); setEditing(true); window.scrollTo(0, 0) }}>Edit</button>
             <button style={{ ...S.btn, background: '#fef2f2', color: '#dc2626', padding: '4px 10px' }} onClick={() => del(s.id)}>Delete</button>
           </div>

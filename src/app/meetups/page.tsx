@@ -73,7 +73,7 @@ export default function MeetupsPage() {
 
   const tabStyle = (active: boolean) => ({
     padding: '8px 20px', borderRadius: '20px', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: 600,
-    background: active ? '#0d9488' : '#fff',
+    background: active ? 'var(--brand)' : '#fff',
     color: active ? '#fff' : '#6b7280',
     border: active ? 'none' : '1px solid #e5e7eb',
   } as React.CSSProperties);
@@ -89,7 +89,7 @@ export default function MeetupsPage() {
           </div>
           <button
             onClick={() => router.push('/meetups/new')}
-            style={{ background: '#0d9488', color: '#fff', border: 'none', borderRadius: '10px', padding: '10px 20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
+            style={{ background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: '10px', padding: '10px 20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
           >
             + Create Meetup
           </button>
@@ -137,7 +137,7 @@ export default function MeetupsPage() {
               <option value="tour">🗺️ Tour</option>
               <option value="other">✨ Other</option>
             </select>
-            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 999, border: `1px solid ${verifiedOnly ? '#0d9488' : '#e5e7eb'}`, background: verifiedOnly ? '#f0fdfa' : '#fff', color: verifiedOnly ? '#0d9488' : '#374151', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 999, border: `1px solid ${verifiedOnly ? 'var(--brand)' : '#e5e7eb'}`, background: verifiedOnly ? 'var(--brand-light)' : '#fff', color: verifiedOnly ? 'var(--brand)' : '#374151', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               <input type="checkbox" checked={verifiedOnly} onChange={e => setVerifiedOnly(e.target.checked)} style={{ margin: 0 }} />
               ✓ Verified hosts only
             </label>
@@ -150,7 +150,7 @@ export default function MeetupsPage() {
             <div style={{ marginLeft: 'auto', display: 'inline-flex', background: '#fff', border: '1px solid #e5e7eb', borderRadius: 999, padding: 2 }}>
               {(['list','map'] as const).map(v => (
                 <button key={v} onClick={() => setView(v)}
-                  style={{ border: 'none', borderRadius: 999, padding: '5px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', background: view === v ? '#0d9488' : 'transparent', color: view === v ? '#fff' : '#6b7280', fontFamily: 'inherit' }}>
+                  style={{ border: 'none', borderRadius: 999, padding: '5px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', background: view === v ? 'var(--brand)' : 'transparent', color: view === v ? '#fff' : '#6b7280', fontFamily: 'inherit' }}>
                   {v === 'list' ? 'List' : 'Map'}
                 </button>
               ))}
@@ -177,7 +177,7 @@ export default function MeetupsPage() {
             </p>
             <button
               onClick={() => router.push('/meetups/new')}
-              style={{ background: '#0d9488', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
+              style={{ background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
             >
               Create First Meetup
             </button>
@@ -202,7 +202,7 @@ export default function MeetupsPage() {
                           <span>👥 {m.attendee_count}/{m.max_attendees}</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: title === 'Hosting' ? '#0d9488' : '#374151', background: title === 'Hosting' ? '#f0fdfa' : '#f3f4f6', padding: '4px 10px', borderRadius: 99 }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: title === 'Hosting' ? 'var(--brand)' : '#374151', background: title === 'Hosting' ? 'var(--brand-light)' : '#f3f4f6', padding: '4px 10px', borderRadius: 99 }}>
                         {title === 'Hosting' ? 'You host' : 'You\u2019re going'}
                       </span>
                     </div>)}
@@ -226,7 +226,7 @@ export default function MeetupsPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', padding: 20 }}>
                     <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => router.push(`/meetups/${meetup.id}`)}>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const, marginBottom: 8 }}>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: upcoming ? '#f0fdfa' : '#f3f4f6', color: upcoming ? '#0d9488' : '#6b7280', borderRadius: '20px', padding: '3px 10px', fontSize: '12px', fontWeight: 600 }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: upcoming ? 'var(--brand-light)' : '#f3f4f6', color: upcoming ? 'var(--brand)' : '#6b7280', borderRadius: '20px', padding: '3px 10px', fontSize: '12px', fontWeight: 600 }}>
                           📅 {formatDate(meetup.meetup_date)}
                           {!upcoming && <span style={{ marginLeft: '4px', color: '#9ca3af' }}>· Past</span>}
                         </span>
@@ -248,7 +248,7 @@ export default function MeetupsPage() {
                         <span style={{ fontSize: '12px', color: '#6b7280' }}>
                           Hosted by <strong style={{ color: '#374151' }}>{meetup.host_display_name || meetup.host_username || 'Traveller'}</strong>
                         </span>
-                        {meetup.host_verified === 'verified' && <span title="Verified" style={{ color: '#0d9488', fontSize: 11, fontWeight: 700 }}>✓</span>}
+                        {meetup.host_verified === 'verified' && <span title="Verified" style={{ color: 'var(--brand)', fontSize: 11, fontWeight: 700 }}>✓</span>}
                         {meetup.host_rating != null && <span style={{ fontSize: 11, color: '#92400e', background: '#fef3c7', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>★{Number(meetup.host_rating).toFixed(1)}</span>}
                       </div>
                     </div>
@@ -260,7 +260,7 @@ export default function MeetupsPage() {
                         style={{
                           flexShrink: 0, border: 'none', borderRadius: '10px', padding: '10px 18px',
                           fontSize: '13px', fontWeight: 600, cursor: (full && !meetup.is_attending) ? 'not-allowed' : 'pointer',
-                          background: meetup.is_attending ? '#fef2f2' : full ? '#f3f4f6' : '#0d9488',
+                          background: meetup.is_attending ? '#fef2f2' : full ? '#f3f4f6' : 'var(--brand)',
                           color: meetup.is_attending ? '#ef4444' : full ? '#9ca3af' : '#fff',
                           opacity: attending === meetup.id ? 0.6 : 1,
                           minWidth: '90px',

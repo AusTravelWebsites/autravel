@@ -34,7 +34,7 @@ type Seg = [number, number][];
 export function TrailMap({
   geometry,
   start,
-  color = '#0d9488',
+  color = 'var(--brand)',
   height = 460,
   interactive = true,
   rounded = 12,

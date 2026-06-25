@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488' };
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)' };
 
 interface Meetup {
   id: string;
@@ -58,7 +58,7 @@ export function MeetupsMap({ meetups }: { meetups: Meetup[] }) {
         const href = `/meetups/${m.id}`;
         const date = new Date(m.meetup_date).toLocaleString('en-AU', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
         const html = `<div style="font-family:system-ui,sans-serif;min-width:180px">
-          <a href="${href}" style="color:#0d9488;font-weight:700;font-size:13px;text-decoration:none">${escape(m.title)}</a>
+          <a href="${href}" style="color:var(--brand);font-weight:700;font-size:13px;text-decoration:none">${escape(m.title)}</a>
           <div style="font-size:11px;color:#6b7280;margin-top:2px">${escape(m.location_name || '')}</div>
           <div style="font-size:11px;color:#6b7280">📅 ${date}</div>
           ${m.attendee_count != null ? `<div style="font-size:11px;color:#6b7280">👥 ${m.attendee_count} going</div>` : ''}

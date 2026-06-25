@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 interface Props { username?: string; displayName?: string; variant?: 'primary' | 'inline' }
 
-const C = { teal: '#0d9488', tealLight: '#f0fdfa', text: '#111827', sub: '#6b7280', border: '#e5e7eb', card: '#fff', red: '#ef4444' };
+const C = { teal: 'var(--brand)', tealLight: 'var(--brand-light)', text: '#111827', sub: '#6b7280', border: '#e5e7eb', card: '#fff', red: '#ef4444' };
 
 export function InviteFriendButton({ username, displayName, variant = 'primary' }: Props) {
   const [open, setOpen] = useState(false);

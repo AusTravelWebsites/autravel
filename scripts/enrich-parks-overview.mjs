@@ -39,8 +39,12 @@ Return STRICT JSON only: { "overview": string }`
 
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
+// Strip lone UTF-16 surrogates (broken emoji halves in some Google reviews) —
+// they make the JSON request body invalid and the API 400s.
+const clean = s => String(s || '').replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, '')
+
 async function overview(p) {
-  const reviews = (p.source_raw?.reviews || []).slice(0, 4).map(r => `"${(r.text || '').slice(0, 200)}"`).join('\n')
+  const reviews = (p.source_raw?.reviews || []).slice(0, 4).map(r => `"${clean(r.text).slice(0, 200)}"`).join('\n')
   const facts = [
     `NAME: ${p.name}`,
     `TYPE: ${TYPE_LABEL[p.park_type] || 'caravan park'}`,
@@ -56,7 +60,7 @@ async function overview(p) {
     try {
       const msg = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: SYSTEM,
-        messages: [{ role: 'user', content: facts }],
+        messages: [{ role: 'user', content: clean(facts) }],
       })
       const text = msg.content.filter(c => c.type === 'text').map(c => c.text).join('\n').trim()
       let parsed = null

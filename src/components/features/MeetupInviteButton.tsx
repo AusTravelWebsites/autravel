@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', red: '#ef4444' };
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', red: '#ef4444' };
 
 interface Candidate { id: string; username: string; display_name: string; avatar_url: string | null; already: boolean }
 
@@ -67,7 +67,7 @@ export function MeetupInviteButton({ meetupId, hostId }: { meetupId: string; hos
                 : filtered.map(c => {
                     const picked = selected.has(c.id);
                     return (
-                      <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 8, cursor: c.already ? 'default' : 'pointer', background: picked ? '#f0fdfa' : 'transparent', opacity: c.already ? 0.5 : 1 }}>
+                      <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 8, cursor: c.already ? 'default' : 'pointer', background: picked ? 'var(--brand-light)' : 'transparent', opacity: c.already ? 0.5 : 1 }}>
                         <input type="checkbox" disabled={c.already} checked={picked || c.already}
                           onChange={e => {
                             const s = new Set(selected);

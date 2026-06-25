@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PlaceAutocomplete } from '@/components/features/PlaceAutocomplete';
 
-const C = { bg:'#f3f4f6',card:'#fff',border:'#e5e7eb',text:'#111827',sub:'#6b7280',teal:'#0d9488',tealLight:'#f0fdfa',red:'#ef4444',orange:'#f97316' };
+const C = { bg:'#f3f4f6',card:'#fff',border:'#e5e7eb',text:'#111827',sub:'#6b7280',teal:'var(--brand)',tealLight:'var(--brand-light)',red:'#ef4444',orange:'#f97316' };
 
 function Section({ title, icon, children }: { title:string; icon:string; children:React.ReactNode }) {
   return (

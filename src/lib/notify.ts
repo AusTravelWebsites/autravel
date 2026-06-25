@@ -131,9 +131,9 @@ function renderEmail({ headline, previewText, ctaLabel, ctaUrl, unsubUrl, type, 
     <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:14px;padding:28px 26px">
       <p style="margin:0 0 12px;color:#6b7280;font-size:13px">${greeting}</p>
       <h1 style="margin:0 0 14px;font-family:Georgia,serif;font-size:22px;color:#111827;line-height:1.3">${headline}</h1>
-      ${previewText ? `<div style="background:#f9fafb;border-left:3px solid #0d9488;padding:12px 14px;border-radius:6px;color:#374151;font-size:14px;line-height:1.55;margin:0 0 18px;font-style:italic">${escHtml(previewText.slice(0, 280))}${previewText.length > 280 ? '…' : ''}</div>` : ''}
+      ${previewText ? `<div style="background:#f9fafb;border-left:3px solid var(--brand);padding:12px 14px;border-radius:6px;color:#374151;font-size:14px;line-height:1.55;margin:0 0 18px;font-style:italic">${escHtml(previewText.slice(0, 280))}${previewText.length > 280 ? '…' : ''}</div>` : ''}
       <div style="text-align:center;margin:6px 0 4px">
-        <a href="${ctaUrl}" style="display:inline-block;background:#0d9488;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 26px;border-radius:8px;font-size:14px">${ctaLabel}</a>
+        <a href="${ctaUrl}" style="display:inline-block;background:var(--brand);color:#ffffff;text-decoration:none;font-weight:700;padding:12px 26px;border-radius:8px;font-size:14px">${ctaLabel}</a>
       </div>
     </div>
     <p style="text-align:center;color:#9ca3af;font-size:11px;line-height:1.6;margin-top:18px">

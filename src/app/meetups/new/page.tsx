@@ -159,7 +159,7 @@ export default function NewMeetupPage() {
                   { id: 'friends_of_friends', label: '👥 Friends of friends (mutual followers)' },
                   { id: 'friends_only', label: '🤝 My friends only' },
                 ].map(o => (
-                  <label key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', border: `1.5px solid ${form.scope === o.id ? '#0d9488' : '#e5e7eb'}`, borderRadius: 8, cursor: 'pointer', background: form.scope === o.id ? '#f0fdfa' : '#fff', fontSize: 13 }}>
+                  <label key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', border: `1.5px solid ${form.scope === o.id ? 'var(--brand)' : '#e5e7eb'}`, borderRadius: 8, cursor: 'pointer', background: form.scope === o.id ? 'var(--brand-light)' : '#fff', fontSize: 13 }}>
                     <input type="radio" name="scope" value={o.id} checked={form.scope === o.id} onChange={() => set('scope', o.id)} />
                     {o.label}
                   </label>
@@ -196,7 +196,7 @@ export default function NewMeetupPage() {
               onClick={submit}
               disabled={submitting}
               style={{
-                background: submitting ? '#6b7280' : '#0d9488', color: '#fff', border: 'none',
+                background: submitting ? '#6b7280' : 'var(--brand)', color: '#fff', border: 'none',
                 borderRadius: '10px', padding: '12px', fontSize: '15px', fontWeight: 600,
                 cursor: submitting ? 'not-allowed' : 'pointer', marginTop: '4px'
               }}

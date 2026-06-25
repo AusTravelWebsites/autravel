@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       ${note ? `<p style="font-size:14px;color:#6b7280;line-height:1.6;background:#f3f4f6;padding:12px 14px;border-radius:8px;margin:16px 0;font-style:italic">${escapeHtml(note)}</p>` : ''}
       <p style="font-size:15px;color:#374151;line-height:1.6;margin:16px 0">BugBitten is your online travel journal — document adventures, share with friends and family, and join meetups with fellow travellers.</p>
       <div style="text-align:center;margin:28px 0">
-        <a href="${inviteUrl}" style="display:inline-block;background:#0d9488;color:#ffffff;text-decoration:none;font-weight:700;padding:14px 32px;border-radius:10px;font-size:15px">Join free to see ${escapeHtml(fromName)}'s journal</a>
+        <a href="${inviteUrl}" style="display:inline-block;background:var(--brand);color:#ffffff;text-decoration:none;font-weight:700;padding:14px 32px;border-radius:10px;font-size:15px">Join free to see ${escapeHtml(fromName)}'s journal</a>
       </div>
       <p style="font-size:12px;color:#9ca3af;text-align:center;margin-top:32px">If you didn't expect this, you can ignore the email.</p>
     </div>`

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', red: '#ef4444' };
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', red: '#ef4444' };
 const MAX_WORDS = 30;
 
 interface Msg { id: string; body: string; created_at: string; user_id: string; username?: string; display_name?: string; avatar_url?: string | null }
@@ -116,7 +116,7 @@ export default function ChannelChatPage() {
                     {msg.avatar_url ? (
                       <img loading="lazy" decoding="async" src={msg.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' as const }} />
                     ) : (
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 13, fontWeight: 700 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 13, fontWeight: 700 }}>
                         {(msg.display_name || msg.username || '?')[0].toUpperCase()}
                       </div>
                     )}

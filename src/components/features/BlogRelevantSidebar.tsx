@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 type Post = { slug: string; title: string; excerpt?: string; featured_image?: string; category: string; location_name?: string; country?: string; view_count: number; username: string; display_name?: string; distance_km?: number };
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488' };
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)' };
 
 export function BlogRelevantSidebar() {
   const [posts, setPosts] = useState<Post[]>([]);

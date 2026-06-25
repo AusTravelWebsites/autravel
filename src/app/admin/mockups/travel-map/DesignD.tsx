@@ -4,7 +4,7 @@ import { ComposableMap, Geographies, Geography, Sphere, Graticule, Marker } from
 import { geoCentroid } from 'd3-geo'
 import { MOCK_VISITED, visitedSet, lookupCountry, TOTAL_COUNTRIES, MockCountry } from './mockData'
 
-const TEAL = '#0d9488'
+const TEAL = 'var(--brand)'
 const TEAL_LIGHT = '#5eead4'
 
 // Higher-resolution (50m) topojson — more detail on coastlines, small islands, country borders.
@@ -203,7 +203,7 @@ export default function DesignD() {
                   return (
                     <Geography key={geo.rsmKey} geography={geo}
                       fill={isActive ? '#fbbf24' : isVisited ? TEAL : '#162338'}
-                      stroke={isVisited ? '#0f766e' : '#0a1322'} strokeWidth={isVisited ? 0.5 : 0.3}
+                      stroke={isVisited ? 'var(--brand-dark)' : '#0a1322'} strokeWidth={isVisited ? 0.5 : 0.3}
                       onClick={() => onCountryClick(name)}
                       onMouseEnter={(e: React.MouseEvent) => setHover({ name, visited: isVisited, x: e.clientX, y: e.clientY })}
                       onMouseMove={(e: React.MouseEvent) => setHover(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
@@ -231,7 +231,7 @@ export default function DesignD() {
                         textAnchor="middle" y={-fontSize * 0.2}
                         style={{ pointerEvents: 'none', fontFamily: 'system-ui, sans-serif', fontWeight: 700, letterSpacing: 0.3 }}
                         fontSize={fontSize}
-                        fill={isActive ? '#fbbf24' : '#f0fdfa'}
+                        fill={isActive ? '#fbbf24' : 'var(--brand-light)'}
                         stroke="#000" strokeWidth={3} strokeOpacity={0.55} paintOrder="stroke"
                         filter="url(#label-shadow)"
                       >{name}</text>
@@ -297,7 +297,7 @@ export default function DesignD() {
                   <span title={isCountryPublic(c.iso2) ? 'Shared publicly' : 'Private'}
                     style={{ fontSize: 11, padding: '2px 6px', borderRadius: 999, fontWeight: 700,
                       background: isCountryPublic(c.iso2) ? '#d1fae5' : '#f1f5f9',
-                      color: isCountryPublic(c.iso2) ? '#065f46' : '#64748b' }}>
+                      color: isCountryPublic(c.iso2) ? 'var(--brand-dark)' : '#64748b' }}>
                     {isCountryPublic(c.iso2) ? '🌐' : '🔒'}
                   </span>
                 </div>
@@ -321,7 +321,7 @@ export default function DesignD() {
               <button onClick={() => toggleCountryPublic(selected.iso2)}
                 style={{
                   background: isCountryPublic(selected.iso2) ? '#ecfdf5' : '#f8fafc',
-                  color: isCountryPublic(selected.iso2) ? '#065f46' : '#475569',
+                  color: isCountryPublic(selected.iso2) ? 'var(--brand-dark)' : '#475569',
                   border: `1px solid ${isCountryPublic(selected.iso2) ? '#a7f3d0' : '#e5e7eb'}`,
                   borderRadius: 8, padding: '9px 14px', fontWeight: 700, fontSize: 13, cursor: 'pointer',
                 }}>

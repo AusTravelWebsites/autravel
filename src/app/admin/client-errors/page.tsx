@@ -17,7 +17,7 @@ type Row = {
   all_seen: boolean
 }
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111', sub: '#6b7280', teal: '#0d9488', red: '#dc2626', amber: '#f59e0b', purple: '#7c3aed' }
+const C = { card: '#fff', border: '#e5e7eb', text: '#111', sub: '#6b7280', teal: 'var(--brand)', red: '#dc2626', amber: '#f59e0b', purple: '#7c3aed' }
 
 export default function ClientErrorsPage() {
   const [rows, setRows] = useState<Row[]>([])
@@ -70,7 +70,7 @@ export default function ClientErrorsPage() {
           <button key={t.id} onClick={() => setSource(t.id)}
             style={{ padding: '8px 16px', borderRadius: 999,
               border: `1px solid ${source === t.id ? C.teal : C.border}`,
-              background: source === t.id ? '#f0fdfa' : '#fff',
+              background: source === t.id ? 'var(--brand-light)' : '#fff',
               color: source === t.id ? C.teal : C.text,
               fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
             {t.label} <span style={{ color: t.unseen > 0 ? C.red : C.sub, fontWeight: t.unseen > 0 ? 700 : 500 }}>({t.unseen > 0 ? `${t.unseen} unseen · ` : ''}{t.total})</span>
@@ -79,10 +79,10 @@ export default function ClientErrorsPage() {
       </div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' as const }}>
-        <button onClick={() => setSeen('unseen')} style={{ padding: '6px 12px', borderRadius: 6, border: `1px solid ${seen === 'unseen' ? C.teal : C.border}`, background: seen === 'unseen' ? '#f0fdfa' : '#fff', color: seen === 'unseen' ? C.teal : C.text, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button onClick={() => setSeen('unseen')} style={{ padding: '6px 12px', borderRadius: 6, border: `1px solid ${seen === 'unseen' ? C.teal : C.border}`, background: seen === 'unseen' ? 'var(--brand-light)' : '#fff', color: seen === 'unseen' ? C.teal : C.text, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
           Unseen only
         </button>
-        <button onClick={() => setSeen('all')} style={{ padding: '6px 12px', borderRadius: 6, border: `1px solid ${seen === 'all' ? C.teal : C.border}`, background: seen === 'all' ? '#f0fdfa' : '#fff', color: seen === 'all' ? C.teal : C.text, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button onClick={() => setSeen('all')} style={{ padding: '6px 12px', borderRadius: 6, border: `1px solid ${seen === 'all' ? C.teal : C.border}`, background: seen === 'all' ? 'var(--brand-light)' : '#fff', color: seen === 'all' ? C.teal : C.text, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
           Including seen
         </button>
         <div style={{ flex: 1 }} />

@@ -11,7 +11,7 @@ type Author = {
 }
 
 const STATES = ['qld', 'nsw', 'nt', 'wa', 'sa', 'tas', 'vic', 'aunz']
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', red: '#dc2626' }
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', red: '#dc2626' }
 
 export default function AdminAuthorsPage() {
   const [rows, setRows] = useState<Author[]>([])

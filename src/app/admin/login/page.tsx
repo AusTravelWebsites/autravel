@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
             style={{ width: '100%', padding: '11px 13px', borderRadius: 8, border: '1px solid #e5e7eb', color: '#111827', fontSize: 15, outline: 'none', boxSizing: 'border-box' as const, marginBottom: 16 }} />
           {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '9px 12px', color: '#dc2626', fontSize: 13, marginBottom: 14 }}>{error}</div>}
           <button type="submit" disabled={loading || !email || !password}
-            style={{ width: '100%', padding: 12, borderRadius: 8, background: '#0d9488', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !email || !password ? 0.6 : 1 }}>
+            style={{ width: '100%', padding: 12, borderRadius: 8, background: 'var(--brand)', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !email || !password ? 0.6 : 1 }}>
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
           <div style={{ marginTop: 14, textAlign: 'center' }}>

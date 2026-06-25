@@ -34,7 +34,7 @@ const S = {
   btn: { padding: '7px 14px', borderRadius: 7, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit' } as React.CSSProperties,
   th: { textAlign: 'left' as const, padding: '8px 10px', fontSize: 11, fontWeight: 700, color: '#374151', borderBottom: '1px solid #e5e7eb', textTransform: 'uppercase' as const, letterSpacing: 0.5, background: '#f9fafb' },
   td: { padding: '8px 10px', fontSize: 13, color: '#111', borderBottom: '1px solid #f3f4f6', verticalAlign: 'middle' as const },
-  chip: (active: boolean): React.CSSProperties => ({ padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: active ? '#0d9488' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid #0d9488' : '1px solid #e5e7eb', cursor: 'pointer' }),
+  chip: (active: boolean): React.CSSProperties => ({ padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: active ? 'var(--brand)' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid var(--brand)' : '1px solid #e5e7eb', cursor: 'pointer' }),
 }
 
 export default function RedirectsPage() {
@@ -121,7 +121,7 @@ export default function RedirectsPage() {
           <h1 style={S.h1}>Redirects</h1>
           <p style={S.sub}>WordPress-Redirection-style manager. Exact, prefix, and regex match types. Tenant-scoped hit counters. {total.toLocaleString()} redirects total.</p>
         </div>
-        <button style={{ ...S.btn, background: '#0d9488', color: '#fff' }} onClick={startCreate}>+ New redirect</button>
+        <button style={{ ...S.btn, background: 'var(--brand)', color: '#fff' }} onClick={startCreate}>+ New redirect</button>
       </div>
 
       <div style={S.card}>
@@ -174,7 +174,7 @@ export default function RedirectsPage() {
       )}
 
       {showForm && (
-        <div style={{ ...S.card, background: '#f0fdfa', borderColor: '#a7f3d0' }}>
+        <div style={{ ...S.card, background: 'var(--brand-light)', borderColor: '#a7f3d0' }}>
           <h3 style={{ fontSize: 15, fontWeight: 700, margin: '0 0 10px' }}>{editing ? 'Edit redirect' : 'New redirect'}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
             <div>
@@ -224,7 +224,7 @@ export default function RedirectsPage() {
           </div>
           <div style={{ marginTop: 12, display: 'flex', gap: 10, alignItems: 'center' }}>
             <label style={{ fontSize: 12 }}><input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })}/> Active</label>
-            <button style={{ ...S.btn, background: '#0d9488', color: '#fff' }} onClick={save}>{editing ? 'Save changes' : 'Create redirect'}</button>
+            <button style={{ ...S.btn, background: 'var(--brand)', color: '#fff' }} onClick={save}>{editing ? 'Save changes' : 'Create redirect'}</button>
             <button style={{ ...S.btn, background: '#fff', color: '#111', border: '1px solid #e5e7eb' }} onClick={() => { setShowForm(false); setForm(blank); setEditing(false) }}>Cancel</button>
           </div>
         </div>
@@ -235,7 +235,7 @@ export default function RedirectsPage() {
         <div style={{ marginTop: 10 }}>
           <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
             <input placeholder="New group name" value={newGroup} onChange={e => setNewGroup(e.target.value)} style={S.input}/>
-            <button onClick={addGroup} style={{ ...S.btn, background: '#0d9488', color: '#fff', whiteSpace: 'nowrap' as const }}>+ Group (uses selected tenant)</button>
+            <button onClick={addGroup} style={{ ...S.btn, background: 'var(--brand)', color: '#fff', whiteSpace: 'nowrap' as const }}>+ Group (uses selected tenant)</button>
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
             {groups.map(g => (
@@ -270,7 +270,7 @@ export default function RedirectsPage() {
               <tr key={r.id} style={{ opacity: r.is_active ? 1 : 0.5 }}>
                 <td style={S.td}><input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleSel(r.id)}/></td>
                 <td style={S.td}><code style={{ fontSize: 12, background: '#f3f4f6', padding: '1px 6px', borderRadius: 4 }}>{r.from_path}</code></td>
-                <td style={S.td}><code style={{ fontSize: 12, background: '#f0fdfa', padding: '1px 6px', borderRadius: 4 }}>{r.to_path}</code></td>
+                <td style={S.td}><code style={{ fontSize: 12, background: 'var(--brand-light)', padding: '1px 6px', borderRadius: 4 }}>{r.to_path}</code></td>
                 <td style={S.td}>{r.state_code.toUpperCase()}</td>
                 <td style={S.td}>{r.redirect_type} · {r.match_type}</td>
                 <td style={S.td}>{r.group_name || <span style={{ color: '#9ca3af' }}>—</span>}</td>

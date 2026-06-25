@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', amber: '#f59e0b', red: '#ef4444' };
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', amber: '#f59e0b', red: '#ef4444' };
 
 interface Pending {
   user_id: string;
@@ -50,8 +50,8 @@ export function MeetupHostPanel({ meetupId, hostId }: { meetupId: string; hostId
   if (!pending || pending.length === 0) return null;
 
   return (
-    <div style={{ background: '#f0fdfa', border: `1px solid #99f6e4`, borderRadius: 12, padding: 14, marginTop: 16 }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: '#065f46', marginBottom: 8 }}>Requests to join ({pending.length})</div>
+    <div style={{ background: 'var(--brand-light)', border: `1px solid #99f6e4`, borderRadius: 12, padding: 14, marginTop: 16 }}>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand-dark)', marginBottom: 8 }}>Requests to join ({pending.length})</div>
       <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 8 }}>
         {pending.map(p => (
           <div key={p.user_id} style={{ display: 'flex', alignItems: 'center', gap: 10, background: C.card, borderRadius: 8, padding: 8 }}>

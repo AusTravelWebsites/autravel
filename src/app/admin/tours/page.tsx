@@ -17,7 +17,7 @@ type SourceRow   = { source: string; c: number }
 type AiSummary   = { ai_missing: number; ai_done: number; ai_total: number }
 type SyncLog     = { id: string; source: string; action: string; ok: boolean; count_ok: number; count_fail: number; details?: any; started_at: string; finished_at?: string }
 
-const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa', red:'#ef4444', amber:'#f59e0b' }
+const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)', red:'#ef4444', amber:'#f59e0b' }
 
 export default function AdminToursPage() {
   const sp = useSearchParams()
@@ -241,7 +241,7 @@ export default function AdminToursPage() {
 const th: React.CSSProperties = { textAlign: 'left' as const, padding: '10px 14px', fontSize: 11, fontWeight: 700, color: '#6b7280', textTransform: 'uppercase' as const, letterSpacing: '0.04em', borderBottom: '1px solid #e5e7eb' }
 const td: React.CSSProperties = { padding: '10px 14px', borderTop: '1px solid #e5e7eb', verticalAlign: 'middle' as const }
 
-function Toggle({ on, onChange, color = '#0d9488' }: { on: boolean; onChange: (v: boolean) => void; color?: string }) {
+function Toggle({ on, onChange, color = 'var(--brand)' }: { on: boolean; onChange: (v: boolean) => void; color?: string }) {
   return (
     <button onClick={() => onChange(!on)} aria-pressed={on}
       style={{ width: 36, height: 20, borderRadius: 99, border: 'none', background: on ? color : '#d1d5db', position: 'relative' as const, cursor: 'pointer', padding: 0, transition: 'background .15s' }}>

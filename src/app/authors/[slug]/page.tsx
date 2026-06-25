@@ -68,7 +68,7 @@ export default async function AuthorProfilePage({ params }: { params: Promise<{ 
                 style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover' as const, border: '3px solid #fff', boxShadow: '0 4px 14px rgba(0,0,0,0.08)' }} />
             ) : (
               <div aria-hidden="true"
-                style={{ width: 120, height: 120, borderRadius: '50%', background: '#0d9488', color: '#fff',
+                style={{ width: 120, height: 120, borderRadius: '50%', background: 'var(--brand)', color: '#fff',
                          display: 'flex', alignItems: 'center', justifyContent: 'center',
                          fontSize: 44, fontWeight: 800, fontFamily: 'Georgia, serif',
                          border: '3px solid #fff', boxShadow: '0 4px 14px rgba(0,0,0,0.08)' }}>
@@ -77,12 +77,12 @@ export default async function AuthorProfilePage({ params }: { params: Promise<{ 
             )}
             <div style={{ flex: 1, minWidth: 280 }}>
               <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px,4vw,38px)', fontWeight: 800, color: '#111827', margin: '4px 0 6px', lineHeight: 1.15 }}>{a.name}</h1>
-              {a.role && <div style={{ color: '#0d9488', fontWeight: 700, fontSize: 15 }}>{a.role} · {tenant.name}</div>}
+              {a.role && <div style={{ color: 'var(--brand)', fontWeight: 700, fontSize: 15 }}>{a.role} · {tenant.name}</div>}
               {a.bio && <p style={{ color: '#374151', fontSize: 16, lineHeight: 1.6, margin: '12px 0 0', maxWidth: 720 }}>{a.bio}</p>}
               <div style={{ display: 'flex', gap: 16, marginTop: 14, flexWrap: 'wrap' as const, fontSize: 14, fontWeight: 600 }}>
-                {a.website && <a href={a.website} target="_blank" rel="noopener me" style={{ color: '#0d9488', textDecoration: 'none' }}>Website</a>}
-                {a.twitter && <a href={`https://twitter.com/${a.twitter.replace(/^@/, '')}`} target="_blank" rel="noopener me" style={{ color: '#0d9488', textDecoration: 'none' }}>X / Twitter</a>}
-                {a.instagram && <a href={`https://instagram.com/${a.instagram.replace(/^@/, '')}`} target="_blank" rel="noopener me" style={{ color: '#0d9488', textDecoration: 'none' }}>Instagram</a>}
+                {a.website && <a href={a.website} target="_blank" rel="noopener me" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Website</a>}
+                {a.twitter && <a href={`https://twitter.com/${a.twitter.replace(/^@/, '')}`} target="_blank" rel="noopener me" style={{ color: 'var(--brand)', textDecoration: 'none' }}>X / Twitter</a>}
+                {a.instagram && <a href={`https://instagram.com/${a.instagram.replace(/^@/, '')}`} target="_blank" rel="noopener me" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Instagram</a>}
               </div>
             </div>
           </div>

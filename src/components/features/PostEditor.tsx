@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 interface Props { ownerId: string; postId: string; initialBody: string; initialIsPublic: boolean }
 
-const C = { sub:'#6b7280', red:'#ef4444', border:'#e5e7eb', teal:'#0d9488', card:'#fff' };
+const C = { sub:'#6b7280', red:'#ef4444', border:'#e5e7eb', teal:'var(--brand)', card:'#fff' };
 
 export function PostEditor({ ownerId, postId, initialBody, initialIsPublic }: Props) {
   const router = useRouter();

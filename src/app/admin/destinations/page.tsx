@@ -10,7 +10,7 @@ type Dest = {
   hero_image: string | null; is_featured: boolean; display_order: number; active: boolean
 }
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111', sub: '#6b7280', teal: '#0d9488', red: '#ef4444' }
+const C = { card: '#fff', border: '#e5e7eb', text: '#111', sub: '#6b7280', teal: 'var(--brand)', red: '#ef4444' }
 
 export default function AdminDestinationsPage() {
   const sp = useSearchParams()

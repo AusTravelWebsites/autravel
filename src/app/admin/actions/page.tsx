@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 type Action = { id:string; action:string; target_type?:string; target_id?:string; metadata?:any; ip?:string; created_at:string; username?:string; display_name?:string }
-const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'#0d9488' }
+const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'var(--brand)' }
 
 function timeAgo(iso: string) {
   const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)

@@ -78,11 +78,11 @@ export async function POST(req: NextRequest) {
     const html = `
       <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#f9fafb">
         <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:24px">
-          <h2 style="color:#0d9488;margin:0 0 6px;font-size:18px">New contact-form submission</h2>
+          <h2 style="color:var(--brand);margin:0 0 6px;font-size:18px">New contact-form submission</h2>
           <p style="color:#6b7280;margin:0 0 18px;font-size:13px">${tenant.host} &middot; ${submitted}</p>
           <table style="width:100%;border-collapse:collapse;font-size:14px">
             <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;font-weight:600;color:#374151;width:110px">Name</td><td style="padding:8px 0;color:#111827">${safe.name}</td></tr>
-            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;font-weight:600;color:#374151">Email</td><td style="padding:8px 0;color:#111827"><a href="mailto:${safe.email}" style="color:#0d9488">${safe.email}</a></td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;font-weight:600;color:#374151">Email</td><td style="padding:8px 0;color:#111827"><a href="mailto:${safe.email}" style="color:var(--brand)">${safe.email}</a></td></tr>
             <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;font-weight:600;color:#374151">Subject</td><td style="padding:8px 0;color:#111827">${safe.subject}</td></tr>
             <tr><td style="padding:12px 0 0;font-weight:600;color:#374151;vertical-align:top">Message</td><td style="padding:12px 0 0;color:#111827;white-space:pre-wrap;line-height:1.55">${safe.message}</td></tr>
           </table>

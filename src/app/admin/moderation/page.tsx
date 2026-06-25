@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 type Kind = 'posts' | 'reviews' | 'comments' | 'images' | 'trips'
-const C = { bg:'#f9fafb', card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'#0d9488', red:'#ef4444' }
+const C = { bg:'#f9fafb', card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'var(--brand)', red:'#ef4444' }
 
 function timeAgo(iso: string) {
   const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000)

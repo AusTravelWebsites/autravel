@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', amber: '#f59e0b' };
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', amber: '#f59e0b' };
 
 interface Props {
   meetupId: string;

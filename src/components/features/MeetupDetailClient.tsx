@@ -45,13 +45,13 @@ export function MeetupDetailClient({ meetupId, hostId, hostUsername, meetupDate 
   if (!me) {
     return (
       <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 16, textAlign: 'center' as const }}>
-        <a href={`/login?next=/meetups/${meetupId}`} style={{ color: '#0d9488', fontWeight: 600 }}>Log in to RSVP</a>
+        <a href={`/login?next=/meetups/${meetupId}`} style={{ color: 'var(--brand)', fontWeight: 600 }}>Log in to RSVP</a>
       </div>
     );
   }
   if (me.id === hostId) {
     return (
-      <div style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 12, padding: 16, color: '#065f46', fontSize: 14, fontWeight: 600 }}>
+      <div style={{ background: 'var(--brand-light)', border: '1px solid #99f6e4', borderRadius: 12, padding: 16, color: 'var(--brand-dark)', fontSize: 14, fontWeight: 600 }}>
         You're the host of this meetup.
       </div>
     );
@@ -79,13 +79,13 @@ export function MeetupDetailClient({ meetupId, hostId, hostUsername, meetupDate 
         </div>
       )}
       {myExtended === 'invited' && (
-        <div style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 8, padding: '8px 12px', marginBottom: 10, fontSize: 13, color: '#065f46', fontWeight: 600 }}>
+        <div style={{ background: 'var(--brand-light)', border: '1px solid #99f6e4', borderRadius: 8, padding: '8px 12px', marginBottom: 10, fontSize: 13, color: 'var(--brand-dark)', fontWeight: 600 }}>
           ✉️ You've been invited — tap Going to accept.
         </div>
       )}
       <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8 }}>
         <button onClick={() => rsvp('going')} disabled={busy}
-          style={{ background: myStatus === 'going' ? '#0d9488' : '#fff', color: myStatus === 'going' ? '#fff' : '#0d9488', border: '1.5px solid #0d9488', borderRadius: 8, padding: '9px 18px', fontSize: 14, fontWeight: 700, cursor: 'pointer', flex: '1 1 auto', minWidth: 110 }}>
+          style={{ background: myStatus === 'going' ? 'var(--brand)' : '#fff', color: myStatus === 'going' ? '#fff' : 'var(--brand)', border: '1.5px solid var(--brand)', borderRadius: 8, padding: '9px 18px', fontSize: 14, fontWeight: 700, cursor: 'pointer', flex: '1 1 auto', minWidth: 110 }}>
           {myStatus === 'going' ? '✓ Going' : myExtended === 'requested' ? 'Requested' : myExtended === 'waitlist' ? 'On waitlist' : 'Going'}
         </button>
         <button onClick={() => rsvp('maybe')} disabled={busy}
@@ -101,7 +101,7 @@ export function MeetupDetailClient({ meetupId, hostId, hostUsername, meetupDate 
       </div>
       {err && (
         <div style={{ marginTop: 10, padding: '8px 12px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, color: '#991b1b', fontSize: 13 }}>
-          {err} {err.includes('Verify') && <a href="/verify" style={{ color: '#0d9488', fontWeight: 600 }}>Verify now →</a>}
+          {err} {err.includes('Verify') && <a href="/verify" style={{ color: 'var(--brand)', fontWeight: 600 }}>Verify now →</a>}
         </div>
       )}
     </div>

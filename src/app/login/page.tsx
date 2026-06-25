@@ -73,7 +73,7 @@ export default function LoginPage() {
         </Link>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 800, color: '#111827', marginBottom: 6, textAlign: 'center' as const }}>Sign in</h1>
         <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 28, textAlign: 'center' as const }}>
-          No account? <Link href="/signup" style={{ color: '#0d9488', textDecoration: 'none', fontWeight: 600 }}>Join free</Link>
+          No account? <Link href="/signup" style={{ color: 'var(--brand)', textDecoration: 'none', fontWeight: 600 }}>Join free</Link>
         </p>
 
         <button onClick={() => handleSocial('google')} disabled={loading}
@@ -95,11 +95,11 @@ export default function LoginPage() {
         </div>
 
         {sent ? (
-          <div style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 12, padding: 24, textAlign: 'center' }}>
+          <div style={{ background: 'var(--brand-light)', border: '1px solid #99f6e4', borderRadius: 12, padding: 24, textAlign: 'center' }}>
             <div style={{ fontSize: 32, marginBottom: 12 }}>📬</div>
-            <h3 style={{ color: '#0d9488', fontWeight: 700, marginBottom: 8 }}>Check your email</h3>
+            <h3 style={{ color: 'var(--brand)', fontWeight: 700, marginBottom: 8 }}>Check your email</h3>
             <p style={{ color: '#374151', fontSize: 14, lineHeight: 1.6 }}>We sent a sign-in link to <strong style={{ color: '#111827' }}>{email}</strong>. Click it to sign in.</p>
-            <button onClick={() => { setSent(false); setEmail(''); }} style={{ marginTop: 16, background: 'none', border: 'none', color: '#0d9488', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}>Use a different email</button>
+            <button onClick={() => { setSent(false); setEmail(''); }} style={{ marginTop: 16, background: 'none', border: 'none', color: 'var(--brand)', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}>Use a different email</button>
           </div>
         ) : (
           <form onSubmit={handleMagicLink}>
@@ -108,14 +108,14 @@ export default function LoginPage() {
               style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: '#fff', border: '1px solid #e5e7eb', color: '#111827', fontSize: 15, outline: 'none', boxSizing: 'border-box' as const, marginBottom: 12 }} />
             {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '10px 14px', color: '#dc2626', fontSize: 13, marginBottom: 12 }}>{error}</div>}
             <button type="submit" disabled={loading || !email}
-              style={{ width: '100%', padding: 13, borderRadius: 10, background: '#0d9488', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !email ? 0.6 : 1 }}>
+              style={{ width: '100%', padding: 13, borderRadius: 10, background: 'var(--brand)', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !email ? 0.6 : 1 }}>
               {loading ? 'Sending...' : 'Send magic link'}
             </button>
           </form>
         )}
 
         <p style={{ textAlign: 'center', fontSize: 13, color: '#9ca3af', marginTop: 24 }}>
-          New here? <Link href="/signup" style={{ color: '#0d9488', textDecoration: 'none', fontWeight: 600 }}>Create a free account</Link>
+          New here? <Link href="/signup" style={{ color: 'var(--brand)', textDecoration: 'none', fontWeight: 600 }}>Create a free account</Link>
         </p>
       </div>
     </div>

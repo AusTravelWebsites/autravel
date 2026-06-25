@@ -111,7 +111,7 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
   }
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)' }
 
 export default async function DistancePairPage({ params }: { params: Promise<{ state: string; pair: string }> }) {
   const { state, pair } = await params
@@ -167,7 +167,7 @@ export default async function DistancePairPage({ params }: { params: Promise<{ s
     <main style={{ minHeight: '100vh', background: C.bg }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}/>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(tripLd) }}/>
-      <section style={{ background: 'linear-gradient(135deg,#0d9488 0%,#065f46 100%)', padding: '36px 20px 28px', textAlign: 'center' as const }}>
+      <section style={{ background: 'linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '36px 20px 28px', textAlign: 'center' as const }}>
         <div style={{ maxWidth: 780, margin: '0 auto' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', letterSpacing: 2, textTransform: 'uppercase' as const, marginBottom: 10 }}>Drive distance &amp; time</div>
           <h1 style={{ color: '#fff', fontSize: 'clamp(26px,5vw,38px)', fontWeight: 800, margin: '0 0 6px', fontFamily: 'Georgia, serif' }}>{fromName} → {toName}</h1>
@@ -190,8 +190,8 @@ export default async function DistancePairPage({ params }: { params: Promise<{ s
         </section>
 
         {longDrive && (
-          <section style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 14, padding: '20px 24px', marginBottom: 18 }}>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 20, margin: '0 0 8px', color: '#065f46' }}>Plan an overnight stop</h2>
+          <section style={{ background: 'var(--brand-light)', border: '1px solid #99f6e4', borderRadius: 14, padding: '20px 24px', marginBottom: 18 }}>
+            <h2 style={{ fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 20, margin: '0 0 8px', color: 'var(--brand-dark)' }}>Plan an overnight stop</h2>
             <p style={{ fontSize: 14, color: '#047857', margin: 0, lineHeight: 1.6 }}>
               At {hh} h {mm} m, this is a long single day — most travellers split it across two days. Pick a destination roughly halfway from the list below, or scan the caravan parks within 30&nbsp;km of either end.
             </p>

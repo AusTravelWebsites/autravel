@@ -43,7 +43,7 @@ export default async function TripsPage() {
             Turn your journal entries and trips into an interactive globe. Every country you write about lights up. Click a country to see the photos and stories from that trip, and choose what to share with friends or the world.
           </p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/login?next=/trips" style={{ background: '#0d9488', color: '#fff', borderRadius: 999, padding: '12px 22px', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>Sign in</Link>
+            <Link href="/login?next=/trips" style={{ background: 'var(--brand)', color: '#fff', borderRadius: 999, padding: '12px 22px', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>Sign in</Link>
             <Link href="/signup" style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 999, padding: '12px 22px', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>Create an account</Link>
           </div>
         </div>

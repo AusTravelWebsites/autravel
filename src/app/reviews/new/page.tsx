@@ -1337,7 +1337,7 @@ function ReviewPickPlaceScreen({ onPick }: { onPick: (p: { id: string; slug?: st
         <PlaceAutocomplete value={q} onChange={setQ} placeholder="e.g. Villa Kayu Lama, Ubud" inputStyle={{ width:'100%', border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 14px', fontSize:14, outline:'none', boxSizing:'border-box' as const }} />
         {err && <div style={{ color: '#ef4444', fontSize: 13, marginTop: 10 }}>{err}</div>}
         <button onClick={go} disabled={!q.trim() || submitting}
-          style={{ marginTop: 14, background: q.trim() ? '#0d9488' : '#e5e7eb', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontSize: 14, fontWeight: 700, cursor: q.trim() && !submitting ? 'pointer' : 'default', width: '100%' }}>
+          style={{ marginTop: 14, background: q.trim() ? 'var(--brand)' : '#e5e7eb', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontSize: 14, fontWeight: 700, cursor: q.trim() && !submitting ? 'pointer' : 'default', width: '100%' }}>
           {submitting ? 'Loading…' : 'Continue'}
         </button>
       </div>

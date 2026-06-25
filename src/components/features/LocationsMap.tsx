@@ -25,7 +25,7 @@ export function LocationsMap({ visited, onCountryClick, selectedCode }: Props) {
   };
 
   return (
-    <div style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 16, padding: 12, position: 'relative' as const }}>
+    <div style={{ background: 'var(--brand-light)', border: '1px solid #99f6e4', borderRadius: 16, padding: 12, position: 'relative' as const }}>
       <ComposableMap projection="geoMercator" projectionConfig={{ scale: 130 }} style={{ width: '100%', height: 'auto' }}>
         <ZoomableGroup center={[10, 10]} zoom={1}>
           <Geographies geography={GEO_URL}>
@@ -44,17 +44,17 @@ export function LocationsMap({ visited, onCountryClick, selectedCode }: Props) {
                     onMouseLeave={() => setHovered(null)}
                     style={{
                       default: {
-                        fill: visited ? '#0d9488' : '#e5e7eb',
+                        fill: visited ? 'var(--brand)' : '#e5e7eb',
                         stroke: '#fff', strokeWidth: 0.5, outline: 'none',
                         cursor: 'pointer',
                       },
                       hover: {
-                        fill: visited ? '#0f766e' : '#94a3b8',
+                        fill: visited ? 'var(--brand-dark)' : '#94a3b8',
                         stroke: '#fff', strokeWidth: 0.5, outline: 'none',
                         cursor: 'pointer',
                       },
                       pressed: {
-                        fill: '#0f766e', stroke: '#fff', strokeWidth: 0.5, outline: 'none',
+                        fill: 'var(--brand-dark)', stroke: '#fff', strokeWidth: 0.5, outline: 'none',
                       },
                     }}
                   />
@@ -71,7 +71,7 @@ export function LocationsMap({ visited, onCountryClick, selectedCode }: Props) {
       )}
       <div style={{ position: 'absolute' as const, bottom: 12, right: 16, display: 'flex', gap: 12, fontSize: 12, color: '#6b7280', background: 'rgba(255,255,255,0.85)', padding: '4px 10px', borderRadius: 6 }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 10, height: 10, borderRadius: 2, background: '#0d9488' }} /> Visited
+          <span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand)' }} /> Visited
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ width: 10, height: 10, borderRadius: 2, background: '#e5e7eb' }} /> Click to add

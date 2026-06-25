@@ -20,7 +20,7 @@ function withTimeout<T>(p: Promise<T>, fallback: T): Promise<T> {
   ]);
 }
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa' };
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)' };
 
 interface Props { params: Promise<{ slug: string[] }> }
 
@@ -210,7 +210,7 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg }}>
-      <div style={{ background: 'linear-gradient(160deg,#0d9488 0%,#0f766e 100%)', padding: '40px 20px' }}>
+      <div style={{ background: 'linear-gradient(160deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '40px 20px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ color: '#cbd5e1', fontSize: 13, marginBottom: 6 }}>
             <Link href="/blog" style={{ color: '#cbd5e1', textDecoration: 'none' }}>Blog</Link> › Category

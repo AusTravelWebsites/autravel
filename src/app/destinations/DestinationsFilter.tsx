@@ -11,7 +11,7 @@ type Destination = {
   is_featured: boolean
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)' }
 
 /**
  * Client component that renders the destinations grid with an instant-search filter input.

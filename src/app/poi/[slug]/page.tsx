@@ -167,13 +167,13 @@ export default async function PoiPage({ params }: { params: Promise<{ slug: stri
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 20px 22px' }}>
           {covering[0] && (
             <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}>
-              <Link href={`/${covering[0].slug}/`} style={{ color: '#0d9488', textDecoration: 'none' }}>← Back to {covering[0].name}</Link>
+              <Link href={`/${covering[0].slug}/`} style={{ color: 'var(--brand)', textDecoration: 'none' }}>← Back to {covering[0].name}</Link>
             </div>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
             <span style={{ fontSize: 36, lineHeight: 1 }} aria-hidden>{icon}</span>
             <div>
-              <div style={{ fontSize: 11, color: '#0d9488', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>{label}</div>
+              <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>{label}</div>
               <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(24px,4vw,34px)', fontWeight: 800, margin: '2px 0 0', color: '#111827', lineHeight: 1.2 }}>{name}</h1>
             </div>
           </div>
@@ -225,7 +225,7 @@ export default async function PoiPage({ params }: { params: Promise<{ slug: stri
               <h2 style={h2}>About {name}</h2>
               <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10, color: '#374151', fontSize: 14, lineHeight: 1.6 }}>
                 {tags.description && <p style={{ margin: 0 }}>{tags.description}</p>}
-                {tags.inscription && <p style={{ margin: 0, fontStyle: 'italic' as const, padding: '8px 12px', background: '#f9fafb', borderLeft: '3px solid #0d9488', borderRadius: 4 }}>"{tags.inscription}"</p>}
+                {tags.inscription && <p style={{ margin: 0, fontStyle: 'italic' as const, padding: '8px 12px', background: '#f9fafb', borderLeft: '3px solid var(--brand)', borderRadius: 4 }}>"{tags.inscription}"</p>}
                 {tags.operator && <p style={{ margin: 0 }}><b>Operated by:</b> {tags.operator}</p>}
                 {tags['name:en'] && tags['name:en'] !== name && <p style={{ margin: 0 }}><b>English name:</b> {tags['name:en']}</p>}
                 {wikipediaLink && <p style={{ margin: 0 }}>Read more on <a href={wikipediaLink} target="_blank" rel="noopener" style={linkStyle}>Wikipedia ↗</a></p>}
@@ -299,6 +299,6 @@ const card: React.CSSProperties = { background: '#fff', border: '1px solid #e5e7
 const h2: React.CSSProperties = { fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 20, margin: '0 0 8px', color: '#111827' }
 const h3: React.CSSProperties = { fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 16, margin: '0 0 6px', color: '#111827' }
 const p2: React.CSSProperties = { fontSize: 13, color: '#6b7280', margin: '0 0 14px', lineHeight: 1.55 }
-const btnPrimary: React.CSSProperties = { background: '#0d9488', color: '#fff', padding: '9px 16px', borderRadius: 8, textDecoration: 'none', fontSize: 13, fontWeight: 700 }
+const btnPrimary: React.CSSProperties = { background: 'var(--brand)', color: '#fff', padding: '9px 16px', borderRadius: 8, textDecoration: 'none', fontSize: 13, fontWeight: 700 }
 const btnSecondary: React.CSSProperties = { background: '#fff', color: '#111827', padding: '9px 16px', borderRadius: 8, textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '1px solid #e5e7eb' }
-const linkStyle: React.CSSProperties = { color: '#0d9488', textDecoration: 'underline' }
+const linkStyle: React.CSSProperties = { color: 'var(--brand)', textDecoration: 'underline' }

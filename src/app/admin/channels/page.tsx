@@ -75,7 +75,7 @@ function AdminChannelsInner() {
           <tbody>
             {channels.map(c => (
               <tr key={c.id}>
-                <td style={td}><a href={`/channels/${c.slug}`} style={{ color:'#0d9488', fontWeight:600, textDecoration:'none' }}>#{c.city_name}</a></td>
+                <td style={td}><a href={`/channels/${c.slug}`} style={{ color:'var(--brand)', fontWeight:600, textDecoration:'none' }}>#{c.city_name}</a></td>
                 <td style={td}>{c.country || '-'}</td>
                 <td style={td}>{c.member_count}</td>
                 <td style={td}>{c.message_count}</td>
@@ -83,9 +83,9 @@ function AdminChannelsInner() {
                 <td style={td}>{c.last_activity_at ? new Date(c.last_activity_at).toLocaleString() : '-'}</td>
                 <td style={td}>{c.is_locked ? <span style={{ color:'#ef4444', fontWeight:700 }}>🔒 Locked</span> : <span style={{ color:'#10b981' }}>Open</span>}</td>
                 <td style={{ ...td, display:'flex', gap:4 }}>
-                  <a href={`/channels/${c.slug}`} target="_blank" rel="noopener noreferrer" style={{ ...btn, background:'#f0fdfa', color:'#0d9488', textDecoration:'none', display:'inline-block' }}>Open</a>
+                  <a href={`/channels/${c.slug}`} target="_blank" rel="noopener noreferrer" style={{ ...btn, background:'var(--brand-light)', color:'var(--brand)', textDecoration:'none', display:'inline-block' }}>Open</a>
                   <button onClick={() => loadHidden(c.slug)} style={{ ...btn, background:'#f3f4f6', color:'#374151' }}>Hidden</button>
-                  <button onClick={() => toggleLock(c.slug, !c.is_locked)} style={{ ...btn, background:c.is_locked?'#d1fae5':'#fef3c7', color:c.is_locked?'#065f46':'#92400e' }}>{c.is_locked?'Unlock':'Lock'}</button>
+                  <button onClick={() => toggleLock(c.slug, !c.is_locked)} style={{ ...btn, background:c.is_locked?'#d1fae5':'#fef3c7', color:c.is_locked?'var(--brand-dark)':'#92400e' }}>{c.is_locked?'Unlock':'Lock'}</button>
                   <button onClick={() => deleteChannel(c.slug)} style={{ ...btn, background:'#fee2e2', color:'#991b1b' }}>Delete</button>
                 </td>
               </tr>
@@ -109,7 +109,7 @@ function AdminChannelsInner() {
                       <td style={td}>@{h.username || h.user_id}</td>
                       <td style={{ ...td, maxWidth: 400, wordBreak: 'break-word' as const }}>{h.body}</td>
                       <td style={td}>{h.hidden_reason || '-'}</td>
-                      <td style={td}><button onClick={() => restore(h.id)} style={{ ...btn, background:'#d1fae5', color:'#065f46' }}>Restore</button></td>
+                      <td style={td}><button onClick={() => restore(h.id)} style={{ ...btn, background:'#d1fae5', color:'var(--brand-dark)' }}>Restore</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -128,7 +128,7 @@ function AdminChannelsInner() {
                 <td style={td}>{b.reason || '-'}</td>
                 <td style={td}>{new Date(b.created_at).toLocaleString()}</td>
                 <td style={td}>{b.expires_at ? new Date(b.expires_at).toLocaleString() : 'Permanent'}</td>
-                <td style={td}><button onClick={() => liftBan(b.id)} style={{ ...btn, background:'#d1fae5', color:'#065f46' }}>Lift</button></td>
+                <td style={td}><button onClick={() => liftBan(b.id)} style={{ ...btn, background:'#d1fae5', color:'var(--brand-dark)' }}>Lift</button></td>
               </tr>
             ))}
             {!bans.length && <tr><td colSpan={5} style={{ ...td, textAlign:'center' as const, color:'#6b7280' }}>No bans.</td></tr>}

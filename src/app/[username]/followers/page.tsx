@@ -20,7 +20,7 @@ export default async function FollowersPage({ params }: Props) {
   return (
     <div style={{ background: '#f3f4f6', minHeight: '100vh', color: '#111827' }}>
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '32px 20px' }}>
-        <Link href={'/' + username} style={{ color: '#0d9488', textDecoration: 'none', fontSize: 14, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
+        <Link href={'/' + username} style={{ color: 'var(--brand)', textDecoration: 'none', fontSize: 14, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
           ← {username}
         </Link>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 26, fontWeight: 800, color: '#111827', marginBottom: 24 }}>Followers</h1>
@@ -33,7 +33,7 @@ export default async function FollowersPage({ params }: Props) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 12, background: '#ffffff', border: '1px solid #e5e7eb', marginBottom: 8 }}>
                   {f.avatar_url
                     ? <img loading="lazy" decoding="async" src={f.avatar_url} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} />
-                    : <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#fff', fontSize: 18 }}>{(f.display_name || f.username)?.[0]?.toUpperCase()}</div>
+                    : <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#fff', fontSize: 18 }}>{(f.display_name || f.username)?.[0]?.toUpperCase()}</div>
                   }
                   <div>
                     <div style={{ fontSize: 15, fontWeight: 600, color: '#111827' }}>{f.display_name || f.username}</div>

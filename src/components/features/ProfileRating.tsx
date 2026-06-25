@@ -88,7 +88,7 @@ export function ProfileRating({ username, initialRating, initialCount }: Props) 
         )}
         {!isSelf && viewerLoaded && hasViewer && (
           <button onClick={() => setOpen(o => !o)}
-            style={{ background: myStars ? '#0d9488' : 'transparent', color: myStars ? '#fff' : '#0d9488', border: '1px solid #0d9488', borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ background: myStars ? 'var(--brand)' : 'transparent', color: myStars ? '#fff' : 'var(--brand)', border: '1px solid var(--brand)', borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
             {myStars ? `Your rating: ${myStars}★` : 'Rate this traveller'}
           </button>
         )}

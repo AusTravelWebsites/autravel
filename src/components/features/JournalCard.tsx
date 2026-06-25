@@ -132,7 +132,7 @@ export function JournalCard({
         {(entry.place_name || entry.locationName) && (
           <div style={{padding:'0 16px 8px'}}>
             {entry.place_slug ? (
-              <a href={`/places/${entry.place_slug}`} style={{display:'inline-flex',alignItems:'center',background:'#f0fdfa',color:'#0d9488',border:'1px solid #99f6e4',borderRadius:'99px',padding:'2px 10px',fontSize:'12px',fontWeight:600,textDecoration:'none'}}>
+              <a href={`/places/${entry.place_slug}`} style={{display:'inline-flex',alignItems:'center',background:'var(--brand-light)',color:'var(--brand)',border:'1px solid #99f6e4',borderRadius:'99px',padding:'2px 10px',fontSize:'12px',fontWeight:600,textDecoration:'none'}}>
                 {entry.place_name || entry.locationName}
               </a>
             ) : (

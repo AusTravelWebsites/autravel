@@ -281,9 +281,9 @@ export default async function ProfilePage({ params }: Props) {
             {/* Avatar */}
             {user.avatar_url ? (
               <img loading="lazy" decoding="async" src={user.avatar_url as string} alt={user.display_name as string}
-                style={{ width: 96, height: 96, borderRadius: '50%', objectFit: 'cover', border: '3px solid #0d9488', flexShrink: 0 }} />
+                style={{ width: 96, height: 96, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--brand)', flexShrink: 0 }} />
             ) : (
-              <div style={{ width: 96, height: 96, borderRadius: '50%', background: 'linear-gradient(135deg, #0d9488, #0d9488)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, fontWeight: 800, color: '#fff', flexShrink: 0, border: '3px solid #0d9488' }}>
+              <div style={{ width: 96, height: 96, borderRadius: '50%', background: 'linear-gradient(135deg, var(--brand), var(--brand))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, fontWeight: 800, color: '#fff', flexShrink: 0, border: '3px solid var(--brand)' }}>
                 {initials}
               </div>
             )}
@@ -292,13 +292,13 @@ export default async function ProfilePage({ params }: Props) {
             <div style={{ flex: 1 }}>
               <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 30, fontWeight: 800, margin: '0 0 4px', color: '#111827', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' as const }}>
                 {user.display_name as string}
-                {user.verification_status === 'verified' && <span title="Verified 18+" style={{ color: '#0d9488', fontSize: 20 }}>✓</span>}
+                {user.verification_status === 'verified' && <span title="Verified 18+" style={{ color: 'var(--brand)', fontSize: 20 }}>✓</span>}
                 {(() => {
                   const raw = user.last_seen_at as string | null | undefined;
                   if (!raw) return null;
                   const ms = Date.now() - new Date(raw).getTime();
                   if (ms < 5 * 60 * 1000) return (
-                    <span title="Active now" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#d1fae5', color: '#065f46', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>
+                    <span title="Active now" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#d1fae5', color: 'var(--brand-dark)', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>
                       <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', display: 'inline-block' }}/>Active now
                     </span>
                   );
@@ -312,7 +312,7 @@ export default async function ProfilePage({ params }: Props) {
               <div style={{ fontSize: 14, color: '#6b7280', marginBottom: 4, display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
                 <span>@{user.username}</span>
                 {(user.home_city || user.home_country) && (
-                  <span style={{ color: '#0d9488' }}>· 📍 {[user.home_city, user.home_country].filter(Boolean).join(', ')}</span>
+                  <span style={{ color: 'var(--brand)' }}>· 📍 {[user.home_city, user.home_country].filter(Boolean).join(', ')}</span>
                 )}
               </div>
               <ProfileRating username={user.username as string} initialRating={user.bb_rating ? Number(user.bb_rating) : null} initialCount={Number(user.bb_rating_count) || 0} />
@@ -339,12 +339,12 @@ export default async function ProfilePage({ params }: Props) {
               <div key={s.label}>
                 {s.href ? (
                   <Link href={s.href} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: '#0d9488' }}>{s.val as number}</div>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--brand)' }}>{s.val as number}</div>
                     <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{s.label}</div>
                   </Link>
                 ) : (
                   <>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: '#0d9488' }}>{s.val as number}</div>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--brand)' }}>{s.val as number}</div>
                     <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{s.label}</div>
                   </>
                 )}
@@ -367,7 +367,7 @@ export default async function ProfilePage({ params }: Props) {
                 <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>Interests</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 6 }}>
                   {(user.interests as string[]).map(i => (
-                    <span key={i} style={{ background: '#f0fdfa', color: '#0d9488', border: '1px solid #99f6e4', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>{i.replace(/_/g, ' ')}</span>
+                    <span key={i} style={{ background: 'var(--brand-light)', color: 'var(--brand)', border: '1px solid #99f6e4', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>{i.replace(/_/g, ' ')}</span>
                   ))}
                 </div>
               </div>
@@ -409,7 +409,7 @@ export default async function ProfilePage({ params }: Props) {
                       <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 4 }}>{m.title}</div>
                       <div style={{ fontSize: 12, color: '#6b7280' }}>📅 {new Date(m.meetup_date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}</div>
                       {m.location_name && <div style={{ fontSize: 12, color: '#6b7280' }}>📍 {m.location_name}</div>}
-                      <div style={{ fontSize: 12, color: '#0d9488', marginTop: 4, fontWeight: 600 }}>👥 {m.attendee_count} going</div>
+                      <div style={{ fontSize: 12, color: 'var(--brand)', marginTop: 4, fontWeight: 600 }}>👥 {m.attendee_count} going</div>
                     </div>
                   </div>
                 </Link>
@@ -427,7 +427,7 @@ export default async function ProfilePage({ params }: Props) {
                 <Link key={r.id} href={'/places/' + r.place_slug} style={{ textDecoration: 'none' }}>
                   <div style={{ background: '#fff', borderRadius: 12, padding: '16px', border: '1px solid #e5e7eb', transition: 'border-color 0.15s' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#0d9488' }}>{r.place_name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--brand)' }}>{r.place_name}</div>
                       <div style={{ display: 'flex', gap: 1 }}>
                         {[1,2,3,4,5].map((s: number) => (
                           <span key={s} style={{ color: s <= r.overall_rating ? '#f97316' : '#1e3354', fontSize: 13 }}>★</span>
@@ -468,15 +468,15 @@ export default async function ProfilePage({ params }: Props) {
                     {user.avatar_url ? (
                       <img loading="lazy" decoding="async" src={user.avatar_url as string} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#111827', fontSize: 14 }}>{initials}</div>
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#111827', fontSize: 14 }}>{initials}</div>
                     )}
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{user.display_name as string}</div>
                       <div style={{ fontSize: 12, color: '#6b7280' }}>
                         {(e.place_slug || e.location_name) && (
                           <span>📍 {e.place_slug
-                            ? <Link href={'/places/' + e.place_slug} style={{ color: '#0d9488', textDecoration: 'none', fontWeight: 600 }}>{e.place_name || e.location_name}</Link>
-                            : <Link href={'/explore?q=' + encodeURIComponent(e.location_name)} style={{ color: '#0d9488', textDecoration: 'none', fontWeight: 600 }}>{e.location_name}</Link>
+                            ? <Link href={'/places/' + e.place_slug} style={{ color: 'var(--brand)', textDecoration: 'none', fontWeight: 600 }}>{e.place_name || e.location_name}</Link>
+                            : <Link href={'/explore?q=' + encodeURIComponent(e.location_name)} style={{ color: 'var(--brand)', textDecoration: 'none', fontWeight: 600 }}>{e.location_name}</Link>
                           } · </span>
                         )}
                         {timeAgo(e.created_at)}
@@ -505,7 +505,7 @@ export default async function ProfilePage({ params }: Props) {
                     <span style={{ fontSize: 13, color: '#6b7280' }}>♥ {e.like_count || 0}</span>
                     <span style={{ fontSize: 13, color: '#6b7280' }}>💬 {e.comment_count || 0}</span>
                     {e.place_name && (
-                      <Link href={'/places/' + e.place_slug} style={{ marginLeft: 'auto', fontSize: 12, color: '#0d9488', textDecoration: 'none' }}>
+                      <Link href={'/places/' + e.place_slug} style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--brand)', textDecoration: 'none' }}>
                         {e.place_name} →
                       </Link>
                     )}

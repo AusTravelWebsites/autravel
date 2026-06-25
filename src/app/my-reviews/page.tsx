@@ -65,7 +65,7 @@ export default function MyReviewsPage() {
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, flexWrap: 'wrap', gap: 12 }}>
             <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111827', margin: 0 }}>My Reviews</h1>
-            <Link href="/reviews/new" style={{ background: '#0d9488', color: '#fff', borderRadius: 10, padding: '10px 16px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>+ Write a Review</Link>
+            <Link href="/reviews/new" style={{ background: 'var(--brand)', color: '#fff', borderRadius: 10, padding: '10px 16px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>+ Write a Review</Link>
           </div>
 
           <div style={{ background: '#fff', borderRadius: 12, padding: 14, marginBottom: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
@@ -88,7 +88,7 @@ export default function MyReviewsPage() {
                 <>
                   <div style={{ fontSize: 42, marginBottom: 10 }}>✍️</div>
                   <p style={{ margin: '0 0 8px', fontWeight: 600, color: '#111827' }}>You haven't written any reviews yet.</p>
-                  <p style={{ margin: 0, fontSize: 14 }}><Link href="/reviews/new" style={{ color: '#0d9488', fontWeight: 600 }}>Leave your first review →</Link></p>
+                  <p style={{ margin: 0, fontSize: 14 }}><Link href="/reviews/new" style={{ color: 'var(--brand)', fontWeight: 600 }}>Leave your first review →</Link></p>
                 </>
               ) : (
                 <>
@@ -105,7 +105,7 @@ export default function MyReviewsPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 6 }}>
                   <div style={{ minWidth: 0, flex: 1 }}>
                     {r.place_slug ? (
-                      <Link href={`/places/${r.place_slug}`} style={{ color: '#0d9488', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
+                      <Link href={`/places/${r.place_slug}`} style={{ color: 'var(--brand)', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
                         {r.place_name || 'Unknown place'}
                       </Link>
                     ) : (
@@ -122,7 +122,7 @@ export default function MyReviewsPage() {
                 {r.body && <p style={{ fontSize: 14, color: '#374151', margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.55 }}>{r.body}</p>}
                 <div style={{ marginTop: 10, fontSize: 12, color: '#9ca3af' }}>
                   {new Date(r.created_at).toLocaleDateString()}
-                  {r.gps_verified && <span style={{ marginLeft: 8, color: '#0d9488' }}>📍 GPS verified</span>}
+                  {r.gps_verified && <span style={{ marginLeft: 8, color: 'var(--brand)' }}>📍 GPS verified</span>}
                 </div>
               </article>
             ))}

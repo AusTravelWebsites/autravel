@@ -50,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: { icon: tenant.ogImage, apple: tenant.ogImage },
   }
 }
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#0d9488' }
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: 'var(--brand)' }
 
 import { unstable_cache } from 'next/cache'
 
@@ -218,12 +218,19 @@ try {
         ],
       }) }} />
       </head>
-      <body className="font-body antialiased min-h-screen" suppressHydrationWarning style={{background:"#f3f4f6"}}>
+      <body className="font-body antialiased min-h-screen" suppressHydrationWarning style={{
+        background: "#f3f4f6",
+        // Per-tenant brand accent (overrides the teal :root default in globals.css).
+        // Perth Tourism + The Australian Explorer are outback-ochre, not teal.
+        ...(tenant.state_code === 'perth' || tenant.state_code === 'auex'
+          ? { ['--brand' as any]: '#b45309', ['--brand-dark' as any]: '#7c2d12', ['--brand-light' as any]: '#fff7ed' }
+          : {}),
+      } as React.CSSProperties}>
         {/* Head snippets rendered at body start  scripts/styles work from here too */}
         {bodyStartCode && (
           <div id="bb-body-start" dangerouslySetInnerHTML={{ __html: bodyStartCode }} />
         )}
-        <NavbarWrapper brand={brand} scope={scope} isAggregator={tenant.aggregator} mega={mega} tenantCode={tenant.state_code} trailsRoute={trailsCopy(tenant).enabled ? trailsCopy(tenant).base : undefined} trailsLabel={trailsCopy(tenant).navLabel} />
+        <NavbarWrapper brand={brand} scope={scope} isAggregator={tenant.aggregator} mega={mega} tenantCode={tenant.state_code} trailsRoute={trailsCopy(tenant).enabled ? trailsCopy(tenant).base : undefined} trailsLabel={trailsCopy(tenant).navLabel} tracksRoute={tenant.state_code === 'auex' ? '/off-road-tracks' : undefined} />
         {children}
         <SiteFooter
           brand={{ name: tenant.name, scope, tagline: tenant.tagline }}

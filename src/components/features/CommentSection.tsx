@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
-const C={bg:'#f3f4f6',card:'#fff',border:'#e5e7eb',text:'#111827',sub:'#6b7280',teal:'#0d9488'}
+const C={bg:'#f3f4f6',card:'#fff',border:'#e5e7eb',text:'#111827',sub:'#6b7280',teal:'var(--brand)'}
 type Comment={id:string;body:string;created_at:string;display_name:string;avatar_url:string;username:string}
 export function CommentSection({entryId,reviewId,count}:{entryId?:string;reviewId?:string;count:number}) {
   const [open,setOpen]=useState(false)

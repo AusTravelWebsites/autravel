@@ -17,7 +17,7 @@ type Park = {
 }
 type StateRow = { state_code: string; c: number; active_c: number; featured_c: number }
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111', sub: '#6b7280', teal: '#0d9488', red: '#ef4444', amber: '#f59e0b' }
+const C = { card: '#fff', border: '#e5e7eb', text: '#111', sub: '#6b7280', teal: 'var(--brand)', red: '#ef4444', amber: '#f59e0b' }
 
 export default function AdminParksPage() {
   const sp = useSearchParams()

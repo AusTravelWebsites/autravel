@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
-import { getTenant, stateFilterValue } from '@/lib/get-tenant'
+import { getTenant, parkStatesFor } from '@/lib/get-tenant'
 import { StateCode } from '@/lib/tenants'
 import { SaveButton } from '@/components/features/SaveButton'
 import { DestinationWeather } from '@/components/features/DestinationWeather'
@@ -47,13 +47,13 @@ type Park = {
   ai_review_summary: string | null
 }
 
-async function getPark(slug: string, state: StateCode | null): Promise<Park | null> {
+async function getPark(slug: string, parkStates: StateCode[] | null): Promise<Park | null> {
   try {
     const [row] = await db<Park[]>`
       SELECT * FROM parks
       WHERE slug = ${slug}
         AND active = true
-        AND (${state}::text IS NULL OR state_code = ${state}::text)
+        AND ${parkStates === null ? db`true` : db`state_code = ANY(${parkStates})`}
       LIMIT 1`
     return row || null
   } catch {
@@ -111,12 +111,15 @@ async function getNearbyAlerts(park: Park): Promise<Alert[]> {
 }
 
 type NearestDest = { slug: string; name: string; region: string | null; lat: string; lng: string; distance_km: number }
-async function getNearestDestinations(park: Park): Promise<NearestDest[]> {
+async function getNearestDestinations(park: Park, destState: StateCode): Promise<NearestDest[]> {
   if (!park.lat || !park.lng) return []
   try {
+    // Use the CURRENT tenant's destinations (destState), not the park's home state
+    // — an all-Australia tenant (auex) surfaces parks from every state but only its
+    // own destinations exist, so link to the nearest of those (geographically).
     const rows = await db<Array<{ slug: string; name: string; region: string | null; lat: string; lng: string }>>`
       SELECT slug, name, region, lat::text, lng::text FROM destinations
-      WHERE active = true AND state_code = ${park.state_code}
+      WHERE active = true AND state_code = ${destState}
         AND lat IS NOT NULL AND lng IS NOT NULL
       ORDER BY (
         (lat - ${park.lat}::numeric) * (lat - ${park.lat}::numeric) +
@@ -167,7 +170,7 @@ async function getNearbyTours(park: Park): Promise<Array<{ slug: string; title: 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params
   const tenant = await getTenant()
-  const park = await getPark(slug, stateFilterValue(tenant))
+  const park = await getPark(slug, parkStatesFor(tenant))
   if (!park) return { title: 'Park not found' }
   const rawTitle = park.seo_title || `${park.name} — ${park.region || tenant.stateName}`
   const title = rawTitle.length > 45 ? rawTitle.slice(0, 42).replace(/\s+\S*$/, '') + '…' : rawTitle
@@ -183,7 +186,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   }
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
 
 const STATE_TZ_PARK = {
   qld: 'Australia/Brisbane', nsw: 'Australia/Sydney', vic: 'Australia/Melbourne',
@@ -194,10 +197,10 @@ const STATE_TZ_PARK = {
 export default async function ParkDetailPage({ params }: { params: Params }) {
   const { slug } = await params
   const tenant = await getTenant()
-  const park = await getPark(slug, stateFilterValue(tenant))
+  const park = await getPark(slug, parkStatesFor(tenant))
   if (!park) notFound()
 
-  const [nearby, tours, osmNearby, alerts, nearestDests] = await Promise.all([getNearbyParks(park), getNearbyTours(park), getNearbyOsm(park.id), getNearbyAlerts(park), getNearestDestinations(park)])
+  const [nearby, tours, osmNearby, alerts, nearestDests] = await Promise.all([getNearbyParks(park), getNearbyTours(park), getNearbyOsm(park.id), getNearbyAlerts(park), getNearestDestinations(park, tenant.state_code)])
   const rating = park.avg_rating ? Number(park.avg_rating) : (park.star_rating ? Number(park.star_rating) : null)
   const canonical = `https://${tenant.host}/parks/${park.slug}/`
   const breadcrumb = {
@@ -333,7 +336,7 @@ export default async function ParkDetailPage({ params }: { params: Params }) {
               {alerts.map(a => (
                 <li key={a.id}>
                   <strong>{a.severity || a.type || 'Alert'}:</strong> {a.title} · {a.distance_km.toFixed(1)} km away · <span style={{ color: '#9ca3af' }}>{a.source}</span>
-                  {a.link && <> · <a href={a.link} target="_blank" rel="noopener noreferrer" style={{ color: '#0d9488', fontWeight: 600 }}>details →</a></>}
+                  {a.link && <> · <a href={a.link} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand)', fontWeight: 600 }}>details →</a></>}
                 </li>
               ))}
             </ul>
@@ -378,7 +381,7 @@ export default async function ParkDetailPage({ params }: { params: Params }) {
                   <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 12, padding: '14px 16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                       <span aria-hidden style={{ fontSize: 18 }}>👍</span>
-                      <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#065f46', textTransform: 'uppercase' as const, letterSpacing: 0.5 }}>What people love</h3>
+                      <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: 'var(--brand-dark)', textTransform: 'uppercase' as const, letterSpacing: 0.5 }}>What people love</h3>
                     </div>
                     <ul style={{ margin: 0, paddingLeft: 18, color: '#064e3b', fontSize: 14, lineHeight: 1.55 }}>
                       {park.ai_pros.map((p, i) => <li key={i} style={{ marginBottom: 6 }}>{p}</li>)}
@@ -545,7 +548,7 @@ function NearbyMap({ parkName, nearby }: { parkName: string; nearby: NearbyOsm[]
         })}
       </div>
       <div style={{ fontSize: 11, color: '#6b7280', marginTop: 12 }}>
-        Source: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" style={{ color: '#0d9488' }}>OpenStreetMap contributors</a>, ODbL.
+        Source: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand)' }}>OpenStreetMap contributors</a>, ODbL.
       </div>
     </section>
   )
@@ -567,7 +570,7 @@ function NearestDestinationsPanel({ state, parkName, dests }: { state: string; p
         ))}
       </div>
       <div style={{ fontSize: 12, marginTop: 12 }}>
-        <Link href={`/distances/${state}/`} style={{ color: '#0d9488', fontWeight: 700 }}>See full drive distances across the state →</Link>
+        <Link href="/distances/" style={{ color: 'var(--brand)', fontWeight: 700 }}>See full drive distances across the state →</Link>
       </div>
     </section>
   )

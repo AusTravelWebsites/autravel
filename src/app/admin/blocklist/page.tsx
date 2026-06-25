@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 type Item = { id: string; kind: string; value: string; reason?: string; created_by?: string; created_at: string }
-const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'#0d9488', red:'#ef4444' }
+const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'var(--brand)', red:'#ef4444' }
 
 export default function BlocklistPage() {
   const [items, setItems] = useState<Item[]>([])

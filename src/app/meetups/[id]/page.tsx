@@ -94,12 +94,12 @@ export default async function MeetupDetailPage({ params }: Props) {
         <Link href="/meetups" style={{ color: '#6b7280', fontSize: 14, textDecoration: 'none' }}>← All meetups</Link>
 
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const, marginTop: 18, marginBottom: 12 }}>
-          {m.category && <span style={{ background: '#f0fdfa', color: '#0d9488', border: '1px solid #99f6e4', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.04em' }}>{m.category}</span>}
+          {m.category && <span style={{ background: 'var(--brand-light)', color: 'var(--brand)', border: '1px solid #99f6e4', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.04em' }}>{m.category}</span>}
           <span style={{ background: '#f3f4f6', color: '#374151', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 500 }}>{scopeLabel[m.scope] || m.scope}</span>
           {m.women_only && <span style={{ background: '#fce7f3', color: '#9d174d', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>Women only</span>}
           {m.host_approval_required && <span style={{ background: '#fef3c7', color: '#92400e', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>Host approves</span>}
           {m.status === 'cancelled' && <span style={{ background: '#fee2e2', color: '#991b1b', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>Cancelled</span>}
-          {m.recurrence && <span style={{ background: '#ecfdf5', color: '#065f46', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>🔁 {m.recurrence === 'weekly' ? 'Weekly' : 'Monthly'}</span>}
+          {m.recurrence && <span style={{ background: '#ecfdf5', color: 'var(--brand-dark)', borderRadius: 999, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>🔁 {m.recurrence === 'weekly' ? 'Weekly' : 'Monthly'}</span>}
         </div>
 
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 800, margin: '0 0 12px' }}>{m.title}</h1>
@@ -117,7 +117,7 @@ export default async function MeetupDetailPage({ params }: Props) {
             {m.host_avatar_url ? (
               <img loading="lazy" decoding="async" src={m.host_avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' as const }} />
             ) : (
-              <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontWeight: 700, fontSize: 20 }}>
+              <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontWeight: 700, fontSize: 20 }}>
                 {(m.host_display_name || m.host_username || '?')[0].toUpperCase()}
               </div>
             )}
@@ -129,7 +129,7 @@ export default async function MeetupDetailPage({ params }: Props) {
               <div style={{ fontSize: 12, color: '#6b7280' }}>Hosted by</div>
               <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' as const }}>
                 <span style={{ fontSize: 15, fontWeight: 700 }}>{m.host_display_name || m.host_username}</span>
-                {m.host_verified === 'verified' && <span title="Verified" style={{ color: '#0d9488', fontSize: 13 }}>✓</span>}
+                {m.host_verified === 'verified' && <span title="Verified" style={{ color: 'var(--brand)', fontSize: 13 }}>✓</span>}
                 {m.host_rating != null && (
                   <span style={{ fontSize: 12, color: '#92400e', background: '#fef3c7', borderRadius: 999, padding: '1px 8px', fontWeight: 600 }}>
                     ★ {Number(m.host_rating).toFixed(1)} <span style={{ fontWeight: 400, color: '#78350f' }}>({m.host_rating_count})</span>
@@ -176,12 +176,12 @@ export default async function MeetupDetailPage({ params }: Props) {
                   {a.avatar_url ? (
                     <img loading="lazy" decoding="async" src={a.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' as const }} />
                   ) : (
-                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 12, fontWeight: 700 }}>{(a.display_name || a.username || '?')[0].toUpperCase()}</div>
+                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 12, fontWeight: 700 }}>{(a.display_name || a.username || '?')[0].toUpperCase()}</div>
                   )}
                   {active && <span style={{ position: 'absolute' as const, bottom: -1, right: -1, width: 9, height: 9, background: '#10b981', border: '2px solid #fff', borderRadius: '50%' }} />}
                   </div>
                   <span style={{ fontSize: 13, fontWeight: 600 }}>{a.display_name || a.username}</span>
-                  {a.verification_status === 'verified' && <span style={{ color: '#0d9488', fontSize: 11 }}>✓</span>}
+                  {a.verification_status === 'verified' && <span style={{ color: 'var(--brand)', fontSize: 11 }}>✓</span>}
                   {a.bb_rating != null && <span style={{ fontSize: 11, color: '#92400e' }}>★{Number(a.bb_rating).toFixed(1)}</span>}
                 </Link>
               );})}

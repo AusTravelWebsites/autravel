@@ -6,7 +6,7 @@ import { CommentSection } from '@/components/features/CommentSection';
 import { PlaceAutocomplete } from '@/components/features/PlaceAutocomplete';
 import { InviteFriendButton } from '@/components/features/InviteFriendButton';
 
-const C = { bg:'#f3f4f6',card:'#fff',border:'#e5e7eb',text:'#111827',sub:'#6b7280',teal:'#0d9488',tealLight:'#f0fdfa',orange:'#f97316',red:'#ef4444' };
+const C = { bg:'#f3f4f6',card:'#fff',border:'#e5e7eb',text:'#111827',sub:'#6b7280',teal:'var(--brand)',tealLight:'var(--brand-light)',orange:'#f97316',red:'#ef4444' };
 
 function AutoMeetupNudge({ user }: { user: any }) {
   const [dismissed, setDismissed] = useState(false);
@@ -37,14 +37,14 @@ function ProfileNudge() {
   useEffect(() => { try { if (typeof window !== 'undefined' && localStorage.getItem('bb-nudge-onboard-dismissed') === '1') setDismissed(true) } catch {} }, []);
   if (dismissed) return null;
   return (
-    <div style={{ background:'#f0fdfa', border:'1px solid #99f6e4', borderRadius:12, padding:'14px 18px', marginBottom:12, display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' as const }}>
+    <div style={{ background:'var(--brand-light)', border:'1px solid #99f6e4', borderRadius:12, padding:'14px 18px', marginBottom:12, display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' as const }}>
       <span style={{ fontSize:24 }}>👋</span>
       <div style={{ flex:1, minWidth:200 }}>
-        <div style={{ fontWeight:700, color:'#0f766e', fontSize:14 }}>Finish setting up your profile</div>
-        <div style={{ fontSize:12, color:'#0d9488' }}>Add a bio + your travel interests so other travellers can find you.</div>
+        <div style={{ fontWeight:700, color:'var(--brand-dark)', fontSize:14 }}>Finish setting up your profile</div>
+        <div style={{ fontSize:12, color:'var(--brand)' }}>Add a bio + your travel interests so other travellers can find you.</div>
       </div>
-      <Link href="/onboarding" style={{ background:'#0d9488', color:'#fff', borderRadius:8, padding:'7px 14px', fontSize:13, fontWeight:700, textDecoration:'none', whiteSpace:'nowrap' as const }}>Continue</Link>
-      <button onClick={() => { try { localStorage.setItem('bb-nudge-onboard-dismissed','1') } catch {}; setDismissed(true) }} aria-label="Dismiss" style={{ background:'none', border:'none', color:'#0f766e', cursor:'pointer', fontSize:20, lineHeight:1, padding:4 }}>×</button>
+      <Link href="/onboarding" style={{ background:'var(--brand)', color:'#fff', borderRadius:8, padding:'7px 14px', fontSize:13, fontWeight:700, textDecoration:'none', whiteSpace:'nowrap' as const }}>Continue</Link>
+      <button onClick={() => { try { localStorage.setItem('bb-nudge-onboard-dismissed','1') } catch {}; setDismissed(true) }} aria-label="Dismiss" style={{ background:'none', border:'none', color:'var(--brand-dark)', cursor:'pointer', fontSize:20, lineHeight:1, padding:4 }}>×</button>
     </div>
   );
 }
@@ -104,7 +104,7 @@ function PostCard({entry,me}:{entry:any;me:any}){
     </div>
     <div style={{padding:'0 16px 14px'}}>{(() => { const fs=(entry.body||'').split(/[.!?\n]/)[0]?.trim()||''; const heading=fs.length>6?(fs.length>80?fs.slice(0,77)+'…':fs):(loc?`Journal from ${loc}`:'Journal entry'); return isJournalLike ? <Link href={`/journal-entries/${entry.id}`} style={{textDecoration:'none'}}><h3 style={{fontFamily:'Georgia, serif',fontSize:17,fontWeight:700,color:C.text,margin:'0 0 6px',lineHeight:1.35}}>{heading}</h3></Link> : null; })()}<p style={{color:C.text,fontSize:15,lineHeight:1.65,margin:0}}>{entry.body}</p></div>
     {img&&<div style={{width:'100%',maxHeight:400,overflow:'hidden',background:'#f3f4f6'}}><img loading="lazy" decoding="async" src={img} alt={loc||''} style={{width:'100%',objectFit:'cover',display:'block'}} onError={e=>{(e.target as HTMLImageElement).style.display='none'}}/></div>}
-    {loc&&slug&&<div style={{padding:'4px 16px 8px'}}><Link href={`/places/${slug}`} style={{display:'inline-flex',alignItems:'center',background:'#f0fdfa',color:'#0d9488',border:'1px solid #99f6e4',borderRadius:'99px',padding:'2px 10px',fontSize:'12px',fontWeight:600,textDecoration:'none'}}>{loc}</Link></div>}
+    {loc&&slug&&<div style={{padding:'4px 16px 8px'}}><Link href={`/places/${slug}`} style={{display:'inline-flex',alignItems:'center',background:'var(--brand-light)',color:'var(--brand)',border:'1px solid #99f6e4',borderRadius:'99px',padding:'2px 10px',fontSize:'12px',fontWeight:600,textDecoration:'none'}}>{loc}</Link></div>}
     <div style={{borderTop:'1px solid #f0f0f0',marginTop:12,padding:'8px 12px',display:'flex',alignItems:'center',gap:4}}>
       <button onClick={toggleLike} style={{background:liked?'#fff7ed':'none',border:liked?`1px solid ${C.orange}`:'none',color:liked?C.orange:C.sub,cursor:'pointer',display:'flex',alignItems:'center',gap:5,fontSize:13,padding:'6px 12px',borderRadius:8,fontFamily:'inherit',fontWeight:600}}>{liked?'♥':'♡'} {likes>0?likes:''} Like</button>
       {isJournalLike && <CommentSection entryId={entry.id} count={commentCount} />}
@@ -275,10 +275,10 @@ function RightSidebar({user}:{user:any}){
   },[]);
   return <div style={{display:'flex',flexDirection:'column',gap:16}}>
     {user&&<Link href="/auto-meetups" style={{ display: 'block', textDecoration: 'none' }}>
-      <div style={{ background: 'linear-gradient(135deg, #f0fdfa 0%, #fffbeb 100%)', border: '1px solid #99f6e4', borderRadius: 12, padding: 14 }}>
-        <div style={{ fontSize: 11, color: '#065f46', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.06em', marginBottom: 4 }}>🌏 Auto-meetups</div>
-        <div style={{ fontSize: 13, color: '#065f46', fontWeight: 600, marginBottom: 2 }}>See travellers near you</div>
-        <div style={{ fontSize: 11, color: '#0d9488' }}>Within 10 miles, from your last check-in →</div>
+      <div style={{ background: 'linear-gradient(135deg, var(--brand-light) 0%, #fffbeb 100%)', border: '1px solid #99f6e4', borderRadius: 12, padding: 14 }}>
+        <div style={{ fontSize: 11, color: 'var(--brand-dark)', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.06em', marginBottom: 4 }}>🌏 Auto-meetups</div>
+        <div style={{ fontSize: 13, color: 'var(--brand-dark)', fontWeight: 600, marginBottom: 2 }}>See travellers near you</div>
+        <div style={{ fontSize: 11, color: 'var(--brand)' }}>Within 10 miles, from your last check-in →</div>
       </div>
     </Link>}
     {online.length>0&&<div style={{background:C.card,borderRadius:12,overflow:'hidden',}}>

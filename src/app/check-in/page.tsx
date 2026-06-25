@@ -229,7 +229,7 @@ function CheckInPageInner() {
 
         {/* Place info */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 11, color: '#0d9488', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, marginBottom: 6 }}>Check in · {place.category}</div>
+          <div style={{ fontSize: 11, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, marginBottom: 6 }}>Check in · {place.category}</div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 800, color: '#111827', margin: '0 0 4px', lineHeight: 1.2 }}>
             {place.name}
           </h1>
@@ -274,11 +274,11 @@ function IdleState({ place, onStart }: { place: Place; onStart: () => void }) {
   return (
     <div style={{ display:'flex', flexDirection:'column' as const, alignItems:'center', textAlign:'center' as const, gap:22 }}>
       <div style={{ position:'relative' as const, width:144, height:144 }}>
-        <div style={{ position:'absolute' as const, inset:0, borderRadius:'50%', background:'#f0fdfa', border:'2px solid #99f6e4' }} />
+        <div style={{ position:'absolute' as const, inset:0, borderRadius:'50%', background:'var(--brand-light)', border:'2px solid #99f6e4' }} />
         <div style={{ position:'absolute' as const, inset:16, borderRadius:'50%', background:'#ecfeff', border:'2px solid #e5e7eb' }} />
         <div style={{ position:'absolute' as const, inset:32, borderRadius:'50%', background:'#f3f4f6', border:'2px solid #e5e7eb' }} />
         <div style={{ position:'absolute' as const, inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ width:40, height:40, borderRadius:'50%', background:'#0d9488', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff' }}>
+          <div style={{ width:40, height:40, borderRadius:'50%', background:'var(--brand)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff' }}>
             <PinIcon size={18} color="#fff" />
           </div>
         </div>
@@ -292,7 +292,7 @@ function IdleState({ place, onStart }: { place: Place; onStart: () => void }) {
         </p>
       </div>
 
-      <button onClick={onStart} style={{ background:'#0d9488', color:'#fff', border:'none', borderRadius:10, padding:'12px 28px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>Check in here</button>
+      <button onClick={onStart} style={{ background:'var(--brand)', color:'#fff', border:'none', borderRadius:10, padding:'12px 28px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>Check in here</button>
 
       <p style={{ fontSize:12, color:'#6b7280', textAlign:'center' as const, lineHeight:1.5, maxWidth:380 }}>
         Your exact coordinates are never stored publicly. Only the check-in distance is recorded.
@@ -307,7 +307,7 @@ function IdleState({ place, onStart }: { place: Place; onStart: () => void }) {
             'GPS-verified reviews rank higher on BugBitten',
           ].map(item => (
             <li key={item} style={{ display:'flex', alignItems:'flex-start' as const, gap:8, fontSize:12, color:'#374151' }}>
-              <span style={{ color:'#0d9488', fontWeight:700, flexShrink:0 }}>✓</span>
+              <span style={{ color:'var(--brand)', fontWeight:700, flexShrink:0 }}>✓</span>
               {item}
             </li>
           ))}
@@ -385,7 +385,7 @@ function RadarAnimation({ calculating }: { calculating?: boolean }) {
           'w-12 h-12 rounded-full flex items-center justify-center',
           calculating ? 'bg-gray-100 animate-pulse' : 'bg-teal-600'
         )}>
-          <PinIcon size={22} color="#0d9488" />
+          <PinIcon size={22} color="var(--brand)" />
         </div>
       </div>
 
@@ -477,7 +477,7 @@ function SuccessState({
           </>
         ) : (
           <>
-            <PinIcon size={20} color="#0d9488" />
+            <PinIcon size={20} color="var(--brand)" />
             Confirm check-in
           </>
         )}
@@ -541,7 +541,7 @@ function OutOfRangeState({
       <div className="space-y-3">
         <button
           onClick={onRetry}
-          style={{ width:'100%', padding:'12px 20px', borderRadius:10, background:'#0d9488', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}
+          style={{ width:'100%', padding:'12px 20px', borderRadius:10, background:'var(--brand)', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}
         >
           Try again
         </button>
@@ -586,7 +586,7 @@ function PermissionDeniedState({ onRetry }: { onRetry: () => void }) {
       </div>
       <button
         onClick={onRetry}
-        style={{ width:'100%', padding:'12px 20px', borderRadius:10, background:'#0d9488', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}
+        style={{ width:'100%', padding:'12px 20px', borderRadius:10, background:'var(--brand)', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}
       >
         Try again
       </button>
@@ -611,7 +611,7 @@ function ErrorState({ state, onRetry }: { state: CheckInState; onRetry: () => vo
             : 'Could not get a GPS fix. Try moving outside, away from tall buildings, and ensure location services are enabled.'}
         </p>
       </div>
-      <button onClick={onRetry} style={{ width:'100%', padding:'12px 20px', borderRadius:10, background:'#0d9488', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}>
+      <button onClick={onRetry} style={{ width:'100%', padding:'12px 20px', borderRadius:10, background:'var(--brand)', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}>
         Try again
       </button>
     </div>
@@ -638,26 +638,26 @@ function SuccessScreen({
         <h1 style={{ fontFamily:'Georgia, serif', fontSize:28, fontWeight:800, color:'#111827', margin:'0 0 6px', lineHeight:1.2 }}>
           Checked in!
         </h1>
-        <div style={{ fontSize:15, fontWeight:600, color:'#0d9488', margin:'0 0 4px' }}>{place.name}</div>
+        <div style={{ fontSize:15, fontWeight:600, color:'var(--brand)', margin:'0 0 4px' }}>{place.name}</div>
         <div style={{ fontSize:12, color:'#6b7280', marginBottom:22 }}>
           {(result.distanceMetres / 1000).toFixed(1)} km away · GPS verified
         </div>
 
-        <div style={{ background:'#f0fdfa', border:'1px solid #99f6e4', borderRadius:12, padding:16, marginBottom:20, textAlign:'left' as const }}>
+        <div style={{ background:'var(--brand-light)', border:'1px solid #99f6e4', borderRadius:12, padding:16, marginBottom:20, textAlign:'left' as const }}>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
             <span style={{ fontSize:22 }}>🕐</span>
             <div>
-              <div style={{ fontSize:13, fontWeight:700, color:'#0f766e' }}>72-hour review window open</div>
-              <div style={{ fontSize:12, color:'#0d9488' }}>Write your review anytime in the next 3 days</div>
+              <div style={{ fontSize:13, fontWeight:700, color:'var(--brand-dark)' }}>72-hour review window open</div>
+              <div style={{ fontSize:12, color:'var(--brand)' }}>Write your review anytime in the next 3 days</div>
             </div>
           </div>
-          <div style={{ fontSize:12, color:'#0f766e', lineHeight:1.55 }}>
+          <div style={{ fontSize:12, color:'var(--brand-dark)', lineHeight:1.55 }}>
             Your GPS-verified check-in is saved. You can write a review from anywhere — no need to stay nearby.
           </div>
         </div>
 
         <div style={{ display:'flex', flexDirection:'column' as const, gap:10 }}>
-          <button onClick={onReview} style={{ padding:'13px 20px', borderRadius:10, background:'#0d9488', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}>
+          <button onClick={onReview} style={{ padding:'13px 20px', borderRadius:10, background:'var(--brand)', color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'inherit' }}>
             Write a review now
           </button>
           <button onClick={onFeed} style={{ padding:'13px 20px', borderRadius:10, background:'#ffffff', color:'#374151', fontWeight:600, fontSize:14, border:'1px solid #e5e7eb', cursor:'pointer', fontFamily:'inherit' }}>
@@ -731,7 +731,7 @@ function PickPlaceScreen({ onPick, title }: { onPick: (p: { id: string; slug?: s
         )}
         {err && <div style={{ color: '#ef4444', fontSize: 13, marginTop: 10 }}>{err}</div>}
         <button onClick={submit} disabled={!q.trim() || submitting}
-          style={{ marginTop: 14, background: q.trim() ? '#0d9488' : '#e5e7eb', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontSize: 14, fontWeight: 700, cursor: q.trim() && !submitting ? 'pointer' : 'default', width: '100%' }}>
+          style={{ marginTop: 14, background: q.trim() ? 'var(--brand)' : '#e5e7eb', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontSize: 14, fontWeight: 700, cursor: q.trim() && !submitting ? 'pointer' : 'default', width: '100%' }}>
           {submitting ? 'Loading…' : 'Continue'}
         </button>
       </div>

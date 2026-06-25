@@ -189,9 +189,9 @@ export default async function PlacePage({ params }: Props) {
             const countrySlug = place.country ? place.country.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') : '';
             const citySlug = place.city ? place.city.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') : '';
             const parts: React.ReactNode[] = [];
-            if (place.city && countrySlug && citySlug) parts.push(<Link key="city" href={`/places/city/${countrySlug}/${citySlug}`} style={{ color: '#0d9488', textDecoration: 'none' }}>{place.city}</Link>);
+            if (place.city && countrySlug && citySlug) parts.push(<Link key="city" href={`/places/city/${countrySlug}/${citySlug}`} style={{ color: 'var(--brand)', textDecoration: 'none' }}>{place.city}</Link>);
             else if (place.city) parts.push(<span key="city">{place.city}</span>);
-            if (place.country && countrySlug) parts.push(<Link key="country" href={`/country/${countrySlug}`} style={{ color: '#0d9488', textDecoration: 'none' }}>{place.country}</Link>);
+            if (place.country && countrySlug) parts.push(<Link key="country" href={`/country/${countrySlug}`} style={{ color: 'var(--brand)', textDecoration: 'none' }}>{place.country}</Link>);
             else if (place.country) parts.push(<span key="country">{place.country}</span>);
             return parts.reduce<React.ReactNode[]>((acc, el, i) => (i === 0 ? [el] : [...acc, ', ', el]), []);
           })()}
@@ -199,12 +199,12 @@ export default async function PlacePage({ params }: Props) {
         </div>
         <div style={{ display: 'flex', gap: 24, fontSize: 14, color: '#6b7280', marginBottom: 24, flexWrap: 'wrap' as const }}>
           <div>
-            <span style={{ color: '#0d9488' }}>{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
+            <span style={{ color: 'var(--brand)' }}>{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
             <span style={{ marginLeft: 8 }}>{place.avg_rating ? Number(place.avg_rating).toFixed(1) : '—'} ({place.review_count || 0} reviews)</span>
           </div>
           <div>📍 {place.checkin_count || 0} check-ins</div>
           <div>📷 {wall.length} photo{wall.length === 1 ? '' : 's'}</div>
-          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#0d9488', textDecoration: 'none', fontWeight: 600 }}>
+          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand)', textDecoration: 'none', fontWeight: 600 }}>
             View on Google Maps →
           </a>
         </div>
@@ -214,8 +214,8 @@ export default async function PlacePage({ params }: Props) {
           </div>
         )}
         <div style={{ display: 'flex', gap: 12, marginBottom: 32, flexWrap: 'wrap' as const }}>
-          <a href={'/check-in?place=' + place.id} style={{ background: '#0d9488', color: '#fff', padding: '12px 24px', borderRadius: 20, fontSize: 14, fontWeight: 700, textDecoration: 'none' }}>Check In Here</a>
-          <a href={'/reviews/new?place=' + place.id} style={{ background: '#fff', border: '1px solid #0d9488', color: '#0d9488', padding: '12px 24px', borderRadius: 20, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>Write a Review</a>
+          <a href={'/check-in?place=' + place.id} style={{ background: 'var(--brand)', color: '#fff', padding: '12px 24px', borderRadius: 20, fontSize: 14, fontWeight: 700, textDecoration: 'none' }}>Check In Here</a>
+          <a href={'/reviews/new?place=' + place.id} style={{ background: '#fff', border: '1px solid var(--brand)', color: 'var(--brand)', padding: '12px 24px', borderRadius: 20, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>Write a Review</a>
           <FavouriteButton placeId={place.id} />
           <ShareButton url={`https://bugbitten.com/places/${place.slug}`} text={`${place.name} — ${place.city || place.country || ''} on BugBitten`} />
         </div>
@@ -235,7 +235,7 @@ export default async function PlacePage({ params }: Props) {
                 <div style={{ position: 'absolute' as const, left: 0, right: 0, bottom: 0, padding: '14px 10px 8px', background: 'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0))', display: 'flex', alignItems: 'center', gap: 6 }}>
                   {p.avatar_url
                     ? <img loading="lazy" decoding="async" src={p.avatar_url} alt="" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover' as const, border: '1.5px solid #fff' }} />
-                    : <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 11, fontWeight: 700, border: '1.5px solid #fff' }}>{(p.display_name || p.username || '?')[0].toUpperCase()}</div>
+                    : <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 11, fontWeight: 700, border: '1.5px solid #fff' }}>{(p.display_name || p.username || '?')[0].toUpperCase()}</div>
                   }
                   <span style={{ color: '#fff', fontSize: 12, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.6)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
                     {p.display_name || p.username}
@@ -258,7 +258,7 @@ export default async function PlacePage({ params }: Props) {
                 <Link key={c.username} href={'/' + c.username} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f9fafb', borderRadius: 99, padding: '6px 12px 6px 6px', textDecoration: 'none' }}>
                   {c.avatar_url
                     ? <img loading="lazy" decoding="async" src={c.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' as const }} />
-                    : <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 12, fontWeight: 700 }}>{(c.display_name || c.username)[0].toUpperCase()}</div>
+                    : <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 12, fontWeight: 700 }}>{(c.display_name || c.username)[0].toUpperCase()}</div>
                   }
                   <span style={{ color: '#111827', fontSize: 13, fontWeight: 600 }}>{c.display_name || c.username}</span>
                   <span style={{ color: '#6b7280', fontSize: 12 }}>· {c.count}</span>
@@ -282,11 +282,11 @@ export default async function PlacePage({ params }: Props) {
                 <Link href={'/' + r.username} style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
                   {r.avatar_url
                     ? <img loading="lazy" decoding="async" src={r.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' as const }} />
-                    : <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 12, fontWeight: 700 }}>{(r.display_name || r.username || '?')[0].toUpperCase()}</div>
+                    : <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 12, fontWeight: 700 }}>{(r.display_name || r.username || '?')[0].toUpperCase()}</div>
                   }
                   <span style={{ fontWeight: 600, color: '#111827' }}>{r.display_name || r.username || 'Traveller'}</span>
                 </Link>
-                <span style={{ color: '#0d9488' }}>{'★'.repeat(rStars)}{'☆'.repeat(5 - rStars)}</span>
+                <span style={{ color: 'var(--brand)' }}>{'★'.repeat(rStars)}{'☆'.repeat(5 - rStars)}</span>
               </div>
               {r.title && <div style={{ fontWeight: 600, color: '#111827', marginBottom: 6 }}>{r.title}</div>}
               <div style={{ color: '#374151', fontSize: 14, lineHeight: 1.6 }}>{r.body}</div>
@@ -306,7 +306,7 @@ export default async function PlacePage({ params }: Props) {
               })().map((n: any) => (
                 <Link key={n.slug} href={'/places/' + n.slug} style={{ textDecoration: 'none' }}>
                   <div style={{ background: '#ffffff', borderRadius: 12, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
-                    <div style={{ height: 110, background: '#f0fdfa', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
+                    <div style={{ height: 110, background: 'var(--brand-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                       {n.cover_image
                         ? <img loading="lazy" decoding="async" src={n.cover_image} alt={n.name} style={{ width: '100%', height: '100%', objectFit: 'cover' as const }} />
                         : <span style={{ fontSize: 40 }}>{n.emoji || '📍'}</span>}

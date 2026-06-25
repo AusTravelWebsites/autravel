@@ -103,7 +103,7 @@ export function ToursLocationSearch({
             <button key={`${d.slug}-${d.place_type}`}
               onMouseDown={e => { e.preventDefault(); pickName(d.name) }}
               onMouseEnter={() => setHi(i)}
-              style={{ display: 'block', width: '100%', padding: '10px 16px', background: hi === i ? '#f0fdfa' : 'transparent', border: 'none', textAlign: 'left' as const, cursor: 'pointer', fontSize: 14, color: '#111827', fontFamily: 'inherit' }}>
+              style={{ display: 'block', width: '100%', padding: '10px 16px', background: hi === i ? 'var(--brand-light)' : 'transparent', border: 'none', textAlign: 'left' as const, cursor: 'pointer', fontSize: 14, color: '#111827', fontFamily: 'inherit' }}>
               <div style={{ fontWeight: 600 }}>📍 {d.name}</div>
               <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2, textTransform: 'capitalize' as const }}>{d.place_type} · {stateName}</div>
             </button>

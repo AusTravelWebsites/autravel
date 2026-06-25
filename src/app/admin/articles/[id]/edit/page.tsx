@@ -33,7 +33,7 @@ type AuthorOption = { slug: string; name: string; role: string | null }
 
 const C = {
   bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280',
-  teal: '#0d9488', tealDark: '#0f766e', tealLight: '#f0fdfa', red: '#dc2626', amber: '#f59e0b',
+  teal: 'var(--brand)', tealDark: 'var(--brand-dark)', tealLight: 'var(--brand-light)', red: '#dc2626', amber: '#f59e0b',
 }
 
 export default function AdminArticleEditPage() {
@@ -403,8 +403,8 @@ export default function AdminArticleEditPage() {
               [contenteditable] p { margin: 0 0 1em; }
               [contenteditable] ul, [contenteditable] ol { margin: 0 0 1em 1.4em; padding: 0; }
               [contenteditable] li { margin: 0.2em 0; }
-              [contenteditable] a { color: #0d9488; text-decoration: underline; }
-              [contenteditable] blockquote { border-left: 4px solid #0d9488; padding: 8px 14px; color: #374151; background: #f0fdfa; margin: 0 0 1em; font-style: italic; }
+              [contenteditable] a { color: var(--brand); text-decoration: underline; }
+              [contenteditable] blockquote { border-left: 4px solid var(--brand); padding: 8px 14px; color: #374151; background: var(--brand-light); margin: 0 0 1em; font-style: italic; }
               [contenteditable] img { max-width: 100%; height: auto; border-radius: 8px; margin: 0.6em 0; }
               [contenteditable] pre { background: #f3f4f6; padding: 10px 12px; border-radius: 8px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 13px; }
               [contenteditable] code { background: #f3f4f6; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.92em; }

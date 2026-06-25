@@ -15,7 +15,7 @@ const fbCfg = {
 }
 if (!getApps().length) initializeApp(fbCfg)
 
-const C = { bg:'#f3f4f6', card:'#ffffff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa' }
+const C = { bg:'#f3f4f6', card:'#ffffff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)' }
 
 type User = {
   id:string; username:string; display_name:string; avatar_url?:string; bio?:string;

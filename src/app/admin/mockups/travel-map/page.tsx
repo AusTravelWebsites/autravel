@@ -44,7 +44,7 @@ export default function TravelMapMockups() {
               Three interactive mockups with fake data (15 "visited" countries, Unsplash sample photos). Click on the teal countries to see the drawer behaviour. Once you pick one, I'll wire it to the real data + add the public-sharing toggle.
             </p>
           </div>
-          <Link href="/admin" style={{ color: '#0d9488', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>← Back to admin</Link>
+          <Link href="/admin" style={{ color: 'var(--brand)', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>← Back to admin</Link>
         </div>
 
         {/* Tabs */}
@@ -52,7 +52,7 @@ export default function TravelMapMockups() {
           {DESIGNS.map(d => (
             <button key={d.id} onClick={() => setWhich(d.id)}
               style={{
-                flex: '1 1 auto', border: 'none', background: which === d.id ? '#0d9488' : 'transparent',
+                flex: '1 1 auto', border: 'none', background: which === d.id ? 'var(--brand)' : 'transparent',
                 color: which === d.id ? '#fff' : '#475569', fontWeight: 700, fontSize: 13,
                 padding: '10px 16px', borderRadius: 7, cursor: 'pointer', whiteSpace: 'nowrap',
               }}>
@@ -63,7 +63,7 @@ export default function TravelMapMockups() {
 
         {/* Current design blurb */}
         <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '14px 18px', marginBottom: 18 }}>
-          <div style={{ fontSize: 11, color: '#0d9488', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>{active.label}</div>
+          <div style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>{active.label}</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 4 }}>{active.headline}</div>
           <div style={{ fontSize: 13, color: '#475569', lineHeight: 1.55 }}>{active.blurb}</div>
         </div>

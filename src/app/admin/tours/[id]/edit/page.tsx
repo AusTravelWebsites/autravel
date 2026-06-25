@@ -40,7 +40,7 @@ type Tour = {
 
 const C = {
   bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280',
-  teal: '#0d9488', tealDark: '#0f766e', red: '#dc2626', amber: '#f59e0b',
+  teal: 'var(--brand)', tealDark: 'var(--brand-dark)', red: '#dc2626', amber: '#f59e0b',
 }
 
 export default function AdminTourEditPage() {
@@ -316,8 +316,8 @@ export default function AdminTourEditPage() {
               [contenteditable] h3 { font-size: 18px; }
               [contenteditable] p { margin: 0 0 0.8em; }
               [contenteditable] ul, [contenteditable] ol { margin: 0 0 1em 1.4em; padding: 0; }
-              [contenteditable] a { color: #0d9488; text-decoration: underline; }
-              [contenteditable] blockquote { border-left: 4px solid #0d9488; padding: 8px 14px; color: #374151; background: #f0fdfa; margin: 0 0 1em; font-style: italic; }
+              [contenteditable] a { color: var(--brand); text-decoration: underline; }
+              [contenteditable] blockquote { border-left: 4px solid var(--brand); padding: 8px 14px; color: #374151; background: var(--brand-light); margin: 0 0 1em; font-style: italic; }
             `}</style>
           </div>
 

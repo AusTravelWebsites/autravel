@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const C = { teal: '#0d9488', amber: '#f59e0b' };
+const C = { teal: 'var(--brand)', amber: '#f59e0b' };
 
 interface Props { username: string; verified: boolean }
 

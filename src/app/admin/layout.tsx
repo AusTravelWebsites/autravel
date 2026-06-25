@@ -71,7 +71,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           .bb-admin-side { width: 100% !important; position: static !important; height: auto !important; }
           .bb-admin-side nav { display: flex !important; overflow-x: auto !important; gap: 2px; padding: 6px 8px !important; }
           .bb-admin-side nav a { white-space: nowrap !important; padding: 8px 12px !important; border-left: none !important; border-bottom: 3px solid transparent !important; flex-shrink: 0; }
-          .bb-admin-side nav a[data-active="1"] { border-bottom-color: #0d9488 !important; border-left-color: transparent !important; }
+          .bb-admin-side nav a[data-active="1"] { border-bottom-color: var(--brand) !important; border-left-color: transparent !important; }
           .bb-admin-side .bb-admin-foot { display: none !important; }
           .bb-admin-side .bb-admin-heading { display: none !important; }
         }

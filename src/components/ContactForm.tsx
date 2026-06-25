@@ -8,7 +8,7 @@
  */
 import { useState, FormEvent } from 'react'
 
-const C = { border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealDark: '#065f46', err: '#b91c1c', ok: '#15803d' }
+const C = { border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealDark: 'var(--brand-dark)', err: '#b91c1c', ok: '#15803d' }
 
 export function ContactForm({ tenantName }: { tenantName: string }) {
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle')

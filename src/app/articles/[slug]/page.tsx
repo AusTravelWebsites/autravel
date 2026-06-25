@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)' }
 
 async function getAuthor(slugOrName: { slug: string | null; name: string | null }): Promise<AuthorProfile | null> {
   if (!slugOrName.slug && !slugOrName.name) return null
@@ -120,7 +120,7 @@ export function ArticleView({ article: a, tenant, author }: { article: Article; 
     <main style={{ minHeight: '100vh', background: C.bg }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}/>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}/>
-      <section style={{ background: 'linear-gradient(135deg,#0d9488 0%,#065f46 100%)', padding: '32px 20px 28px', textAlign: 'center' as const }}>
+      <section style={{ background: 'linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '32px 20px 28px', textAlign: 'center' as const }}>
         <div style={{ maxWidth: 780, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
             <Breadcrumbs crumbs={[
@@ -149,8 +149,8 @@ export function ArticleView({ article: a, tenant, author }: { article: Article; 
           <div className="article-body" dangerouslySetInnerHTML={{ __html: processWpShortcodes(demoteBodyH1s(a.body_html)) }}/>
         )}
         {a.destination_slug && (
-          <div style={{ marginTop: 28, padding: '16px 18px', background: '#f0fdfa', border: '1px solid #a7f3d0', borderRadius: 12 }}>
-            <div style={{ fontSize: 12, color: '#065f46', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>Destination</div>
+          <div style={{ marginTop: 28, padding: '16px 18px', background: 'var(--brand-light)', border: '1px solid #a7f3d0', borderRadius: 12 }}>
+            <div style={{ fontSize: 12, color: 'var(--brand-dark)', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>Destination</div>
             <Link href={`/${a.destination_slug}`} style={{ color: C.teal, fontWeight: 700, textDecoration: 'none', fontSize: 16 }}>
               See the full {a.destination_slug.replace(/-/g, ' ')} guide →
             </Link>
@@ -184,7 +184,7 @@ function AuthorBio({ author, authorName, tenant }: { author?: AuthorProfile | nu
         <img src={avatar} alt={name} width={56} height={56}
           style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
       ) : (
-        <div aria-hidden="true" style={{ width: 56, height: 56, borderRadius: '50%', background: '#0d9488', color: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, fontFamily: 'Georgia, serif' }}>
+        <div aria-hidden="true" style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--brand)', color: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, fontFamily: 'Georgia, serif' }}>
           {initials}
         </div>
       )}
@@ -192,17 +192,17 @@ function AuthorBio({ author, authorName, tenant }: { author?: AuthorProfile | nu
         {slug ? (
           <Link href={`/authors/${slug}/`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#111827' }}>{name}</div>
-            <div style={{ fontSize: 12, color: '#0d9488', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 6 }}>{role}</div>
+            <div style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 6 }}>{role}</div>
           </Link>
         ) : (
           <div>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#111827' }}>{name}</div>
-            <div style={{ fontSize: 12, color: '#0d9488', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 6 }}>{role}</div>
+            <div style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 6 }}>{role}</div>
           </div>
         )}
         <p style={{ fontSize: 14, color: '#374151', margin: 0, lineHeight: 1.6 }}>{bio}</p>
         {slug && (
-          <Link href={`/authors/${slug}/`} style={{ display: 'inline-block', marginTop: 10, fontSize: 13, color: '#0d9488', fontWeight: 700, textDecoration: 'none' }}>
+          <Link href={`/authors/${slug}/`} style={{ display: 'inline-block', marginTop: 10, fontSize: 13, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none' }}>
             More from {name.split(' ')[0]} →
           </Link>
         )}

@@ -18,7 +18,7 @@ async function TripTags({ ids }: { ids: string[] }) {
         <Link key={u.id} href={'/' + u.username} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 99, padding: '6px 14px 6px 6px', textDecoration: 'none' }}>
           {u.avatar_url
             ? <img loading="lazy" decoding="async" src={u.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' as const }} />
-            : <span style={{ width: 28, height: 28, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{(u.display_name || u.username)[0].toUpperCase()}</span>}
+            : <span style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{(u.display_name || u.username)[0].toUpperCase()}</span>}
           <span style={{ color: '#111827', fontSize: 13, fontWeight: 600 }}>{u.display_name || u.username}</span>
         </Link>
       ))}
@@ -28,7 +28,7 @@ async function TripTags({ ids }: { ids: string[] }) {
 
 interface Props { params: Promise<{ username: string; slug: string }> }
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa' }
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)' }
 
 function timeAgo(d: string) {
   const days = Math.floor((Date.now() - new Date(d).getTime()) / 86400000)

@@ -16,7 +16,7 @@ const S = {
   btn: { padding: '6px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit' } as React.CSSProperties,
   th: { textAlign: 'left' as const, padding: '8px 10px', fontSize: 11, fontWeight: 700, color: '#374151', borderBottom: '1px solid #e5e7eb', textTransform: 'uppercase' as const, letterSpacing: 0.5, background: '#f9fafb' },
   td: { padding: '8px 10px', fontSize: 13, borderBottom: '1px solid #f3f4f6', verticalAlign: 'middle' as const },
-  chip: (active: boolean): React.CSSProperties => ({ padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: active ? '#0d9488' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid #0d9488' : '1px solid #e5e7eb', cursor: 'pointer' }),
+  chip: (active: boolean): React.CSSProperties => ({ padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: active ? 'var(--brand)' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid var(--brand)' : '1px solid #e5e7eb', cursor: 'pointer' }),
 }
 
 export default function Admin404s() {
@@ -83,7 +83,7 @@ export default function Admin404s() {
         </div>
         <div style={{ marginTop: 10, display: 'flex', gap: 6 }}>
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { setPage(1); load() } }} placeholder="Search by path or referrer…" style={S.input}/>
-          <button onClick={() => { setPage(1); load() }} style={{ ...S.btn, background: '#0d9488', color: '#fff' }}>Search</button>
+          <button onClick={() => { setPage(1); load() }} style={{ ...S.btn, background: 'var(--brand)', color: '#fff' }}>Search</button>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function Admin404s() {
                     ? <span style={{ fontSize: 11, color: '#166534', background: '#dcfce7', padding: '2px 8px', borderRadius: 99, fontWeight: 700 }}>✓ already redirected</span>
                     : <div style={{ display: 'flex', gap: 4 }}>
                         <input placeholder="/new-path/" value={redirectTo[r.id] || ''} onChange={e => setRedirectTo({ ...redirectTo, [r.id]: e.target.value })} style={{ ...S.input, padding: '4px 8px', fontSize: 12 }}/>
-                        <button onClick={() => createRedirect(r)} style={{ ...S.btn, background: '#0d9488', color: '#fff', whiteSpace: 'nowrap' as const }}>Redirect</button>
+                        <button onClick={() => createRedirect(r)} style={{ ...S.btn, background: 'var(--brand)', color: '#fff', whiteSpace: 'nowrap' as const }}>Redirect</button>
                         <button onClick={() => del(r.id)} style={{ ...S.btn, background: '#fee2e2', color: '#991b1b' }}>×</button>
                       </div>}
                 </td>

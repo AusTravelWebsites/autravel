@@ -77,8 +77,8 @@ export async function BookableTours({ article }: { article: Article }) {
   if (!tours.length) return null
 
   return (
-    <section style={{ marginTop: 32, padding: '20px 22px', background: '#f0fdfa', border: '1px solid #a7f3d0', borderRadius: 12 }}>
-      <div style={{ fontSize: 12, color: '#065f46', fontWeight: 800, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 12 }}>
+    <section style={{ marginTop: 32, padding: '20px 22px', background: 'var(--brand-light)', border: '1px solid #a7f3d0', borderRadius: 12 }}>
+      <div style={{ fontSize: 12, color: 'var(--brand-dark)', fontWeight: 800, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 12 }}>
         Book a real cruise or tour
       </div>
       <div style={{ display: 'grid', gap: 14 }}>
@@ -96,7 +96,7 @@ export async function BookableTours({ article }: { article: Article }) {
                 {t.rating ? `${t.duration_label ? ' · ' : ''}★${Number(t.rating).toFixed(1)}${t.review_count ? ` (${t.review_count})` : ''}` : ''}
               </div>
               {t.price_from && (
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#0d9488' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)' }}>
                   From {t.currency || 'AUD'} ${Math.round(Number(t.price_from))} →
                 </div>
               )}

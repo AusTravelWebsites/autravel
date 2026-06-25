@@ -32,7 +32,7 @@ export default async function UserLocationsPage({ params }: Props) {
     <div style={{ minHeight: '100vh', background: '#f3f4f6', color: '#111827', paddingBottom: 60 }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
-          <Link href={`/${user.username}`} style={{ color: '#0d9488', textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>← {user.display_name || user.username}</Link>
+          <Link href={`/${user.username}`} style={{ color: 'var(--brand)', textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>← {user.display_name || user.username}</Link>
         </div>
         <LocationsClient username={user.username as string} displayName={(user.display_name as string) || (user.username as string)} />
       </div>

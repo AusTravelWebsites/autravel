@@ -15,7 +15,7 @@ type Destination = {
   is_featured: boolean
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)' }
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getTenant()
@@ -84,7 +84,7 @@ export default async function DestinationsPage() {
     <main style={{ minHeight: '100vh', background: C.bg }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}/>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}/>
-      <section style={{ background: 'linear-gradient(135deg,#0d9488 0%,#065f46 100%)', padding: '36px 20px 28px', textAlign: 'center' as const }}>
+      <section style={{ background: 'linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '36px 20px 28px', textAlign: 'center' as const }}>
         <div style={{ maxWidth: 780, margin: '0 auto' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', letterSpacing: 2, textTransform: 'uppercase' as const, marginBottom: 10 }}>Destinations</div>
           <h1 style={{ color: '#fff', fontSize: 'clamp(26px,5vw,40px)', fontWeight: 800, margin: '0 0 10px', lineHeight: 1.15, fontFamily: 'Georgia, serif' }}>

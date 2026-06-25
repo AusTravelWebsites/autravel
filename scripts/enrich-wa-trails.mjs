@@ -86,7 +86,7 @@ async function enrich(t) {
   throw new Error('retries exhausted')
 }
 
-const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 3 })
+const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 10 })
 const rows = await sql`
   SELECT slug, name, trail_type, distance_label, duration_label, difficulty, area, surface,
          waymarked, dog_friendly, bicycle_allowed, horse_allowed
@@ -96,22 +96,28 @@ const rows = await sql`
      ${ROUTES_ONLY ? sql`AND trail_type LIKE ${'%route%'}` : sql``}
    ORDER BY (trail_type LIKE '%route%') DESC, length_m DESC NULLS LAST`
 const todo = rows.slice(0, LIMIT)
-console.log(`enriching ${todo.length} trails (state_code='${STATE}')…`)
-let ok = 0, fail = 0
-for (const t of todo) {
-  try {
-    const ai = await enrich(t)
-    await sql`UPDATE autravel.trails SET
-      description_ai = ${ai.description_ai},
-      highlights_ai = ${sql.json(ai.highlights_ai)},
-      what_to_expect_ai = ${ai.what_to_expect_ai},
-      good_to_know_ai = ${ai.good_to_know_ai},
-      updated_at = now()
-     WHERE state_code=${STATE} AND slug = ${t.slug}`
-    ok++
-    if (ok % 25 === 0) console.log(`  ${ok}/${todo.length} done`)
-    await sleep(120)
-  } catch (e) { fail++; console.warn(`  ✗ ${t.name}: ${e.message}`) }
+// Concurrency pool — each trail is one ~4s API call, so process several at once.
+const CONC_IDX = args.indexOf('--concurrency')
+const CONC = CONC_IDX >= 0 ? Math.max(1, Number(args[CONC_IDX + 1])) : 8
+console.log(`enriching ${todo.length} trails (state_code='${STATE}', concurrency=${CONC})…`)
+let ok = 0, fail = 0, next = 0
+async function worker() {
+  while (next < todo.length) {
+    const t = todo[next++]
+    try {
+      const ai = await enrich(t)
+      await sql`UPDATE autravel.trails SET
+        description_ai = ${ai.description_ai},
+        highlights_ai = ${sql.json(ai.highlights_ai)},
+        what_to_expect_ai = ${ai.what_to_expect_ai},
+        good_to_know_ai = ${ai.good_to_know_ai},
+        updated_at = now()
+       WHERE state_code=${STATE} AND slug = ${t.slug}`
+      ok++
+      if (ok % 50 === 0) console.log(`  ${ok}/${todo.length} done`)
+    } catch (e) { fail++; console.warn(`  ✗ ${t.name}: ${e.message}`) }
+  }
 }
+await Promise.all(Array.from({ length: CONC }, () => worker()))
 console.log(`\nDone: ${ok} enriched, ${fail} failed.`)
 await sql.end()

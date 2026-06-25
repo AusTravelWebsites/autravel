@@ -107,7 +107,7 @@ export function EditorLinkDialog({ open, initial, editing, onSave, onRemove, onC
             <button
               onClick={() => { if (url.trim()) onSave({ url: url.trim(), text: text.trim() || url.trim(), newTab }) }}
               disabled={!url.trim()}
-              style={{ ...btn, background: '#0d9488', color: '#fff', borderColor: '#0d9488', opacity: url.trim() ? 1 : 0.5 }}
+              style={{ ...btn, background: 'var(--brand)', color: '#fff', borderColor: 'var(--brand)', opacity: url.trim() ? 1 : 0.5 }}
             >
               {editing ? 'Update link' : 'Insert link'}
             </button>

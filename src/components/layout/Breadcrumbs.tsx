@@ -14,7 +14,7 @@ export type Crumb = { href?: string; label: string }
  */
 export function Breadcrumbs({ crumbs, variant = 'light' }: { crumbs: Crumb[]; variant?: 'light' | 'dark' }) {
   if (crumbs.length === 0) return null
-  const linkColor = variant === 'light' ? 'rgba(255,255,255,0.85)' : '#0d9488'
+  const linkColor = variant === 'light' ? 'rgba(255,255,255,0.85)' : 'var(--brand)'
   const currentColor = variant === 'light' ? 'rgba(255,255,255,0.6)' : '#6b7280'
   const sepColor = variant === 'light' ? 'rgba(255,255,255,0.45)' : '#9ca3af'
   return (

@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: 'Unsubscribed', robots: { index: fals
 
 interface Props { searchParams: Promise<{ ok?: string; type?: string }> }
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488' };
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)' };
 
 const LABELS: Record<string, string> = {
   all: 'all email notifications',

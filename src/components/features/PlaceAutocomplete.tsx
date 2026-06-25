@@ -93,7 +93,7 @@ export function PlaceAutocomplete({ value, onChange, onSelect, placeholder = 'Se
               onMouseEnter={() => setHi(i)}
               style={{
                 padding: '10px 14px', cursor: 'pointer', fontSize: 14, color: '#111827',
-                background: hi === i ? '#f0fdfa' : 'transparent',
+                background: hi === i ? 'var(--brand-light)' : 'transparent',
                 borderBottom: i < preds.length - 1 ? '1px solid #f3f4f6' : 'none',
               }}>
               <div style={{ fontWeight: 600 }}>📍 {p.structured_formatting?.main_text || p.description}</div>

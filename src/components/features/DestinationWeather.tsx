@@ -67,7 +67,7 @@ export function DestinationWeather({ name, lat, lng, timezone = 'Australia/Sydne
                 <div style={{ fontWeight: 700, color: '#111827', fontSize: 12 }}>{dow}</div>
                 <div style={{ color: '#6b7280', fontSize: 10 }}>{day}</div>
                 <div style={{ fontSize: 22, margin: '6px 0' }} title={LABELS[d.code] || ''}>{ICONS[d.code] || '🌤️'}</div>
-                <div style={{ fontSize: 13, color: '#0d9488', fontWeight: 700 }}>{Math.round(d.tmax)}°</div>
+                <div style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 700 }}>{Math.round(d.tmax)}°</div>
                 <div style={{ fontSize: 10, color: '#6b7280' }}>{Math.round(d.tmin)}°</div>
                 {d.rain > 0 && <div style={{ fontSize: 10, color: '#0284c7', marginTop: 2 }}>💧 {d.rain.toFixed(0)}mm</div>}
               </div>

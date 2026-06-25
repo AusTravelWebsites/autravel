@@ -27,7 +27,7 @@ const S = {
   btn: { padding: '6px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit' } as React.CSSProperties,
   th: { textAlign: 'left' as const, padding: '8px 10px', fontSize: 11, fontWeight: 700, color: '#374151', borderBottom: '1px solid #e5e7eb', textTransform: 'uppercase' as const, letterSpacing: 0.5, background: '#f9fafb' },
   td: { padding: '8px 10px', fontSize: 13, borderBottom: '1px solid #f3f4f6', verticalAlign: 'middle' as const },
-  chip: (active: boolean): React.CSSProperties => ({ padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: active ? '#0d9488' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid #0d9488' : '1px solid #e5e7eb', cursor: 'pointer' }),
+  chip: (active: boolean): React.CSSProperties => ({ padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: active ? 'var(--brand)' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid var(--brand)' : '1px solid #e5e7eb', cursor: 'pointer' }),
 }
 
 export default function UsersAdmin() {
@@ -91,7 +91,7 @@ export default function UsersAdmin() {
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { setPage(1); load() } }} placeholder="Search username, display name, email" style={{ ...S.input, flex: 1 }}/>
-          <button onClick={() => { setPage(1); load() }} style={{ ...S.btn, background: '#0d9488', color: '#fff' }}>Search</button>
+          <button onClick={() => { setPage(1); load() }} style={{ ...S.btn, background: 'var(--brand)', color: '#fff' }}>Search</button>
         </div>
       </div>
 
@@ -127,7 +127,7 @@ export default function UsersAdmin() {
                 <td style={S.td}>{u.email || '—'}</td>
                 <td style={S.td}>
                   {u.is_admin
-                    ? <span style={{ background: '#0d9488', color: '#fff', padding: '2px 8px', borderRadius: 99, fontSize: 11, fontWeight: 700 }}>Admin</span>
+                    ? <span style={{ background: 'var(--brand)', color: '#fff', padding: '2px 8px', borderRadius: 99, fontSize: 11, fontWeight: 700 }}>Admin</span>
                     : <span style={{ background: '#f3f4f6', color: '#374151', padding: '2px 8px', borderRadius: 99, fontSize: 11, fontWeight: 700 }}>User</span>}
                 </td>
                 <td style={S.td}>

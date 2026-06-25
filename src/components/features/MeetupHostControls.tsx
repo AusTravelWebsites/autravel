@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { MeetupInviteButton } from './MeetupInviteButton';
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', red: '#ef4444', amber: '#f59e0b' };
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', red: '#ef4444', amber: '#f59e0b' };
 
 interface Props { meetupId: string; hostId: string; status: string }
 

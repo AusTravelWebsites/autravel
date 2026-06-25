@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { db } from '@/lib/db'
-import { getTenant, stateFilterValue, tourStatesFor } from '@/lib/get-tenant'
+import { getTenant, stateFilterValue, tourStatesFor, parkStatesFor } from '@/lib/get-tenant'
 import { StateCode, TENANTS } from '@/lib/tenants'
 import { SaveButton } from '@/components/features/SaveButton'
 import { DestinationWeather } from '@/components/features/DestinationWeather'
@@ -51,6 +51,7 @@ async function aggregate(d: Destination) {
   // tours (perth reads its own + 'wa'). Parks/places/articles stay state-only.
   const tcfg = TENANTS[state as StateCode]
   const tourStates = tcfg ? tourStatesFor(tcfg) : [state as StateCode]
+  const parkStates = tcfg ? parkStatesFor(tcfg) : [state as StateCode]
   const lat = d.lat, lng = d.lng
   const radius = d.radius_km ? Number(d.radius_km) : 25
   // Rough degrees-per-km at mid-AU latitude (~0.009 deg/km)
@@ -79,7 +80,7 @@ async function aggregate(d: Destination) {
       ? db<Park[]>`
         SELECT slug, name, region, suburb, cover_image, avg_rating, review_count, price_from, currency, pets_allowed, site_types
         FROM parks
-        WHERE active = true AND state_code = ${state}
+        WHERE active = true AND state_code = ANY(${parkStates})
           AND lat BETWEEN (${lat}::numeric - ${degRadius}::numeric) AND (${lat}::numeric + ${degRadius}::numeric)
           AND lng BETWEEN (${lng}::numeric - ${degRadius}::numeric) AND (${lng}::numeric + ${degRadius}::numeric)
         ORDER BY featured DESC, avg_rating DESC NULLS LAST, review_count DESC NULLS LAST
@@ -87,7 +88,7 @@ async function aggregate(d: Destination) {
       : db<Park[]>`
         SELECT slug, name, region, suburb, cover_image, avg_rating, review_count, price_from, currency, pets_allowed, site_types
         FROM parks
-        WHERE active = true AND state_code = ${state}
+        WHERE active = true AND state_code = ANY(${parkStates})
           AND (region ILIKE ${'%' + city + '%'} OR suburb ILIKE ${'%' + city + '%'})
         ORDER BY featured DESC, avg_rating DESC NULLS LAST
         LIMIT 8`,
@@ -203,7 +204,7 @@ export async function generateMetadata(_: { params: Promise<{ slug: string }> })
   return { robots: { index: false, follow: true } }
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
 
 const STATE_TZ = {
   qld: 'Australia/Brisbane', nsw: 'Australia/Sydney', vic: 'Australia/Melbourne',
@@ -399,10 +400,10 @@ export async function DestinationPageContent({ params }: { params: Promise<{ slu
                 .bb-dest-body h3 { font-family: Georgia, serif; font-size: 19px; font-weight: 800; color: #111827; margin: 24px 0 10px; line-height: 1.35; }
                 .bb-dest-body ul, .bb-dest-body ol { margin: 0 0 18px; padding-left: 22px; }
                 .bb-dest-body li { margin-bottom: 6px; line-height: 1.65; }
-                .bb-dest-body a { color: #0d9488; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; transition: color 0.15s; }
-                .bb-dest-body a:hover { color: #0f766e; text-decoration-thickness: 2px; }
+                .bb-dest-body a { color: var(--brand); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; transition: color 0.15s; }
+                .bb-dest-body a:hover { color: var(--brand-dark); text-decoration-thickness: 2px; }
                 .bb-dest-body strong { color: #111827; font-weight: 700; }
-                .bb-dest-body blockquote { margin: 18px 0; padding: 10px 18px; border-left: 3px solid #0d9488; background: #f0fdfa; color: #134e4a; font-style: italic; border-radius: 0 6px 6px 0; }
+                .bb-dest-body blockquote { margin: 18px 0; padding: 10px 18px; border-left: 3px solid var(--brand); background: var(--brand-light); color: #134e4a; font-style: italic; border-radius: 0 6px 6px 0; }
                 .bb-dest-body em { color: #374151; }
               `}</style>
               <section className="bb-dest-body" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: '26px 32px 22px', marginBottom: 24 }} dangerouslySetInnerHTML={{ __html: d.body }}/>
@@ -551,11 +552,11 @@ export async function DestinationPageContent({ params }: { params: Promise<{ slu
 function RightRailCard({ title, more, children }: { title: string; more?: { href: string; label: string }; children: React.ReactNode }) {
   return (
     <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: '12px 14px' }}>
-      <div style={{ fontFamily: 'Georgia, serif', fontSize: 14, fontWeight: 700, color: '#111827', margin: '0 0 8px', paddingBottom: 8, borderBottom: '2px solid #0d9488' }}>{title}</div>
+      <div style={{ fontFamily: 'Georgia, serif', fontSize: 14, fontWeight: 700, color: '#111827', margin: '0 0 8px', paddingBottom: 8, borderBottom: '2px solid var(--brand)' }}>{title}</div>
       {children}
       {more && (
         <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid #e5e7eb' }}>
-          <Link href={more.href} style={{ color: '#0d9488', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>{more.label}</Link>
+          <Link href={more.href} style={{ color: 'var(--brand)', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>{more.label}</Link>
         </div>
       )}
     </div>
@@ -567,7 +568,7 @@ function MiniRow({ href, img, title, subtitle }: { href: string; img: string | n
     <Link href={href} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '1px solid #e5e7eb', textDecoration: 'none', alignItems: 'center' }}>
       {img
         ? <img src={img} alt="" loading="lazy" style={{ width: 56, height: 42, objectFit: 'cover' as const, borderRadius: 6, flexShrink: 0 }}/>
-        : <div style={{ width: 56, height: 42, background: '#f0fdfa', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 22, flexShrink: 0 }}>📍</div>}
+        : <div style={{ width: 56, height: 42, background: 'var(--brand-light)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' as const, fontSize: 22, flexShrink: 0 }}>📍</div>}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 12.5, fontWeight: 600, color: '#111827', lineHeight: 1.3, display: '-webkit-box' as any, WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden' as const }}>{title}</div>
         {subtitle && <div style={{ fontSize: 11, color: '#6b7280', marginTop: 1, overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const }}>{subtitle}</div>}
@@ -605,7 +606,7 @@ function Card({ img, title, subtitle, meta }: { img: string | null; title: strin
 
 const grid: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }
 const cardLink: React.CSSProperties = { textDecoration: 'none', color: 'inherit' }
-const anchor: React.CSSProperties = { padding: '7px 14px', borderRadius: 999, background: '#fff', border: '1px solid #e5e7eb', color: '#0d9488', textDecoration: 'none', fontWeight: 600, fontSize: 13 }
+const anchor: React.CSSProperties = { padding: '7px 14px', borderRadius: 999, background: '#fff', border: '1px solid #e5e7eb', color: 'var(--brand)', textDecoration: 'none', fontWeight: 600, fontSize: 13 }
 
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
@@ -646,7 +647,7 @@ function ClimatePanel({ name, months }: { name: string; months: ClimateMonth[] }
           return (
             <div key={m.month} style={{ background: bg, border: `1px solid ${border}`, borderRadius: 8, padding: '8px 4px', textAlign: 'center' as const, lineHeight: 1.3 }}>
               <div style={{ fontWeight: 700, color: '#111827', fontSize: 12 }}>{MONTH_NAMES[m.month - 1]}</div>
-              <div style={{ fontSize: 14, color: '#0d9488', fontWeight: 700, marginTop: 4 }}>{Math.round(tmax)}°</div>
+              <div style={{ fontSize: 14, color: 'var(--brand)', fontWeight: 700, marginTop: 4 }}>{Math.round(tmax)}°</div>
               <div style={{ fontSize: 10, color: '#6b7280' }}>{Math.round(tmin)}° low</div>
               <div style={{ marginTop: 6, height: 4, background: '#e0f2fe', borderRadius: 2, position: 'relative' as const, overflow: 'hidden' as const }}>
                 <div style={{ position: 'absolute' as const, left: 0, top: 0, bottom: 0, width: `${rainPct * 100}%`, background: '#0284c7' }}/>
@@ -931,7 +932,7 @@ function DestNearbyPanel({ name, nearby }: { name: string; nearby: DestNearby[] 
                   const junk = !n.name || lname === 'unnamed' || /\b(branding|advertising|scaffolding|hoarding|construction sign|temporary sign)\b/.test(lname) || /^\d+m\b/.test(lname)
                   const isLinkable = !junk && n.osm_id
                   const row = (
-                    <span style={{ display: 'flex', justifyContent: 'space-between', gap: 6, fontSize: 12, color: isLinkable ? '#0d9488' : '#6b7280', margin: '3px 0', textDecoration: 'none' }}>
+                    <span style={{ display: 'flex', justifyContent: 'space-between', gap: 6, fontSize: 12, color: isLinkable ? 'var(--brand)' : '#6b7280', margin: '3px 0', textDecoration: 'none' }}>
                       <span style={{ overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const, fontWeight: isLinkable ? 600 : 400 }}>{n.name || 'Unnamed'}</span>
                       <span style={{ color: '#6b7280', flexShrink: 0 }}>{Number(n.distance_km).toFixed(1)} km</span>
                     </span>
@@ -950,7 +951,7 @@ function DestNearbyPanel({ name, nearby }: { name: string; nearby: DestNearby[] 
         })}
       </div>
       <div style={{ fontSize: 11, color: '#6b7280', marginTop: 12 }}>
-        Source: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" style={{ color: '#0d9488' }}>OpenStreetMap contributors</a>, ODbL.
+        Source: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand)' }}>OpenStreetMap contributors</a>, ODbL.
       </div>
     </section>
   )

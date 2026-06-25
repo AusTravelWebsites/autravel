@@ -39,7 +39,7 @@ export function ReportButton({ targetType, targetId }: Props) {
     } catch { setErr('Network error'); setStatus('error'); }
   };
 
-  const teal = '#0d9488', sub = '#6b7280', border = '#e5e7eb', red = '#ef4444';
+  const teal = 'var(--brand)', sub = '#6b7280', border = '#e5e7eb', red = '#ef4444';
   return (
     <div ref={ref} style={{ position: 'relative' as const, display: 'inline-block' }}>
       <button onClick={() => setOpen(o => !o)} style={{ background: 'none', border: 'none', color: sub, fontSize: 12, cursor: 'pointer', padding: '4px 8px', fontFamily: 'inherit' }} aria-label="Report">Report</button>

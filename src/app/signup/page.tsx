@@ -52,7 +52,7 @@ export default function SignupPage() {
         </Link>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 800, color: '#111827', marginBottom: 6, textAlign: 'center' as const }}>Create your account</h1>
         <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 28, textAlign: 'center' as const }}>
-          Already have one? <Link href="/login" style={{ color: '#0d9488', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
+          Already have one? <Link href="/login" style={{ color: 'var(--brand)', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
         </p>
         <button onClick={() => handleSocial('google')} disabled={loading}
           style={{ width: '100%', padding: '12px 16px', borderRadius: 10, background: '#fff', color: '#374151', border: '1px solid #e5e7eb', fontWeight: 600, fontSize: 15, cursor: 'pointer', marginBottom: 10 }}>
@@ -68,12 +68,12 @@ export default function SignupPage() {
           <div style={{ flex: 1, height: 1, background: '#e5e7eb' }} />
         </div>
         {sent ? (
-          <div style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 12, padding: 24, textAlign: 'center' }}>
+          <div style={{ background: 'var(--brand-light)', border: '1px solid #99f6e4', borderRadius: 12, padding: 24, textAlign: 'center' }}>
             <div style={{ fontSize: 32, marginBottom: 12 }}>📬</div>
-            <h3 style={{ color: '#0d9488', fontWeight: 700, marginBottom: 8 }}>Check your email</h3>
+            <h3 style={{ color: 'var(--brand)', fontWeight: 700, marginBottom: 8 }}>Check your email</h3>
             <p style={{ color: '#374151', fontSize: 14 }}>We sent a sign-up link to <strong style={{ color: '#111827' }}>{email}</strong>.</p>
             <button onClick={() => { setSent(false); setEmail(''); }}
-              style={{ marginTop: 16, background: 'none', border: 'none', color: '#0d9488', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}>
+              style={{ marginTop: 16, background: 'none', border: 'none', color: 'var(--brand)', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}>
               Use a different email
             </button>
           </div>
@@ -84,13 +84,13 @@ export default function SignupPage() {
               style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: '#fff', border: '1px solid #e5e7eb', color: '#111827', fontSize: 15, outline: 'none', boxSizing: 'border-box' as const, marginBottom: 12 }} />
             {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '10px 14px', color: '#dc2626', fontSize: 13, marginBottom: 12 }}>{error}</div>}
             <button type="submit" disabled={loading}
-              style={{ width: '100%', padding: 13, borderRadius: 10, background: '#0d9488', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
+              style={{ width: '100%', padding: 13, borderRadius: 10, background: 'var(--brand)', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
               {loading ? 'Sending...' : 'Send sign-up link'}
             </button>
           </form>
         )}
         <p style={{ textAlign: 'center', fontSize: 13, color: '#9ca3af', marginTop: 24 }}>
-          By joining you agree to our <Link href="/terms" style={{ color: '#0d9488', textDecoration: 'none' }}>Terms</Link> and <Link href="/privacy" style={{ color: '#0d9488', textDecoration: 'none' }}>Privacy Policy</Link>
+          By joining you agree to our <Link href="/terms" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Terms</Link> and <Link href="/privacy" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Privacy Policy</Link>
         </p>
       </div>
     </div>

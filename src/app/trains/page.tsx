@@ -6,7 +6,7 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 
 export const revalidate = 3600
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getTenant()
@@ -27,7 +27,7 @@ function TrainCard({ t }: { t: Train }) {
     <Link href={`/trains/${t.slug}/`} style={{ display: 'block', background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', textDecoration: 'none', color: C.text, transition: 'transform .15s, box-shadow .15s' }}>
       {t.cover_image
         ? <img src={t.cover_image} alt={t.name} loading="lazy" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block', background: '#e5e7eb' }} />
-        : <div style={{ width: '100%', aspectRatio: '16/9', background: `linear-gradient(135deg,${C.teal},#0f766e)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 40 }} aria-hidden>🚆</div>}
+        : <div style={{ width: '100%', aspectRatio: '16/9', background: `linear-gradient(135deg,${C.teal},var(--brand-dark))`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 40 }} aria-hidden>🚆</div>}
       <div style={{ padding: '14px 16px 16px' }}>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
           {t.is_national && <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 0.6, textTransform: 'uppercase', color: '#fff', background: C.teal, padding: '2px 8px', borderRadius: 999 }}>National</span>}
@@ -73,7 +73,7 @@ export default async function TrainsHub() {
   return (
     <main style={{ background: C.bg, minHeight: '100vh' }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
-      <div style={{ background: `linear-gradient(135deg, #0f766e, ${C.teal})`, color: '#fff', padding: '28px 20px 30px' }}>
+      <div style={{ background: `linear-gradient(135deg, var(--brand-dark), ${C.teal})`, color: '#fff', padding: '28px 20px 30px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Breadcrumbs crumbs={crumbs} variant="light" />
           <h1 style={{ fontSize: 32, fontWeight: 800, fontFamily: 'Georgia, serif', margin: '12px 0 8px' }}>Trains in {tenant.stateName}</h1>

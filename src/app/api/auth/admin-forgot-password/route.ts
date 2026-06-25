@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         This link expires in ${minutes} minutes and can only be used once.
       </p>
       <div style="text-align:center;margin:18px 0 8px">
-        <a href="${resetUrl}" style="display:inline-block;background:#0d9488;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 26px;border-radius:8px;font-size:14px">Set new password</a>
+        <a href="${resetUrl}" style="display:inline-block;background:var(--brand);color:#ffffff;text-decoration:none;font-weight:700;padding:12px 26px;border-radius:8px;font-size:14px">Set new password</a>
       </div>
       <p style="margin:18px 0 0;color:#9ca3af;font-size:12px;line-height:1.55">
         If you didn't request this, you can ignore this email — your password won't change.

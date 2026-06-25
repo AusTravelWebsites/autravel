@@ -22,7 +22,7 @@ export type TrailCard = {
 const BASE = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280' };
 
 const TYPE_META: Record<string, { icon: string; color: string }> = {
-  'Walking route': { icon: '🥾', color: '#0d9488' },
+  'Walking route': { icon: '🥾', color: 'var(--brand)' },
   'Cycle route':   { icon: '🚲', color: '#2563eb' },
   'Cycle path':    { icon: '🚲', color: '#2563eb' },
   'Footpath':      { icon: '🚶', color: '#16a34a' },
@@ -39,8 +39,8 @@ function RouteSvg({ pts, color }: { pts: [number, number][]; color: string }) {
   return (
     <svg viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: 110, display: 'block', background: 'linear-gradient(135deg,#ecfdf5,#f0f9ff)' }}>
       <path d={d} fill="none" stroke="#fff" strokeWidth={3.2} strokeLinejoin="round" strokeLinecap="round" />
-      <path d={d} fill="none" stroke={color} strokeWidth={1.8} strokeLinejoin="round" strokeLinecap="round" />
-      {pts[0] && <circle cx={pts[0][0]} cy={pts[0][1]} r={2.2} fill={color} stroke="#fff" strokeWidth={0.8} />}
+      <path d={d} fill="none" style={{ stroke: color }} strokeWidth={1.8} strokeLinejoin="round" strokeLinecap="round" />
+      {pts[0] && <circle cx={pts[0][0]} cy={pts[0][1]} r={2.2} style={{ fill: color }} stroke="#fff" strokeWidth={0.8} />}
     </svg>
   );
 }
@@ -55,8 +55,8 @@ export function TrailExplorer({
   trails, types, areas,
   base = '/park-maps',
   scopeText = '',
-  accent = '#0d9488',
-  accentLight = '#f0fdfa',
+  accent = 'var(--brand)',
+  accentLight = 'var(--brand-light)',
 }: {
   trails: TrailCard[]; types: string[]; areas: string[];
   base?: string; scopeText?: string; accent?: string; accentLight?: string;

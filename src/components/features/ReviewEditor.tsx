@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 interface Props { ownerId: string; reviewId: string; initialTitle: string; initialBody: string; initialRating: number }
 
-const C = { sub:'#6b7280', red:'#ef4444', border:'#e5e7eb', teal:'#0d9488', orange:'#f97316' };
+const C = { sub:'#6b7280', red:'#ef4444', border:'#e5e7eb', teal:'var(--brand)', orange:'#f97316' };
 
 export function ReviewEditor({ ownerId, reviewId, initialTitle, initialBody, initialRating }: Props) {
   const router = useRouter();

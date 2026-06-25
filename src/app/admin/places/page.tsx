@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 type Place = { id:string; slug:string; name:string; city?:string; country?:string; category:string; emoji?:string; cover_image?:string; is_verified:boolean; review_count:number; created_at:string }
-const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa', red:'#ef4444' }
+const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)', red:'#ef4444' }
 const CATS = ['','cities','attractions','activities','nature','temples','beaches','food','hotels','hostels']
 
 export default function AdminPlacesPage() {

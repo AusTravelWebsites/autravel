@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa', red:'#ef4444' };
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)', red:'#ef4444' };
 
 type Member = { user_id:string; role:'owner'|'admin'|'member'; username:string; display_name:string; avatar_url?:string };
 type Message = { id:string; body:string; created_at:string; from_user_id:string; username:string; display_name:string; avatar_url?:string };

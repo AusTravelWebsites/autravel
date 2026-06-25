@@ -414,3 +414,13 @@ html body {
   /* Article body link colour: visible on paper */
   a { color: #000 !important; text-decoration: underline; }
 }
+
+/* Per-tenant brand accent. Default = the autravel house teal; individual tenants
+   override --brand / --brand-dark / --brand-light on <body> in layout.tsx
+   (e.g. Perth Tourism + The Australian Explorer use an outback ochre). All UI
+   chrome references var(--brand*) instead of a hard-coded hex. */
+:root {
+  --brand: #0d9488;
+  --brand-dark: #0f766e;
+  --brand-light: #f0fdfa;
+}

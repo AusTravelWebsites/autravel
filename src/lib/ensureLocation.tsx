@@ -43,7 +43,7 @@ export function ensureLocation(reason: string): Promise<Coords> {
         );
       };
 
-      const teal = '#0d9488', sub = '#6b7280', border = '#e5e7eb', red = '#ef4444';
+      const teal = 'var(--brand)', sub = '#6b7280', border = '#e5e7eb', red = '#ef4444';
       return (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} role="dialog" aria-label="Share your location">
           <div style={{ background: '#fff', borderRadius: 14, maxWidth: 420, width: '100%', padding: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>

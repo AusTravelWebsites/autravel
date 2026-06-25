@@ -45,7 +45,7 @@ export default function Dashboard() {
       {/* Total cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
         {[
-          { label: 'Destinations', n: totals.d, href: '/admin/destinations', color: '#0d9488' },
+          { label: 'Destinations', n: totals.d, href: '/admin/destinations', color: 'var(--brand)' },
           { label: 'Caravan parks', n: totals.p, href: '/admin/parks', color: '#059669' },
           { label: 'Tours', n: totals.t, href: '/admin/tours', color: '#0891b2' },
           { label: 'Articles', n: totals.a, href: '/admin/articles', color: '#7c3aed' },
@@ -87,7 +87,7 @@ export default function Dashboard() {
               {data.perTenant.map(r => {
                 const tdLink = (href: string, content: React.ReactNode, bold = false): React.ReactNode => (
                   <td style={{ ...S.td, padding: 0 }}>
-                    <Link href={href} style={{ display: 'block', padding: '6px 10px', color: '#0d9488', textDecoration: 'none', fontWeight: bold ? 700 : undefined }}>
+                    <Link href={href} style={{ display: 'block', padding: '6px 10px', color: 'var(--brand)', textDecoration: 'none', fontWeight: bold ? 700 : undefined }}>
                       {content}
                     </Link>
                   </td>
@@ -124,7 +124,7 @@ export default function Dashboard() {
                 <tbody>
                   {data.top404s.map((r, i) => (
                     <tr key={i}>
-                      <td style={S.td}><Link href={`/admin/404s?state=${r.state_code}`} style={{ color: '#0d9488', textDecoration: 'none' }}><code style={{ fontSize: 12 }}>{r.path}</code></Link></td>
+                      <td style={S.td}><Link href={`/admin/404s?state=${r.state_code}`} style={{ color: 'var(--brand)', textDecoration: 'none' }}><code style={{ fontSize: 12 }}>{r.path}</code></Link></td>
                       <td style={S.td}>{STATE_LABELS[r.state_code] || r.state_code}</td>
                       <td style={S.td}><b>{r.hit_count.toLocaleString()}</b></td>
                     </tr>

@@ -95,7 +95,7 @@ export default async function MockupA({ params }: Props) {
               {data.topCities.slice(0, 6).map((c: any, i: number) => (
                 <Link key={c.city} href={`/places/city/${country}/${slugify(c.city)}`} style={{ textDecoration: 'none' }}>
                   <div style={{
-                    background: `linear-gradient(135deg, ${['#0d9488','#0f766e','#14b8a6','#0891b2','#059669','#f59e0b'][i%6]} 0%, ${['#0f766e','#134e4a','#0d9488','#0e7490','#047857','#d97706'][i%6]} 100%)`,
+                    background: `linear-gradient(135deg, ${['var(--brand)','var(--brand-dark)','#14b8a6','#0891b2','#059669','#f59e0b'][i%6]} 0%, ${['var(--brand-dark)','#134e4a','var(--brand)','#0e7490','#047857','#d97706'][i%6]} 100%)`,
                     borderRadius: 12, padding: '24px 18px', minHeight: 130, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#fff',
                   }}>
                     <div style={{ fontSize: 28, opacity: 0.3, fontFamily: 'Georgia, serif', fontWeight: 800 }}>0{i+1}</div>

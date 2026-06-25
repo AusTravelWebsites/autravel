@@ -32,7 +32,7 @@ function siblingPrefix(path: string | null): string | null {
   return m ? m[1] : null
 }
 
-const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
+const C = { card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
 
 /**
  * Bottom-of-article "Related on [Destination]" section. Renders for ANY published

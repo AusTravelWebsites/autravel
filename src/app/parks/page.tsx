@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { unstable_cache } from 'next/cache'
 import { db } from '@/lib/db'
-import { getTenant, stateFilterValue } from '@/lib/get-tenant'
+import { getTenant, parkStatesFor } from '@/lib/get-tenant'
 import { StateCode } from '@/lib/tenants'
 
 export const revalidate = 300
@@ -55,16 +55,22 @@ const PARK_TYPES = [
   { slug: 'national_park', label: 'National park camping' },
 ]
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
 
-function getRegionsAgg(state: StateCode | null) {
-  const key = state ?? 'all'
+// parks is a shared single-tenant table; a tenant may surface more than one
+// state's parks (The Australian Explorer aggregates all AU states). This turns a
+// park-state list into a WHERE condition (null = aggregator, no filter).
+const parksCond = (states: StateCode[] | null) => states === null ? db`true` : db`state_code = ANY(${states})`
+const parksKey = (states: StateCode[] | null) => states ? states.join('+') : 'all'
+
+function getRegionsAgg(parkStates: StateCode[] | null) {
+  const key = parksKey(parkStates)
   return unstable_cache(
     async () => db<Array<{ region: string; count: number }>>`
       SELECT region, COUNT(*)::int AS count
       FROM parks
       WHERE active = true AND region IS NOT NULL AND region <> ''
-        AND (${state}::text IS NULL OR state_code = ${state}::text)
+        AND ${parksCond(parkStates)}
       GROUP BY region ORDER BY count DESC`,
     ['parks-regions-agg', key],
     { revalidate: 300, tags: ['parks', `parks:${key}`] }
@@ -86,16 +92,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // 2026-05-25 — wrapped in unstable_cache; same fix as /tours.
-function getParks(f: Filters, page: number, state: StateCode | null) {
-  const key = JSON.stringify({ f, page, state })
+function getParks(f: Filters, page: number, parkStates: StateCode[] | null) {
+  const key = JSON.stringify({ f, page, parkStates })
   return unstable_cache(
-    () => getParksRaw(f, page, state),
+    () => getParksRaw(f, page, parkStates),
     ['parks-list', key],
-    { revalidate: 300, tags: ['parks', `parks:${state ?? 'all'}`] }
+    { revalidate: 300, tags: ['parks', `parks:${parksKey(parkStates)}`] }
   )()
 }
 
-async function getParksRaw(f: Filters, page: number, state: StateCode | null) {
+async function getParksRaw(f: Filters, page: number, parkStates: StateCode[] | null) {
   const region = f.region ?? null
   const type = f.type ?? null
   const pets = f.pets === '1' ? true : null
@@ -113,7 +119,7 @@ async function getParksRaw(f: Filters, page: number, state: StateCode | null) {
                description_ai, description
         FROM parks
         WHERE active = true
-          AND (${state}::text IS NULL OR state_code = ${state}::text)
+          AND ${parksCond(parkStates)}
           AND (${region}::text IS NULL OR region = ${region}::text)
           AND (${type}::text IS NULL OR park_type = ${type}::text)
           AND (${pets}::boolean IS NULL OR pets_allowed = ${pets}::boolean)
@@ -124,13 +130,13 @@ async function getParksRaw(f: Filters, page: number, state: StateCode | null) {
       db<[{ total: number }]>`
         SELECT COUNT(*)::int AS total FROM parks
         WHERE active = true
-          AND (${state}::text IS NULL OR state_code = ${state}::text)
+          AND ${parksCond(parkStates)}
           AND (${region}::text IS NULL OR region = ${region}::text)
           AND (${type}::text IS NULL OR park_type = ${type}::text)
           AND (${pets}::boolean IS NULL OR pets_allowed = ${pets}::boolean)
           AND (${cabins}::boolean IS NULL OR (site_types->>'cabins')::boolean = ${cabins}::boolean)
           AND (${q}::text IS NULL OR (name ILIKE ${q}::text OR description ILIKE ${q}::text OR region ILIKE ${q}::text OR suburb ILIKE ${q}::text))`,
-      getRegionsAgg(state),
+      getRegionsAgg(parkStates),
     ])
     return { parks: rows, total: totalRows[0]?.total ?? 0, regions }
   } catch (e) {
@@ -150,10 +156,10 @@ function qs(current: Filters, patch: Partial<Filters>): string {
 export default async function ParksPage({ searchParams }: { searchParams: Promise<Filters> }) {
   const sp = await searchParams
   const tenant = await getTenant()
-  const state = stateFilterValue(tenant)
+  const parkStates = parkStatesFor(tenant)
   const filters: Filters = { region: sp.region, type: sp.type, pets: sp.pets, cabins: sp.cabins, powered: sp.powered, q: sp.q, sort: sp.sort }
   const page = Math.max(1, parseInt(sp.page || '1', 10) || 1)
-  const { parks, total, regions } = await getParks(filters, page, state)
+  const { parks, total, regions } = await getParks(filters, page, parkStates)
   const totalPages = Math.max(1, Math.ceil(total / PARKS_PER_PAGE))
   const activeSort = (filters.sort && SORT_BY_SLUG[filters.sort]) ? SORT_BY_SLUG[filters.sort] : SORT_BY_SLUG.top
   const scope = tenant.aggregator ? 'Australia' : tenant.stateName
@@ -185,7 +191,7 @@ export default async function ParksPage({ searchParams }: { searchParams: Promis
     <main style={{ minHeight: '100vh', background: C.bg }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}/>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}/>
-      <section style={{ background: 'linear-gradient(135deg,#0d9488 0%,#065f46 100%)', padding: '36px 20px 28px', textAlign: 'center' as const }}>
+      <section style={{ background: 'linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '36px 20px 28px', textAlign: 'center' as const }}>
         <div style={{ maxWidth: 780, margin: '0 auto' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', letterSpacing: 2, textTransform: 'uppercase' as const, marginBottom: 10 }}>Caravan &amp; holiday parks</div>
           <h1 style={{ color: '#fff', fontSize: 'clamp(26px,5vw,40px)', fontWeight: 800, margin: '0 0 10px', lineHeight: 1.15, fontFamily: 'Georgia, serif' }}>
@@ -195,7 +201,7 @@ export default async function ParksPage({ searchParams }: { searchParams: Promis
             Powered sites, cabins, glamping, bush camps and big-rig-friendly grounds — we keep this list current so you don't have to phone around. Beth's been scouting parks across {scope} since the van life thing was just called "going camping."
           </p>
           <div style={{ marginTop: 18 }}>
-            <Link href="/caravan-park-finder/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: '#0f766e', padding: '11px 22px', borderRadius: 10, fontWeight: 700, fontSize: 14.5, textDecoration: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.12)' }}>
+            <Link href="/caravan-park-finder/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: 'var(--brand-dark)', padding: '11px 22px', borderRadius: 10, fontWeight: 700, fontSize: 14.5, textDecoration: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.12)' }}>
               🔍 Open the Caravan Park Finder
             </Link>
           </div>
@@ -337,7 +343,7 @@ function chip(active: boolean): React.CSSProperties {
 }
 const badge: React.CSSProperties = {
   fontSize: 11, padding: '3px 8px', borderRadius: 999,
-  background: C.tealLight, color: '#065f46', fontWeight: 600, border: '1px solid #a7f3d0',
+  background: C.tealLight, color: 'var(--brand-dark)', fontWeight: 600, border: '1px solid #a7f3d0',
 }
 const pageBtn: React.CSSProperties = {
   padding: '8px 14px', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none',

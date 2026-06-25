@@ -43,11 +43,11 @@ export default function AdminAutoMeetups() {
       </p>
       <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: 16, marginBottom: 18 }}>
         <button onClick={runScan} disabled={running}
-          style={{ background: running ? '#9ca3af' : '#0d9488', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 14, fontWeight: 700, cursor: running ? 'wait' : 'pointer' }}>
+          style={{ background: running ? '#9ca3af' : 'var(--brand)', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 14, fontWeight: 700, cursor: running ? 'wait' : 'pointer' }}>
           {running ? 'Scanning…' : 'Run scan now'}
         </button>
         {result && (
-          <span style={{ marginLeft: 12, fontSize: 13, color: '#065f46', fontWeight: 600 }}>
+          <span style={{ marginLeft: 12, fontSize: 13, color: 'var(--brand-dark)', fontWeight: 600 }}>
             ✓ Scanned {result.candidates} travellers, notified {result.notified}
           </span>
         )}
@@ -70,7 +70,7 @@ export default function AdminAutoMeetups() {
               {logs.map(l => (
                 <tr key={l.id}>
                   <td style={td}>{new Date(l.created_at).toLocaleString()}</td>
-                  <td style={td}>{l.username ? <a href={`/${l.username}`} style={{ color: '#0d9488' }}>@{l.username}</a> : l.user_id}</td>
+                  <td style={td}>{l.username ? <a href={`/${l.username}`} style={{ color: 'var(--brand)' }}>@{l.username}</a> : l.user_id}</td>
                   <td style={td}>{l.member_count}</td>
                   <td style={td}>{Number(l.cluster_lat).toFixed(3)}, {Number(l.cluster_lng).toFixed(3)}</td>
                 </tr>

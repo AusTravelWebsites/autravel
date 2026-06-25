@@ -30,7 +30,7 @@ type Data = {
 
 const C = {
   bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', sub: '#6b7280', text: '#111827',
-  ok: '#10b981', warn: '#f59e0b', err: '#ef4444', teal: '#0d9488',
+  ok: '#10b981', warn: '#f59e0b', err: '#ef4444', teal: 'var(--brand)',
 }
 
 const S = {

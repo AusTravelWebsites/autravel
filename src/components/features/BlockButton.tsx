@@ -47,7 +47,7 @@ export function BlockButton({ username, userId }: Props) {
       {open && (
         <div style={{ position: 'absolute' as const, right: 0, top: '100%', marginTop: 6, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, boxShadow: '0 10px 30px rgba(0,0,0,0.12)', zIndex: 50, minWidth: 180, padding: 4 }}>
           <button onClick={toggle} disabled={busy}
-            style={{ display: 'block', width: '100%', background: 'none', border: 'none', color: blocked ? '#0d9488' : '#ef4444', fontSize: 13, fontWeight: 600, padding: '10px 14px', textAlign: 'left' as const, cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}>
+            style={{ display: 'block', width: '100%', background: 'none', border: 'none', color: blocked ? 'var(--brand)' : '#ef4444', fontSize: 13, fontWeight: 600, padding: '10px 14px', textAlign: 'left' as const, cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}>
             {busy ? '…' : (blocked ? `Unblock @${username}` : `Block @${username}`)}
           </button>
         </div>

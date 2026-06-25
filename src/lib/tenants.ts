@@ -12,7 +12,7 @@
 // AU state codes + 'aunz' aggregator + 'uk' (New Forest National Park, a
 // UK-wide tours/guides tenant served from new-forest-national-park.com — see
 // the `uk` entry in TENANTS for why it lives in this AU-shaped config).
-export type StateCode = 'qld' | 'nsw' | 'nt' | 'wa' | 'sa' | 'tas' | 'vic' | 'aunz' | 'uk' | 'perth'
+export type StateCode = 'qld' | 'nsw' | 'nt' | 'wa' | 'sa' | 'tas' | 'vic' | 'aunz' | 'uk' | 'perth' | 'auex'
 
 export interface TenantConfig {
   state_code: StateCode
@@ -68,6 +68,12 @@ export interface TenantConfig {
    *  duplicating (or stealing) them. Trails/parks/articles/destinations stay
    *  perth-only — only tours are shared. */
   tourStateCodes?: StateCode[]
+  /** State codes whose `parks` rows this tenant surfaces. Defaults to [state_code].
+   *  Used by all-Australia aggregating tenants (The Australian Explorer) to show
+   *  caravan parks from every AU state without becoming a true `aggregator` (which
+   *  would also bleed in 'uk'/New Forest). Threaded through the park surfaces via
+   *  parkStatesFor() exactly like tourStateCodes. */
+  scopeStates?: StateCode[]
 }
 
 export const TENANTS: Record<StateCode, TenantConfig> = {
@@ -270,6 +276,36 @@ export const TENANTS: Record<StateCode, TenantConfig> = {
     logo: '/brand/perth/logo.webp',
     trailsRoute: '/walks',
     tourStateCodes: ['perth', 'wa'],
+  },
+  // The Australian Explorer — an all-Australia adventure site for off-road/outback
+  // travellers (walks & trails, caravan parks, off-road tracks, train travel,
+  // adventure guides), rebuilt from the WordPress site at theaustralianexplorer.com.au.
+  // A NORMAL tenant (state_code 'auex'), NOT an aggregator: its own content
+  // (off-road tracks, curated iconic walks, destinations, articles) is tagged 'auex';
+  // the shared tours + parks tables are aggregated across AU states via tourStateCodes
+  // / scopeStates. This avoids the aggregator null-filter bleeding in 'uk'/New Forest.
+  auex: {
+    state_code: 'auex',
+    host: 'theaustralianexplorer.com.au',
+    aliases: ['www.theaustralianexplorer.com.au'],
+    name: 'The Australian Explorer',
+    shortName: 'AU Explorer',
+    stateName: 'Australia',
+    regionCode: 'AU',
+    viatorDestIds: [],
+    gaId: 'G-H4ZG7LPZ7G', // GA4 tag injected via autravel.site_snippets (head), like the other tenants
+    ogImage: 'https://theaustralianexplorer.com.au/brand/auex/logo.webp?v=1',
+    heroImage: 'https://media.bugbitten.com/autravel/hero/auex.webp',
+    heroCredit: 'A remote outback track at sunset, Australia',
+    tagline: 'Walks & trails, caravan parks, off-road tracks and great rail journeys across Australia.',
+    aggregator: false,
+    contactEmail: 'info@theaustralianexplorer.com.au',
+    fromEmail: 'noreply@theaustralianexplorer.com.au',
+    logo: '/brand/auex/logo.webp',
+    trailsRoute: '/walks',
+    // Shared tables aggregated across AU states (dedup wa vs perth per table):
+    tourStateCodes: ['qld', 'nsw', 'nt', 'wa', 'sa', 'tas', 'vic'], // wa(254) over perth(11)
+    scopeStates: ['qld', 'nsw', 'nt', 'sa', 'tas', 'vic', 'perth'], // perth(182) over wa(52)
   },
 }
 

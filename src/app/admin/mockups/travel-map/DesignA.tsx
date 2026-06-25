@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { ComposableMap, Geographies, Geography, ZoomableGroup, Sphere, Graticule } from 'react-simple-maps'
 import { MOCK_VISITED, visitedSet, lookupCountry, TOTAL_COUNTRIES, GEO_URL, MockCountry } from './mockData'
 
-const TEAL = '#0d9488'
+const TEAL = 'var(--brand)'
 const TEAL_LIGHT = '#5eead4'
 const GRAY = '#e5e7eb'
 const GRAY_HOVER = '#cbd5e1'

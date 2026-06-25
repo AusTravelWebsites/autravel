@@ -74,7 +74,7 @@ export default function FavouritesPage() {
             </p>
             <button
               onClick={() => router.push('/explore')}
-              style={{ background: '#0d9488', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
+              style={{ background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
             >
               Explore Places
             </button>

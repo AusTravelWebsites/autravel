@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const C = {
   bg: '#f3f4f6', card: '#ffffff', border: '#e5e7eb',
   text: '#111827', body: '#374151', sub: '#6b7280',
-  teal: '#0d9488', tealLight: '#f0fdfa',
+  teal: 'var(--brand)', tealLight: 'var(--brand-light)',
 }
 
 export default async function AboutPage() {
@@ -68,7 +68,7 @@ export default async function AboutPage() {
         </div>
 
         <div style={{ background: C.tealLight, border: '1px solid #a7f3d0', borderRadius: 16, padding: '28px 28px', marginTop: 32 }}>
-          <p style={{ fontSize: 14, color: '#065f46', lineHeight: 1.7, margin: 0 }}>
+          <p style={{ fontSize: 14, color: 'var(--brand-dark)', lineHeight: 1.7, margin: 0 }}>
             {tenant.aggregator
               ? `${tenant.name} is part of a network of state-specific travel guides covering QLD, NSW, VIC, WA, SA, TAS and NT.`
               : `${tenant.name} is part of a network of state-specific Australian travel guides. Heading interstate? See our sister sites at aunztravel.com.au.`}

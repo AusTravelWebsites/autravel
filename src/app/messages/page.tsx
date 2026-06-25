@@ -9,7 +9,7 @@ import { useSearchParams } from 'next/navigation';
 function Avatar({ user, size = 40 }: { user: any; size?: number }) {
   const letter = (user?.display_name || user?.username || '?')[0].toUpperCase();
   return (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: size * 0.4, flexShrink: 0, overflow: 'hidden' }}>
+    <div style={{ width: size, height: size, borderRadius: '50%', background: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: size * 0.4, flexShrink: 0, overflow: 'hidden' }}>
       {user?.avatar_url ? <img loading="lazy" decoding="async" src={user.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : letter}
     </div>
   );
@@ -85,24 +85,24 @@ function MessagesInner() {
           <div className="bb-msg-threads" style={{ width: 280, borderRight: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
             <div style={{ padding: '14px 16px', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ color: '#111827', fontWeight: 700, fontSize: 15 }}>Conversations</span>
-              <Link href="/friends" style={{ color: '#0d9488', fontSize: 13, textDecoration: 'none', fontWeight: 600 }}>+ New</Link>
+              <Link href="/friends" style={{ color: 'var(--brand)', fontSize: 13, textDecoration: 'none', fontWeight: 600 }}>+ New</Link>
             </div>
-            <Link href="/messages/groups" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', textDecoration: 'none', borderBottom: '1px solid #e5e7eb', background: '#f0fdfa' }}>
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#0d9488', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>👥</div>
+            <Link href="/messages/groups" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', textDecoration: 'none', borderBottom: '1px solid #e5e7eb', background: 'var(--brand-light)' }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>👥</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ color: '#111827', fontWeight: 700, fontSize: 14 }}>Group chats</div>
-                <div style={{ color: '#0d9488', fontSize: 12, fontWeight: 600 }}>Plan trips, create groups →</div>
+                <div style={{ color: 'var(--brand)', fontSize: 12, fontWeight: 600 }}>Plan trips, create groups →</div>
               </div>
             </Link>
             <div style={{ flex: 1, overflowY: 'auto' }}>
               {threads.length === 0 && (
                 <div style={{ padding: '24px 16px', color: '#6b7280', textAlign: 'center', fontSize: 14, lineHeight: 1.6 }}>
                   No messages yet.<br />
-                  <Link href="/friends" style={{ color: '#0d9488', fontWeight: 600 }}>Find travellers to chat with →</Link>
+                  <Link href="/friends" style={{ color: 'var(--brand)', fontWeight: 600 }}>Find travellers to chat with →</Link>
                 </div>
               )}
               {threads.map((t: any) => (
-                <div key={t.other_user} onClick={() => openThread(t)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', cursor: 'pointer', background: activeThread?.other_user === t.other_user ? 'rgba(20,184,166,0.08)' : 'transparent', borderBottom: '1px solid rgba(30,51,84,0.3)', borderLeft: activeThread?.other_user === t.other_user ? '3px solid #0d9488' : '3px solid transparent' }}>
+                <div key={t.other_user} onClick={() => openThread(t)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', cursor: 'pointer', background: activeThread?.other_user === t.other_user ? 'rgba(20,184,166,0.08)' : 'transparent', borderBottom: '1px solid rgba(30,51,84,0.3)', borderLeft: activeThread?.other_user === t.other_user ? '3px solid var(--brand)' : '3px solid transparent' }}>
                   <Avatar user={t} size={40} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ color: '#111827', fontWeight: 600, fontSize: 14 }}>{t.display_name || t.username}</div>
@@ -110,7 +110,7 @@ function MessagesInner() {
                       {t.from_user_id === me?.id ? 'You: ' : ''}{t.body}
                     </div>
                   </div>
-                  {!t.read && t.from_user_id !== me?.id && <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#0d9488', flexShrink: 0 }} />}
+                  {!t.read && t.from_user_id !== me?.id && <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--brand)', flexShrink: 0 }} />}
                 </div>
               ))}
             </div>
@@ -124,7 +124,7 @@ function MessagesInner() {
                   <Avatar user={activeThread} size={36} />
                   <div>
                     <div style={{ color: '#111827', fontWeight: 700, fontSize: 15 }}>{activeThread.display_name || activeThread.username}</div>
-                    <Link href={`/${activeThread.username}`} style={{ color: '#0d9488', fontSize: 12, textDecoration: 'none' }}>@{activeThread.username}</Link>
+                    <Link href={`/${activeThread.username}`} style={{ color: 'var(--brand)', fontSize: 12, textDecoration: 'none' }}>@{activeThread.username}</Link>
                   </div>
                 </div>
                 <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -137,7 +137,7 @@ function MessagesInner() {
                       <div key={m.id} style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', gap: 8, alignItems: 'flex-end' }}>
                         {!isMe && <Avatar user={{ username: m.from_username, display_name: m.from_display_name, avatar_url: m.from_avatar }} size={28} />}
                         <div style={{ maxWidth: '68%' }}>
-                          <div style={{ background: isMe ? '#0d9488' : '#e5e7eb', color: isMe ? '#fff' : '#111827', borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px', padding: '10px 16px', fontSize: 14, lineHeight: 1.5, wordBreak: 'break-word' }}>
+                          <div style={{ background: isMe ? 'var(--brand)' : '#e5e7eb', color: isMe ? '#fff' : '#111827', borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px', padding: '10px 16px', fontSize: 14, lineHeight: 1.5, wordBreak: 'break-word' }}>
                             {m.body}
                           </div>
                           <div style={{ color: '#9ca3af', fontSize: 11, marginTop: 4, textAlign: isMe ? 'right' : 'left' }}>{fmt(m.created_at)}</div>
@@ -149,7 +149,7 @@ function MessagesInner() {
                 </div>
                 <div style={{ padding: '12px 16px', borderTop: '1px solid #e5e7eb', display: 'flex', gap: 10, alignItems: 'flex-end', background: '#f9fafb' }}>
                   <textarea value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKey} placeholder="Message... (Enter to send, Shift+Enter for newline)" rows={1} style={{ flex: 1, background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 22, padding: '10px 16px', color: '#111827', fontSize: 14, outline: 'none', resize: 'none', fontFamily: 'inherit', maxHeight: 100 }} />
-                  <button onClick={sendMessage} disabled={sending || !input.trim()} style={{ background: input.trim() ? '#0d9488' : '#e5e7eb', border: 'none', borderRadius: '50%', width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 18, cursor: input.trim() ? 'pointer' : 'default', flexShrink: 0, transition: 'background 0.15s' }}>
+                  <button onClick={sendMessage} disabled={sending || !input.trim()} style={{ background: input.trim() ? 'var(--brand)' : '#e5e7eb', border: 'none', borderRadius: '50%', width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 18, cursor: input.trim() ? 'pointer' : 'default', flexShrink: 0, transition: 'background 0.15s' }}>
                     
                   </button>
                 </div>
@@ -161,7 +161,7 @@ function MessagesInner() {
                 <div style={{ color: '#4a6a9a', fontSize: 14, textAlign: 'center', maxWidth: 280, lineHeight: 1.6 }}>
                   Message friends, plan trips together, and share adventures in real time.
                 </div>
-                <Link href="/friends" style={{ background: '#0d9488', color: '#fff', borderRadius: 10, padding: '11px 28px', textDecoration: 'none', fontWeight: 700, fontSize: 15, marginTop: 4 }}>
+                <Link href="/friends" style={{ background: 'var(--brand)', color: '#fff', borderRadius: 10, padding: '11px 28px', textDecoration: 'none', fontWeight: 700, fontSize: 15, marginTop: 4 }}>
                   Find Travellers to Chat
                 </Link>
               </div>

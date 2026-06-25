@@ -8,7 +8,7 @@ interface Props {
   initial: string[];
 }
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', red: '#ef4444' };
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', red: '#ef4444' };
 const MAX_PHOTOS = 10;
 
 export function TripGalleryEditor({ tripId, ownerId, tripTitle, initial }: Props) {

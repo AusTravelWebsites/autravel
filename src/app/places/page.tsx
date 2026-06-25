@@ -6,10 +6,10 @@ import { PlacesCountrySearch } from '@/components/features/PlacesCountrySearch';
 
 export const revalidate = 1800;
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa', amber: '#f59e0b' };
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)', amber: '#f59e0b' };
 
 const CATEGORIES = [
-  { slug: 'cities',       label: '🏙️ Cities',       col: '#0d9488' },
+  { slug: 'cities',       label: '🏙️ Cities',       col: 'var(--brand)' },
   { slug: 'beaches',      label: '🏖️ Beaches',      col: '#0891b2' },
   { slug: 'nature',       label: '🌲 Nature',       col: '#16a34a' },
   { slug: 'attractions',  label: '🎡 Attractions',  col: '#f59e0b' },
@@ -97,7 +97,7 @@ export default async function PlacesOverviewPage() {
       }) }} />
 
       {/* Hero */}
-      <section style={{ background: 'linear-gradient(135deg, #0d9488 0%, #134e4a 100%)', color: '#fff', padding: '56px 20px 48px', textAlign: 'center' as const }}>
+      <section style={{ background: 'linear-gradient(135deg, var(--brand) 0%, #134e4a 100%)', color: '#fff', padding: '56px 20px 48px', textAlign: 'center' as const }}>
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', letterSpacing: 2, textTransform: 'uppercase' as const, marginBottom: 10 }}>Explore places</div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px,5vw,46px)', fontWeight: 800, margin: '0 0 12px', lineHeight: 1.15 }}>

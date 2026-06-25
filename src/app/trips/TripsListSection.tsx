@@ -34,7 +34,7 @@ export default function TripsListSection() {
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 24, fontWeight: 800, margin: 0, color: '#111827' }}>My trips</h2>
           <button
             onClick={() => router.push('/trips/new')}
-            style={{ background: '#0d9488', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
           >+ New adventure</button>
         </div>
 
@@ -47,7 +47,7 @@ export default function TripsListSection() {
             <p style={{ marginBottom: 20, fontSize: 14 }}>Group your journal entries into named adventures.</p>
             <button
               onClick={() => router.push('/trips/new')}
-              style={{ background: '#0d9488', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 22px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+              style={{ background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 22px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
             >Plan your first adventure</button>
           </div>
         ) : (
@@ -70,7 +70,7 @@ export default function TripsListSection() {
                       </div>
                     </div>
                     {trip.is_active && (
-                      <span style={{ background: '#f0fdfa', color: '#0d9488', borderRadius: 20, padding: '2px 10px', fontSize: 12, fontWeight: 700 }}>Active</span>
+                      <span style={{ background: 'var(--brand-light)', color: 'var(--brand)', borderRadius: 20, padding: '2px 10px', fontSize: 12, fontWeight: 700 }}>Active</span>
                     )}
                   </div>
                   <div style={{ display: 'flex', gap: 16, marginTop: 12, fontSize: 13, color: '#6b7280' }}>

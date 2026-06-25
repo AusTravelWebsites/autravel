@@ -44,4 +44,17 @@ export function tourStatesFor(tenant: TenantConfig): StateCode[] | null {
   return tenant.tourStateCodes ?? [tenant.state_code]
 }
 
+/**
+ * State codes whose `parks` rows a tenant should surface. Like tourStatesFor but
+ * for the shared parks table — lets an all-Australia tenant (The Australian
+ * Explorer) show every AU state's caravan parks via `state_code = ANY(${list})`.
+ *  - aggregator → null (no filter)
+ *  - tenant with scopeStates → that list
+ *  - otherwise → [own state_code]
+ */
+export function parkStatesFor(tenant: TenantConfig): StateCode[] | null {
+  if (tenant.aggregator) return null
+  return tenant.scopeStates ?? [tenant.state_code]
+}
+
 export { DEFAULT_TENANT }

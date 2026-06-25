@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 type Report = { id:string; target_type:string; target_id:string; reason:string; notes?:string; status:string; created_at:string; reporter_username?:string; reporter_name?:string }
-const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'#0d9488', red:'#ef4444' }
+const C = { card:'#fff', border:'#e5e7eb', text:'#111', sub:'#6b7280', teal:'var(--brand)', red:'#ef4444' }
 
 function timeAgo(iso: string) {
   const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)

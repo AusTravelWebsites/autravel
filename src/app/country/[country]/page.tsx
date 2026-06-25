@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 
 interface Props { params: Promise<{ country: string }> }
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa' };
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)' };
 
 function slugify(s: string) {
   return s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
@@ -92,7 +92,7 @@ export default async function CountryPlacesPage({ params }: Props) {
         padding: '64px 20px 48px',
         background: heroImage
           ? `#0f2329`
-          : 'linear-gradient(160deg,#0d9488 0%,#0f766e 100%)',
+          : 'linear-gradient(160deg,var(--brand) 0%,var(--brand-dark) 100%)',
         overflow: 'hidden' as const,
       }}>
         {heroImage && (
@@ -155,7 +155,7 @@ export default async function CountryPlacesPage({ params }: Props) {
 
         {/* CTA to the travel guide — higher-intent landing */}
         <Link href={`/country/${country}/guide`} style={{ textDecoration:'none', display:'block', marginBottom:28 }}>
-          <div style={{ background:`linear-gradient(135deg, ${C.teal} 0%, #0f766e 100%)`, color:'#fff', borderRadius:12, padding:'18px 22px', display:'flex', justifyContent:'space-between', alignItems:'center', gap:12, flexWrap:'wrap' as const, boxShadow:'0 4px 14px rgba(13, 148, 136, 0.25)' }}>
+          <div style={{ background:`linear-gradient(135deg, ${C.teal} 0%, var(--brand-dark) 100%)`, color:'#fff', borderRadius:12, padding:'18px 22px', display:'flex', justifyContent:'space-between', alignItems:'center', gap:12, flexWrap:'wrap' as const, boxShadow:'0 4px 14px rgba(13, 148, 136, 0.25)' }}>
             <div>
               <div style={{ fontSize:13, opacity:0.85, fontWeight:600, letterSpacing:0.3, textTransform:'uppercase' as const }}>Travel Guide</div>
               <div style={{ fontSize:18, fontWeight:700, marginTop:3 }}>📘 Read the full {realName} travel guide →</div>

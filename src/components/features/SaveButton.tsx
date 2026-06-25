@@ -46,9 +46,9 @@ export function SaveButton(props: Omit<SaveItem, 'saved_at'>) {
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
         padding: '8px 14px',
-        background: saved ? '#0d9488' : '#fff',
-        color: saved ? '#fff' : '#0d9488',
-        border: '1px solid #0d9488',
+        background: saved ? 'var(--brand)' : '#fff',
+        color: saved ? '#fff' : 'var(--brand)',
+        border: '1px solid var(--brand)',
         borderRadius: 999,
         fontSize: 13, fontWeight: 700,
         cursor: 'pointer',
@@ -70,7 +70,7 @@ export function SavedCount() {
     return () => window.removeEventListener('autravel:saved-change', update)
   }, [])
   if (n === 0) return null
-  return <span style={{ display: 'inline-block', minWidth: 18, padding: '2px 6px', background: '#0d9488', color: '#fff', borderRadius: 999, fontSize: 11, fontWeight: 700, marginLeft: 4 }}>{n}</span>
+  return <span style={{ display: 'inline-block', minWidth: 18, padding: '2px 6px', background: 'var(--brand)', color: '#fff', borderRadius: 999, fontSize: 11, fontWeight: 700, marginLeft: 4 }}>{n}</span>
 }
 
 export function SavedListClient() {

@@ -56,9 +56,9 @@ export function trailsCopy(t: TenantConfig): TrailsCopy {
       titleSuffix: 'New Forest Park Maps',
       scope: 'across the New Forest',
       scopeShort: 'the New Forest',
-      accent: '#0d9488',
+      accent: 'var(--brand)',
       accentDark: '#0f2e2a',
-      accentLight: '#f0fdfa',
+      accentLight: 'var(--brand-light)',
     }
   }
 

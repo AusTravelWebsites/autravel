@@ -5,7 +5,7 @@ import { ComposableMap, Geographies, Geography, Sphere, Graticule, Marker } from
 import { geoCentroid } from 'd3-geo'
 import { COUNTRIES, NUMERIC_TO_ISO2, TOTAL_COUNTRIES, flagFor } from '@/lib/countries'
 
-const TEAL = '#0d9488'
+const TEAL = 'var(--brand)'
 const TEAL_LIGHT = '#5eead4'
 const GEO_URL_HD = 'https://unpkg.com/world-atlas@2/countries-50m.json'
 
@@ -331,7 +331,7 @@ export default function TravelMapClient({ username, initialIso2 }: Props) {
                   return (
                     <Geography key={geo.rsmKey} geography={geo}
                       fill={isActive ? '#fbbf24' : isVisited ? TEAL : '#162338'}
-                      stroke={isVisited ? '#0f766e' : '#0a1322'} strokeWidth={isVisited ? 0.5 : 0.3}
+                      stroke={isVisited ? 'var(--brand-dark)' : '#0a1322'} strokeWidth={isVisited ? 0.5 : 0.3}
                       onClick={() => onGeoClick(geo)}
                       onMouseEnter={(e: React.MouseEvent) => setHover({ name: (iso2 && COUNTRIES[iso2]?.name) || geo.properties.name, visited: isVisited, x: e.clientX, y: e.clientY })}
                       onMouseMove={(e: React.MouseEvent) => setHover(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
@@ -357,7 +357,7 @@ export default function TravelMapClient({ username, initialIso2 }: Props) {
                       <text textAnchor="middle" y={-fontSize * 0.2}
                         style={{ pointerEvents: 'none', fontFamily: 'system-ui, sans-serif', fontWeight: 700, letterSpacing: 0.3 }}
                         fontSize={fontSize}
-                        fill={isActive ? '#fbbf24' : '#f0fdfa'}
+                        fill={isActive ? '#fbbf24' : 'var(--brand-light)'}
                         stroke="#000" strokeWidth={3} strokeOpacity={0.55} paintOrder="stroke"
                         filter="url(#label-shadow-tm)"
                       >{COUNTRIES[iso2]?.name || ''}</text>
@@ -418,7 +418,7 @@ export default function TravelMapClient({ username, initialIso2 }: Props) {
                     <span title={c.isPublic ? 'Shared publicly' : 'Private'}
                       style={{ fontSize: 11, padding: '2px 6px', borderRadius: 999, fontWeight: 700,
                         background: c.isPublic ? '#d1fae5' : '#f1f5f9',
-                        color: c.isPublic ? '#065f46' : '#64748b' }}>
+                        color: c.isPublic ? 'var(--brand-dark)' : '#64748b' }}>
                       {c.isPublic ? '🌐' : '🔒'}
                     </span>
                   )}
@@ -444,7 +444,7 @@ export default function TravelMapClient({ username, initialIso2 }: Props) {
                 <button onClick={() => toggleVisibility(selected.iso2)}
                   style={{
                     background: selected.isPublic ? '#ecfdf5' : '#f8fafc',
-                    color: selected.isPublic ? '#065f46' : '#475569',
+                    color: selected.isPublic ? 'var(--brand-dark)' : '#475569',
                     border: `1px solid ${selected.isPublic ? '#a7f3d0' : '#e5e7eb'}`,
                     borderRadius: 8, padding: '9px 14px', fontWeight: 700, fontSize: 13, cursor: 'pointer',
                   }}>

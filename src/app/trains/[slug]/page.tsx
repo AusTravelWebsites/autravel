@@ -7,7 +7,7 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 
 export const revalidate = 3600
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', tealLight: '#f0fdfa' }
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -62,7 +62,7 @@ export default async function TrainPage({ params }: { params: Promise<{ slug: st
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
 
       {/* Hero */}
-      <div style={{ position: 'relative', background: `linear-gradient(135deg, #0f766e, ${C.teal})`, color: '#fff' }}>
+      <div style={{ position: 'relative', background: `linear-gradient(135deg, var(--brand-dark), ${C.teal})`, color: '#fff' }}>
         {t.cover_image && <img src={t.cover_image} alt="" aria-hidden style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.28 }} />}
         <div style={{ position: 'relative', maxWidth: 1000, margin: '0 auto', padding: '26px 20px 30px' }}>
           <Breadcrumbs crumbs={crumbs} variant="light" />

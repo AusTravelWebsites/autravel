@@ -100,7 +100,7 @@ function ExplorePageInner() {
 
   return (
     <div style={{ background: '#f3f4f6', minHeight: '100vh', color: '#111827' }}>
-      <div style={{ background: 'linear-gradient(160deg,#0d9488 0%,#0f766e 100%)', borderBottom: '1px solid #0d9488', padding: '32px 20px 0' }}>
+      <div style={{ background: 'linear-gradient(160deg,var(--brand) 0%,var(--brand-dark) 100%)', borderBottom: '1px solid var(--brand)', padding: '32px 20px 0' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)', fontWeight: 800, color: '#fff', margin: '0 0 8px' }}>Explore places</h1>
           <p style={{ color: '#cbd5e1', marginBottom: 24, fontSize: 15 }}>Browse cities, attractions, activities and natural wonders across the world.</p>
@@ -118,7 +118,7 @@ function ExplorePageInner() {
                 } catch {} finally { setNearBusy(false); }
               }}
               disabled={nearBusy}
-              style={{ padding:'10px 18px', borderRadius:10, border:'1.5px solid rgba(255,255,255,0.4)', background: near ? '#fff' : 'rgba(255,255,255,0.15)', color: near ? '#0d9488' : '#fff', fontSize:14, fontWeight:700, cursor: nearBusy?'wait':'pointer', whiteSpace:'nowrap' as const, fontFamily:'inherit' }}>
+              style={{ padding:'10px 18px', borderRadius:10, border:'1.5px solid rgba(255,255,255,0.4)', background: near ? '#fff' : 'rgba(255,255,255,0.15)', color: near ? 'var(--brand)' : '#fff', fontSize:14, fontWeight:700, cursor: nearBusy?'wait':'pointer', whiteSpace:'nowrap' as const, fontFamily:'inherit' }}>
               {nearBusy ? 'Locating…' : (near ? '✓ Near me' : '📍 Near me')}
             </button>
           </div>
@@ -127,7 +127,7 @@ function ExplorePageInner() {
               <button key={c.key} onClick={() => setCat(c.key)}
                 style={{ padding: '7px 16px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: 'none',
                   background: cat === c.key ? '#fff' : 'rgba(255,255,255,0.15)',
-                  color: cat === c.key ? '#0d9488' : '#fff' }}>
+                  color: cat === c.key ? 'var(--brand)' : '#fff' }}>
                 {c.label}
               </button>
             ))}
@@ -161,7 +161,7 @@ function ExplorePageInner() {
                     <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 8, display:'flex', gap:8, flexWrap:'wrap' as const, alignItems:'center' }}>
                       <span>📍 {place.city}, {place.country}</span>
                       {(place as any).distance_km != null && (
-                        <span style={{ background:'#f0fdfa', color:'#0d9488', border:'1px solid #99f6e4', borderRadius:999, padding:'1px 8px', fontSize:11, fontWeight:700 }}>
+                        <span style={{ background:'var(--brand-light)', color:'var(--brand)', border:'1px solid #99f6e4', borderRadius:999, padding:'1px 8px', fontSize:11, fontWeight:700 }}>
                           {(() => { const km = Number((place as any).distance_km); return km < 1 ? Math.round(km*1000) + ' m' : km < 50 ? km.toFixed(1) + ' km' : Math.round(km) + ' km'; })()}
                         </span>
                       )}

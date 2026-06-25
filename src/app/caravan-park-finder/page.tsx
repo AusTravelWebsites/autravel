@@ -2,22 +2,22 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { unstable_cache } from 'next/cache';
 import { db } from '@/lib/db';
-import { getTenant, stateFilterValue } from '@/lib/get-tenant';
+import { getTenant, parkStatesFor } from '@/lib/get-tenant';
 import { ParkFinder, type ParkCard } from '@/components/features/ParkFinder';
 import type { StateCode } from '@/lib/tenants';
 
 export const revalidate = 600;
 
-const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: '#0d9488', dark: '#0f2e2a' };
+const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', dark: 'var(--brand-dark)' };
 
-function getAllParks(state: StateCode | null) {
-  const key = state ?? 'all';
+function getAllParks(parkStates: StateCode[] | null) {
+  const key = parkStates ? parkStates.join('+') : 'all';
   return unstable_cache(
     async () => {
       const rows = await db<ParkCard[]>`
         SELECT slug, name, park_type, region, suburb, avg_rating, review_count, cover_image
         FROM parks
-        WHERE active = true AND (${state}::text IS NULL OR state_code = ${state}::text)
+        WHERE active = true AND ${parkStates === null ? db`true` : db`state_code = ANY(${parkStates})`}
         ORDER BY avg_rating DESC NULLS LAST, review_count DESC NULLS LAST`;
       return rows;
     },
@@ -42,16 +42,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CaravanParkFinderPage() {
   const tenant = await getTenant();
-  const state = stateFilterValue(tenant);
+  const parkStates = parkStatesFor(tenant);
   const scope = tenant.aggregator ? 'Australia' : tenant.stateName;
-  const parks = await getAllParks(state);
+  const parks = await getAllParks(parkStates);
   const regions = [...new Set(parks.map(p => p.region).filter(Boolean) as string[])].sort();
   const rated = parks.filter(p => p.avg_rating != null).length;
   const types = new Set(parks.map(p => p.park_type).filter(Boolean)).size;
 
   return (
     <main style={{ background: C.bg, minHeight: '100vh' }}>
-      <section style={{ background: `linear-gradient(135deg, ${C.dark}, #145049)`, color: '#fff', padding: '46px 20px 40px' }}>
+      <section style={{ background: `linear-gradient(135deg, ${C.dark}, var(--brand))`, color: '#fff', padding: '46px 20px 40px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <nav style={{ fontSize: 13, opacity: 0.8, marginBottom: 12 }}>
             <Link href="/" style={{ color: '#fff', textDecoration: 'none' }}>Home</Link> &rsaquo;{' '}

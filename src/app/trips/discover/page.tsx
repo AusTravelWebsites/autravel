@@ -6,7 +6,7 @@ export const revalidate = 600; // 10-min ISR
 
 interface Props { searchParams: Promise<{ q?: string }> }
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa' };
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)' };
 
 function fmt(d: string | null) {
   if (!d) return '';
@@ -41,7 +41,7 @@ export default async function DiscoverTripsPage({ searchParams }: Props) {
 
   return (
     <div style={{ minHeight:'100vh', background:C.bg }}>
-      <div style={{ background:'linear-gradient(160deg,#0d9488 0%,#0f766e 100%)', padding:'40px 20px' }}>
+      <div style={{ background:'linear-gradient(160deg,var(--brand) 0%,var(--brand-dark) 100%)', padding:'40px 20px' }}>
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <h1 style={{ fontFamily:'Georgia, serif', fontSize:'clamp(28px, 4vw, 36px)', fontWeight:800, color:'#fff', margin:'0 0 8px' }}>Discover trips</h1>
           <p style={{ color:'#cbd5e1', margin:'0 0 18px', fontSize:15 }}>Travel journals from BugBitten travellers around the world.</p>

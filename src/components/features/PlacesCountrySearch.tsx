@@ -84,7 +84,7 @@ export function PlacesCountrySearch() {
             <button key={p.place_id}
               onMouseDown={e => { e.preventDefault(); pick(p); }}
               onMouseEnter={() => setHi(i)}
-              style={{ display: 'block', width: '100%', padding: '10px 16px', background: hi === i ? '#f0fdfa' : 'transparent', border: 'none', textAlign: 'left' as const, cursor: 'pointer', fontSize: 14, color: '#111827', fontFamily: 'inherit' }}>
+              style={{ display: 'block', width: '100%', padding: '10px 16px', background: hi === i ? 'var(--brand-light)' : 'transparent', border: 'none', textAlign: 'left' as const, cursor: 'pointer', fontSize: 14, color: '#111827', fontFamily: 'inherit' }}>
               <div style={{ fontWeight: 600 }}>🌍 {p.structured_formatting?.main_text || p.description}</div>
               {p.structured_formatting?.secondary_text && (
                 <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{p.structured_formatting.secondary_text}</div>

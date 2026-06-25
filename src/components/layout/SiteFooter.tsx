@@ -53,7 +53,7 @@ export function SiteFooter({
         .bb-foot-col a:hover { color: #5eead4; }
         .bb-foot-brand { color: #fff; font-family: Georgia, serif; font-weight: 800; font-size: 24px; letter-spacing: -0.5px; margin: 0 0 8px; display: inline-block; }
         .bb-foot-tag { color: #94a3b8; font-size: 13px; line-height: 1.6; margin: 0 0 14px; max-width: 320px; }
-        .bb-newsletter-row { background: #0d9488; }
+        .bb-newsletter-row { background: var(--brand); }
         .bb-newsletter-inner { max-width: 1200px; margin: 0 auto; padding: 26px 24px; display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: center; }
         .bb-newsletter-inner h3 { color: #fff; margin: 0 0 4px; font-family: Georgia, serif; font-weight: 800; font-size: 22px; }
         .bb-newsletter-inner p { color: #ccfbf1; font-size: 14px; margin: 0; line-height: 1.5; }
@@ -87,7 +87,7 @@ export function SiteFooter({
             <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>✓ Thanks — you're subscribed.</div>
           ) : (
             <form onSubmit={submit} className="bb-newsletter-form">
-              <input type="email" required value={email} onChange={e => { setEmail(e.target.value); setState('idle') }} placeholder="you@example.com" />
+              <input type="email" required value={email} onChange={e => { setEmail(e.target.value); setState('idle') }} placeholder="Your email address" />
               <button type="submit" disabled={state === 'submitting'}>
                 {state === 'submitting' ? 'Subscribing…' : 'Subscribe'}
               </button>

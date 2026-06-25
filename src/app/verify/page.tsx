@@ -15,7 +15,7 @@ export default function VerifyPage() {
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 800, margin: '16px 0 12px' }}>Verify your profile</h1>
 
         {me?.verification_status === 'verified' ? (
-          <div style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: 10, padding: 16, color: '#065f46' }}>
+          <div style={{ background: 'var(--brand-light)', border: '1px solid #99f6e4', borderRadius: 10, padding: 16, color: 'var(--brand-dark)' }}>
             <div style={{ fontWeight: 700, marginBottom: 4 }}>✓ You're verified</div>
             <div style={{ fontSize: 13 }}>You can host and join open meetups with strangers.</div>
           </div>
@@ -37,7 +37,7 @@ export default function VerifyPage() {
             </div>
             {me?.is_admin && (
               <p style={{ marginTop: 18, fontSize: 12, color: '#6b7280' }}>
-                Admins: manually mark a user as verified from the <Link href="/admin/users" style={{ color: '#0d9488' }}>users page</Link>.
+                Admins: manually mark a user as verified from the <Link href="/admin/users" style={{ color: 'var(--brand)' }}>users page</Link>.
               </p>
             )}
           </>

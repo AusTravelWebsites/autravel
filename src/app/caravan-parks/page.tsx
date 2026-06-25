@@ -33,7 +33,7 @@ type Park = {
 
 type Filters = { region?: string; type?: string; pets?: string; cabins?: string; q?: string; sort?: string; page?: string }
 
-const C = { bg: '#f8fafc', card: '#fff', border: '#e5e7eb', text: '#0f172a', sub: '#64748b', teal: '#0d9488', tealDark: '#0f766e', tealLight: '#f0fdfa', amber: '#fbbf24', emerald: '#10b981' }
+const C = { bg: '#f8fafc', card: '#fff', border: '#e5e7eb', text: '#0f172a', sub: '#64748b', teal: 'var(--brand)', tealDark: 'var(--brand-dark)', tealLight: 'var(--brand-light)', amber: '#fbbf24', emerald: '#10b981' }
 
 const SORTS = [
   { slug: 'top',     label: 'Top rated',     orderBy: db`featured DESC, avg_rating DESC NULLS LAST, review_count DESC NULLS LAST` },
@@ -177,7 +177,7 @@ export default async function CaravanParksPage({ searchParams }: { searchParams:
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}/>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}/>
 
-      <section style={{ background: 'linear-gradient(135deg,#0d9488 0%,#065f46 100%)', padding: '40px 20px 30px', textAlign: 'center' as const, color: '#fff' }}>
+      <section style={{ background: 'linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '40px 20px 30px', textAlign: 'center' as const, color: '#fff' }}>
         <div style={{ maxWidth: 780, margin: '0 auto' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.78)', letterSpacing: 2.5, textTransform: 'uppercase' as const, marginBottom: 12 }}>The caravan park finder</div>
           <h1 style={{ fontSize: 'clamp(28px,5.5vw,44px)', fontWeight: 800, margin: '0 0 12px', lineHeight: 1.1, fontFamily: 'Georgia, serif' }}>
@@ -284,7 +284,7 @@ export default async function CaravanParksPage({ searchParams }: { searchParams:
                       </div>
                     )}
                     {Array.isArray(p.ai_pros) && p.ai_pros.length > 0 && (
-                      <ul style={{ margin: '4px 0 0', paddingLeft: 0, listStyle: 'none', fontSize: 12, color: '#065f46', lineHeight: 1.45 }}>
+                      <ul style={{ margin: '4px 0 0', paddingLeft: 0, listStyle: 'none', fontSize: 12, color: 'var(--brand-dark)', lineHeight: 1.45 }}>
                         {p.ai_pros.slice(0, 2).map((pro, i) => (
                           <li key={i} style={{ display: 'flex', gap: 6, marginBottom: 2 }}>
                             <span aria-hidden style={{ color: C.emerald, flexShrink: 0 }}>✓</span>

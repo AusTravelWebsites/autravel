@@ -71,7 +71,7 @@ export function HeroSearch({ placeholder = 'Search destinations, parks, tours…
         />
         <button type="submit"
           style={{
-            background: '#0d9488',
+            background: 'var(--brand)',
             color: '#fff',
             border: 'none',
             borderRadius: 10,
@@ -93,7 +93,7 @@ export function HeroSearch({ placeholder = 'Search destinations, parks, tours…
               style={{
                 padding: '5px 12px',
                 background: isHero ? 'rgba(255,255,255,0.15)' : '#fff',
-                color: isHero ? '#fff' : '#0d9488',
+                color: isHero ? '#fff' : 'var(--brand)',
                 border: isHero ? '1px solid rgba(255,255,255,0.4)' : '1px solid #e5e7eb',
                 borderRadius: 999,
                 fontSize: 12.5,

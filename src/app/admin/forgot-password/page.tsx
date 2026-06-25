@@ -40,10 +40,10 @@ export default function AdminForgotPasswordPage() {
         </p>
         {sent ? (
           <div>
-            <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, padding: '12px 14px', color: '#065f46', fontSize: 14, lineHeight: 1.5, marginBottom: 16 }}>
+            <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, padding: '12px 14px', color: 'var(--brand-dark)', fontSize: 14, lineHeight: 1.5, marginBottom: 16 }}>
               If that email matches the admin account, a reset link has been sent. Check your inbox (and spam folder).
             </div>
-            <Link href="/admin/login/" style={{ color: '#0d9488', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+            <Link href="/admin/login/" style={{ color: 'var(--brand)', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
               ← Back to sign-in
             </Link>
           </div>
@@ -54,7 +54,7 @@ export default function AdminForgotPasswordPage() {
               style={{ width: '100%', padding: '11px 13px', borderRadius: 8, border: '1px solid #e5e7eb', color: '#111827', fontSize: 15, outline: 'none', boxSizing: 'border-box' as const, marginBottom: 16 }} />
             {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '9px 12px', color: '#dc2626', fontSize: 13, marginBottom: 14 }}>{error}</div>}
             <button type="submit" disabled={loading || !email}
-              style={{ width: '100%', padding: 12, borderRadius: 8, background: '#0d9488', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !email ? 0.6 : 1 }}>
+              style={{ width: '100%', padding: 12, borderRadius: 8, background: 'var(--brand)', color: '#fff', border: 'none', fontWeight: 700, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !email ? 0.6 : 1 }}>
               {loading ? 'Sending…' : 'Send reset link'}
             </button>
             <div style={{ marginTop: 16, textAlign: 'center' }}>

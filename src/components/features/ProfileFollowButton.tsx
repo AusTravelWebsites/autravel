@@ -65,9 +65,9 @@ export function ProfileFollowButton({ username, targetUserId }: Props) {
   return (
     <button onClick={onClick} disabled={busy || !loaded}
       style={{ ...baseStyle,
-        background: following ? '#fff' : '#0d9488',
-        color: following ? '#0d9488' : '#fff',
-        border: following ? '1px solid #0d9488' : 'none',
+        background: following ? '#fff' : 'var(--brand)',
+        color: following ? 'var(--brand)' : '#fff',
+        border: following ? '1px solid var(--brand)' : 'none',
       }}>
       {!loaded ? '…' : following ? 'Following' : 'Follow'}
     </button>

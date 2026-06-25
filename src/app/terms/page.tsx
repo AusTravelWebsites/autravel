@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-const C = { bg: '#f3f4f6', text: '#111827', body: '#374151', sub: '#6b7280', teal: '#0d9488' }
+const C = { bg: '#f3f4f6', text: '#111827', body: '#374151', sub: '#6b7280', teal: 'var(--brand)' }
 
 export default async function TermsPage() {
   const tenant = await getTenant()

@@ -20,7 +20,7 @@ function SavedCountBadge() {
     }
   }, [])
   if (n === 0) return null
-  return <span style={{ display: 'inline-block', minWidth: 18, padding: '2px 7px', background: '#0d9488', color: '#fff', borderRadius: 999, fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{n}</span>
+  return <span style={{ display: 'inline-block', minWidth: 18, padding: '2px 7px', background: 'var(--brand)', color: '#fff', borderRadius: 999, fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{n}</span>
 }
 
 interface NavProps {
@@ -34,12 +34,13 @@ interface NavProps {
   tenantCode?: string   // state_code — gates tenant-specific nav
   trailsRoute?: string  // public path of the walks/trails explorer, if this tenant has one
   trailsLabel?: string  // nav label for it, e.g. 'Walks & Trails' / 'Park Maps'
+  tracksRoute?: string  // public path of the off-road tracks finder, if this tenant has one
 }
 
 const PANELS = ['destinations', 'things', 'trains', 'guides', 'about'] as const
 type PanelKey = typeof PANELS[number]
 
-export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, trailsRoute, trailsLabel }: NavProps) {
+export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, trailsRoute, trailsLabel, tracksRoute }: NavProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [open, setOpen] = useState<PanelKey | null>(null)
@@ -80,38 +81,38 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, tr
       <style>{`
         .bb-nav-hamburger { display: none; }
         .bb-mega-trigger { background: transparent; border: none; padding: 18px 14px; font-size: 14px; font-weight: 600; color: #374151; cursor: pointer; letter-spacing: 0.01em; position: relative; font-family: inherit; }
-        .bb-mega-trigger:hover, .bb-mega-trigger[data-open="true"] { color: #0d9488; }
-        .bb-mega-trigger[data-open="true"]::after { content:''; position: absolute; bottom: 0; left: 14px; right: 14px; height: 2px; background: #0d9488; border-radius: 2px 2px 0 0; }
+        .bb-mega-trigger:hover, .bb-mega-trigger[data-open="true"] { color: var(--brand); }
+        .bb-mega-trigger[data-open="true"]::after { content:''; position: absolute; bottom: 0; left: 14px; right: 14px; height: 2px; background: var(--brand); border-radius: 2px 2px 0 0; }
         .bb-mega-chev { font-size: 10px; margin-left: 5px; opacity: 0.6; }
         .bb-mega-panel { position: absolute; left: 0; right: 0; background: #fff; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; box-shadow: 0 18px 28px -16px rgba(15,23,42,0.18); animation: bb-mega-in 0.18s ease-out; }
         @keyframes bb-mega-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
         .bb-mega-grid { max-width: 1200px; margin: 0 auto; padding: 28px 24px 30px; }
         .bb-dest-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         .bb-dest-card { display: block; text-decoration: none; color: #111827; border-radius: 10px; overflow: hidden; border: 1px solid #e5e7eb; background: #fff; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-        .bb-dest-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -8px rgba(15,23,42,0.15); border-color: #0d9488; }
+        .bb-dest-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -8px rgba(15,23,42,0.15); border-color: var(--brand); }
         .bb-dest-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #f1f5f9; display: block; }
         .bb-dest-name { padding: 9px 12px; font-size: 13px; font-weight: 700; line-height: 1.2; }
         .bb-mega-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; }
         .bb-mega-col h3 { font-size: 11px; font-weight: 800; color: #6b7280; letter-spacing: 1.4px; text-transform: uppercase; margin: 0 0 12px; }
         .bb-mega-col a { display: block; padding: 8px 0; color: #111827; text-decoration: none; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f3f4f6; }
         .bb-mega-col a:last-child { border-bottom: none; }
-        .bb-mega-col a:hover { color: #0d9488; }
+        .bb-mega-col a:hover { color: var(--brand); }
         .bb-mega-col a small { display: block; color: #6b7280; font-size: 12px; font-weight: 400; margin-top: 2px; }
         .bb-mega-feature { display: block; text-decoration: none; color: #111827; }
         .bb-mega-feature img { width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 10px; background: #f1f5f9; }
-        .bb-mega-feature .meta { display: block; font-size: 11px; color: #0d9488; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 4px; }
+        .bb-mega-feature .meta { display: block; font-size: 11px; color: var(--brand); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 4px; }
         .bb-mega-feature h4 { font-size: 15px; line-height: 1.35; margin: 0; font-weight: 700; }
-        .bb-mega-feature:hover h4 { color: #0d9488; }
+        .bb-mega-feature:hover h4 { color: var(--brand); }
         .bb-author-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #111827; text-decoration: none; border-bottom: 1px solid #f3f4f6; }
-        .bb-author-row:hover { color: #0d9488; }
+        .bb-author-row:hover { color: var(--brand); }
         .bb-author-row:last-child { border-bottom: none; }
-        .bb-author-av { width: 32px; height: 32px; border-radius: 999px; background: #0d9488; color: #fff; font-weight: 800; font-family: Georgia, serif; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+        .bb-author-av { width: 32px; height: 32px; border-radius: 999px; background: var(--brand); color: #fff; font-weight: 800; font-family: Georgia, serif; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
         .bb-author-av img { width: 100%; height: 100%; object-fit: cover; }
         .bb-author-name { font-size: 13px; font-weight: 700; }
         .bb-author-role { font-size: 11px; color: #6b7280; }
         .bb-state-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .bb-state-card { display: block; padding: 14px 16px; border: 1px solid #e5e7eb; border-radius: 10px; text-decoration: none; color: #111827; font-weight: 700; transition: all 0.15s; }
-        .bb-state-card:hover { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
+        .bb-state-card:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
         .bb-state-card small { display: block; font-weight: 400; color: #6b7280; font-size: 11px; margin-top: 4px; }
         @media (max-width: 1000px) {
           .bb-nav-top { min-height: 64px !important; grid-template-columns: auto 1fr auto !important; padding: 6px 12px !important; }
@@ -129,7 +130,7 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, tr
       <div className="bb-nav-top" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 20px', minHeight: 72, display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 18 }}>
         {/* Logo — left */}
         <div className="bb-nav-logo" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-          <Link href={brand.homeHref} style={{ display: 'inline-block', textDecoration: 'none', color: '#0d9488', fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 26, letterSpacing: -0.5, lineHeight: 1 }}>
+          <Link href={brand.homeHref} style={{ display: 'inline-block', textDecoration: 'none', color: 'var(--brand)', fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 26, letterSpacing: -0.5, lineHeight: 1 }}>
             {brand.name}
           </Link>
         </div>
@@ -142,6 +143,12 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, tr
               {trailsLabel || 'Walks & Trails'}
             </Link>
           )}
+          {tracksRoute && (
+            <Link href={`${tracksRoute}/`} className="bb-mega-trigger" data-open={isActive(tracksRoute)}
+              style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+              Off-Road Tracks
+            </Link>
+          )}
           <MegaTrigger label="Destinations"  panel="destinations" open={open} onHover={hoverOpen} onLeave={hoverClose} />
           <MegaTrigger label="Things to do"  panel="things"       open={open} onHover={hoverOpen} onLeave={hoverClose} />
           <MegaTrigger label="Trains"        panel="trains"       open={open} onHover={hoverOpen} onLeave={hoverClose} />
@@ -151,7 +158,7 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, tr
 
         {/* Right — saved + mobile hamburger (search moved to its own row below) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'flex-end' }}>
-          <Link href="/saved/" style={{ display: 'inline-flex', alignItems: 'center', padding: '7px 12px', borderRadius: 8, color: isActive('/saved') ? '#0d9488' : '#374151', textDecoration: 'none', fontSize: 13, fontWeight: 600, position: 'relative', background: isActive('/saved') ? '#f0fdfa' : 'transparent', transition: 'background 0.15s' }}>
+          <Link href="/saved/" style={{ display: 'inline-flex', alignItems: 'center', padding: '7px 12px', borderRadius: 8, color: isActive('/saved') ? 'var(--brand)' : '#374151', textDecoration: 'none', fontSize: 13, fontWeight: 600, position: 'relative', background: isActive('/saved') ? 'var(--brand-light)' : 'transparent', transition: 'background 0.15s' }}>
             <span aria-hidden style={{ marginRight: 5, fontSize: 15, lineHeight: 1 }}>♡</span> Saved <SavedCountBadge/>
           </Link>
           <button
@@ -184,7 +191,7 @@ export function NavbarWrapper({ brand, scope, isAggregator, mega, tenantCode, tr
               placeholder={`Search ${brand.name}…`}
               aria-label={`Search ${brand.name}`}
               style={{ width: '100%', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 999, padding: '9px 16px 9px 40px', fontSize: 14, outline: 'none', fontFamily: 'inherit', transition: 'border-color 0.15s, background 0.15s' }}
-              onFocus={e => { e.currentTarget.style.borderColor = '#0d9488'; e.currentTarget.style.background = '#fff' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.background = '#fff' }}
               onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f3f4f6' }}
             />
           </div>
@@ -396,7 +403,7 @@ function PanelHeading({ title, cta }: { title: string; cta: { href: string; labe
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 18, gap: 12, flexWrap: 'wrap' }}>
       <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 800, color: '#111827' }}>{title}</div>
-      {cta && <Link href={cta.href} style={{ color: '#0d9488', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>{cta.label}</Link>}
+      {cta && <Link href={cta.href} style={{ color: 'var(--brand)', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>{cta.label}</Link>}
     </div>
   )
 }
@@ -414,7 +421,7 @@ function MobileDrawer({ mega, scope, isAggregator, trailsRoute, trailsLabel, pan
   if (panel) {
     return (
       <div>
-        <button onClick={() => setPanel(null)} style={{ ...groupBtnStyle, color: '#0d9488', fontWeight: 700 }}>
+        <button onClick={() => setPanel(null)} style={{ ...groupBtnStyle, color: 'var(--brand)', fontWeight: 700 }}>
           ← Back
         </button>
         {panel === 'destinations' && (isAggregator
@@ -457,7 +464,7 @@ function MobileDrawer({ mega, scope, isAggregator, trailsRoute, trailsLabel, pan
   return (
     <div>
       {trailsRoute && (
-        <Link href={`${trailsRoute}/`} style={{ ...linkStyle, color: '#0d9488', fontWeight: 700 }} onClick={onClose}>🥾 {trailsLabel || 'Walks & Trails'}</Link>
+        <Link href={`${trailsRoute}/`} style={{ ...linkStyle, color: 'var(--brand)', fontWeight: 700 }} onClick={onClose}>🥾 {trailsLabel || 'Walks & Trails'}</Link>
       )}
       <button onClick={() => setPanel('destinations')} style={groupBtnStyle}>Destinations <span aria-hidden>›</span></button>
       <button onClick={() => setPanel('things')}        style={groupBtnStyle}>Things to do <span aria-hidden>›</span></button>

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { unstable_cache } from 'next/cache'
 import { db } from '@/lib/db'
-import { getTenant, stateFilterValue, tourStatesFor } from '@/lib/get-tenant'
+import { getTenant, stateFilterValue, tourStatesFor, parkStatesFor } from '@/lib/get-tenant'
 import { StateCode } from '@/lib/tenants'
 import { HeroSearch } from '@/components/features/HeroSearch'
 import { trailsCopy } from '@/lib/trails'
@@ -15,9 +15,9 @@ const C = {
   text: '#111827',
   body: '#374151',
   sub: '#6b7280',
-  teal: '#0d9488',
-  tealDark: '#0f766e',
-  tealLight: '#f0fdfa',
+  teal: 'var(--brand)',
+  tealDark: 'var(--brand-dark)',
+  tealLight: 'var(--brand-light)',
 }
 
 type Destination = { slug: string; name: string; region: string | null; intro: string | null; hero_image: string | null }
@@ -25,13 +25,15 @@ type Tour = { slug: string; title: string; city: string | null; cover_image: str
 type Park = { slug: string; name: string; region: string | null; suburb: string | null; cover_image: string | null; avg_rating: string | null }
 type Article = { slug: string; legacy_path: string | null; title: string; excerpt: string | null; cover_image: string | null; published_at: string | null }
 type Trail = { slug: string; name: string; trail_type: string; difficulty: string | null; distance_label: string | null; duration_label: string | null; area: string | null; preview_points: [number, number][] | null }
+type Track = { slug: string; name: string; region: string | null; grade: string | null; length_km: number | null; days: string | null; best_season: string | null }
 
-function getHomeData(state: StateCode | null, tourStates: StateCode[] | null) {
+function getHomeData(state: StateCode | null, tourStates: StateCode[] | null, parkStates: StateCode[] | null) {
   const key = state ?? 'all'
   const tourKey = tourStates ? tourStates.join('+') : 'all'
+  const parkKey = parkStates ? parkStates.join('+') : 'all'
   return unstable_cache(
     async () => {
-      const [destinations, featuredTours, topParks, recentArticles, trails, counts] = await Promise.all([
+      const [destinations, featuredTours, topParks, recentArticles, trails, tracks, counts] = await Promise.all([
         db<Destination[]>`
           SELECT slug, name, region, intro, hero_image
           FROM destinations
@@ -46,7 +48,7 @@ function getHomeData(state: StateCode | null, tourStates: StateCode[] | null) {
         db<Park[]>`
           SELECT slug, name, region, suburb, cover_image, avg_rating
           FROM parks
-          WHERE active = true AND (${state}::text IS NULL OR state_code = ${state}::text)
+          WHERE active = true AND ${parkStates === null ? db`true` : db`state_code = ANY(${parkStates})`}
             AND cover_image IS NOT NULL
           ORDER BY featured DESC, avg_rating DESC NULLS LAST LIMIT 6`,
         db<Article[]>`
@@ -59,16 +61,21 @@ function getHomeData(state: StateCode | null, tourStates: StateCode[] | null) {
           FROM autravel.trails
           WHERE active = true AND (${state}::text IS NULL OR state_code = ${state}::text)
           ORDER BY (trail_type LIKE '%route%') DESC, length_m DESC NULLS LAST LIMIT 6`,
+        db<Track[]>`
+          SELECT slug, name, region, grade, length_km, days, best_season
+          FROM autravel.tracks
+          WHERE active = true AND state_code = ${state}::text
+          ORDER BY (grade = 'Extreme') DESC, length_km DESC NULLS LAST LIMIT 6`.catch(() => [] as Track[]),
         db<[{ d: number; t: number; p: number; a: number }]>`
           SELECT
             (SELECT COUNT(*)::int FROM destinations WHERE active AND (${state}::text IS NULL OR state_code = ${state}::text)) AS d,
             (SELECT COUNT(*)::int FROM tours WHERE active AND ${tourStates === null ? db`true` : db`state_code = ANY(${tourStates})`}) AS t,
-            (SELECT COUNT(*)::int FROM parks WHERE active AND (${state}::text IS NULL OR state_code = ${state}::text)) AS p,
+            (SELECT COUNT(*)::int FROM parks WHERE active AND ${parkStates === null ? db`true` : db`state_code = ANY(${parkStates})`}) AS p,
             (SELECT COUNT(*)::int FROM articles WHERE status='published' AND (${state}::text IS NULL OR state_code = ${state}::text)) AS a`,
       ])
-      return { destinations, featuredTours, topParks, recentArticles, trails, counts: counts[0] || { d: 0, t: 0, p: 0, a: 0 } }
+      return { destinations, featuredTours, topParks, recentArticles, trails, tracks, counts: counts[0] || { d: 0, t: 0, p: 0, a: 0 } }
     },
-    ['home', key, tourKey, 'v3'],
+    ['home', key, tourKey, parkKey, 'v4'],
     { revalidate: 600, tags: ['home', `home:${key}`] }
   )()
 }
@@ -76,8 +83,8 @@ function getHomeData(state: StateCode | null, tourStates: StateCode[] | null) {
 export default async function HomePage() {
   const tenant = await getTenant()
   const state = stateFilterValue(tenant)
-  const data = await getHomeData(state, tourStatesFor(tenant)).catch(() => ({
-    destinations: [] as Destination[], featuredTours: [] as Tour[], topParks: [] as Park[], recentArticles: [] as Article[], trails: [] as Trail[], counts: { d: 0, t: 0, p: 0, a: 0 },
+  const data = await getHomeData(state, tourStatesFor(tenant), parkStatesFor(tenant)).catch(() => ({
+    destinations: [] as Destination[], featuredTours: [] as Tour[], topParks: [] as Park[], recentArticles: [] as Article[], trails: [] as Trail[], tracks: [] as Track[], counts: { d: 0, t: 0, p: 0, a: 0 },
   }))
   const scope = tenant.aggregator ? 'Australia' : tenant.stateName
   const trailCopy = trailsCopy(tenant)
@@ -128,6 +135,36 @@ export default async function HomePage() {
           {tenant.heroCredit}
         </div>
       </section>
+
+      {/* Off-road tracks — the signature section for The Australian Explorer. */}
+      {data.tracks.length > 0 && (
+        <section style={{ ...section, background: '#fff' }}>
+          <div style={wrap}>
+            <SectionHeader title="Iconic off-road tracks" subtitle="Australia's great 4WD and outback routes — the deserts, the Kimberley, the Cape and the High Country." cta={{ href: '/off-road-tracks/', label: 'Explore all tracks →' }} accent="#b45309"/>
+            <div style={grid3}>
+              {data.tracks.map(t => {
+                const gc = t.grade === 'Extreme' ? '#dc2626' : t.grade === 'Hard 4WD' ? '#ea580c' : t.grade === 'Moderate 4WD' ? '#d97706' : '#16a34a'
+                return (
+                  <Link key={t.slug} href={`/off-road-tracks/${t.slug}/`} style={cardLink}>
+                    <article style={card}>
+                      <div style={{ height: 8, background: gc }} />
+                      <div style={{ padding: '13px 15px 15px' }}>
+                        <div style={{ ...tagline, color: gc }}>{t.grade}</div>
+                        <h3 style={titleH3}>{t.name}</h3>
+                        <div style={{ fontSize: 12.5, color: C.sub, marginTop: 8, display: 'flex', gap: 12, flexWrap: 'wrap' as const }}>
+                          {t.region && <span>📍 {t.region}</span>}
+                          {t.length_km != null && <span>📏 {t.length_km.toLocaleString()} km</span>}
+                          {t.days && <span>🗓 {t.days}</span>}
+                        </div>
+                      </div>
+                    </article>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Trails-first: walks & bike paths lead the page for trails-enabled tenants. */}
       {trailCopy.enabled && data.trails.length > 0 && (
@@ -284,8 +321,8 @@ function RoutePreview({ pts, color }: { pts: [number, number][]; color: string }
   return (
     <svg viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', aspectRatio: '16/10', display: 'block', background: 'linear-gradient(135deg,#fff7ed,#f0f9ff)' }}>
       <path d={d} fill="none" stroke="#fff" strokeWidth={3.2} strokeLinejoin="round" strokeLinecap="round" />
-      <path d={d} fill="none" stroke={color} strokeWidth={1.8} strokeLinejoin="round" strokeLinecap="round" />
-      {pts[0] && <circle cx={pts[0][0]} cy={pts[0][1]} r={2.2} fill={color} stroke="#fff" strokeWidth={0.8} />}
+      <path d={d} fill="none" style={{ stroke: color }} strokeWidth={1.8} strokeLinejoin="round" strokeLinecap="round" />
+      {pts[0] && <circle cx={pts[0][0]} cy={pts[0][1]} r={2.2} style={{ fill: color }} stroke="#fff" strokeWidth={0.8} />}
     </svg>
   )
 }

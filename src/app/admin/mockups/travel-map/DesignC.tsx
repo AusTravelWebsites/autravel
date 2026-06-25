@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { ComposableMap, Geographies, Geography, Sphere, Graticule } from 'react-simple-maps'
 import { MOCK_VISITED, visitedSet, lookupCountry, TOTAL_COUNTRIES, GEO_URL, MockCountry } from './mockData'
 
-const TEAL = '#0d9488'
+const TEAL = 'var(--brand)'
 const TEAL_LIGHT = '#5eead4'
 
 // Drag-to-rotate orthographic globe with a modal on country click.

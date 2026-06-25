@@ -5,7 +5,7 @@ import { flagFor, COUNTRIES } from '@/lib/countries'
 export const C = {
   bg: '#f3f4f6', card: '#fff', border: '#e5e7eb',
   text: '#111827', sub: '#6b7280',
-  teal: '#0d9488', tealLight: '#f0fdfa', tealDeep: '#0f766e',
+  teal: 'var(--brand)', tealLight: 'var(--brand-light)', tealDeep: 'var(--brand-dark)',
   amber: '#f59e0b', slate: '#0f172a',
 }
 

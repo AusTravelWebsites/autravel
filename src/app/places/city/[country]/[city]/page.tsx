@@ -7,7 +7,7 @@ export const revalidate = 1800;
 
 interface Props { params: Promise<{ country: string; city: string }> }
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa' };
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)' };
 
 function slugify(s: string) {
   return s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
@@ -71,7 +71,7 @@ export default async function CityPlacesPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
-      <div style={{ background: 'linear-gradient(160deg,#0d9488 0%,#0f766e 100%)', padding:'40px 20px' }}>
+      <div style={{ background: 'linear-gradient(160deg,var(--brand) 0%,var(--brand-dark) 100%)', padding:'40px 20px' }}>
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <div style={{ color:'#cbd5e1', fontSize:13, marginBottom:10 }}>
             <Link href="/explore" style={{ color:'#cbd5e1', textDecoration:'none' }}>Explore</Link>

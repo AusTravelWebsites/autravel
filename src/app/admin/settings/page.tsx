@@ -36,7 +36,7 @@ const S = {
   btn: { padding: '8px 14px', borderRadius: 7, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit' } as React.CSSProperties,
   label: { fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 2, display: 'block', textTransform: 'uppercase' as const, letterSpacing: 0.5 } as React.CSSProperties,
   hint: { fontSize: 11, color: '#9ca3af', marginTop: 3 } as React.CSSProperties,
-  chip: (active: boolean): React.CSSProperties => ({ padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, background: active ? '#0d9488' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid #0d9488' : '1px solid #e5e7eb', cursor: 'pointer' }),
+  chip: (active: boolean): React.CSSProperties => ({ padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, background: active ? 'var(--brand)' : '#fff', color: active ? '#fff' : '#374151', border: active ? '1px solid var(--brand)' : '1px solid #e5e7eb', cursor: 'pointer' }),
 }
 
 export default function SettingsAdmin() {
@@ -104,7 +104,7 @@ export default function SettingsAdmin() {
               ))}
             </div>
             <div style={{ marginTop: 18, display: 'flex', gap: 8 }}>
-              <button onClick={saveAll} disabled={saving} style={{ ...S.btn, background: '#0d9488', color: '#fff', opacity: saving ? 0.5 : 1 }}>{saving ? 'Saving…' : 'Save settings'}</button>
+              <button onClick={saveAll} disabled={saving} style={{ ...S.btn, background: 'var(--brand)', color: '#fff', opacity: saving ? 0.5 : 1 }}>{saving ? 'Saving…' : 'Save settings'}</button>
             </div>
           </div>}
 
@@ -114,7 +114,7 @@ export default function SettingsAdmin() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr auto', gap: 6, marginBottom: 10 }}>
             <input value={newKey} onChange={e => setNewKey(e.target.value)} placeholder="custom_key" style={S.input}/>
             <input value={newVal} onChange={e => setNewVal(e.target.value)} placeholder="value" style={S.input}/>
-            <button onClick={addCustom} style={{ ...S.btn, background: '#0d9488', color: '#fff' }}>Add / Update</button>
+            <button onClick={addCustom} style={{ ...S.btn, background: 'var(--brand)', color: '#fff' }}>Add / Update</button>
           </div>
           <table style={{ width: '100%', borderCollapse: 'collapse' as const, fontSize: 13 }}>
             <thead><tr><th style={{ textAlign: 'left' as const, padding: '6px 8px', background: '#f9fafb' }}>Key</th><th style={{ textAlign: 'left' as const, padding: '6px 8px', background: '#f9fafb' }}>Value</th><th></th></tr></thead>

@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'#0d9488', tealLight:'#f0fdfa' };
+const C = { bg:'#f3f4f6', card:'#fff', border:'#e5e7eb', text:'#111827', sub:'#6b7280', teal:'var(--brand)', tealLight:'var(--brand-light)' };
 
 type Conv = { id:string; name:string; description?:string; avatar_url?:string; created_by:string; my_role:string; member_count:number; last_body?:string; last_message_at?:string; unread_count:number };
 type Friend = { id:string; username:string; display_name:string; avatar_url?:string };

@@ -28,6 +28,8 @@ const UPLOAD_DIRS: Record<string, string> = {
   // cPanel account + wp-content/uploads dir stays on disk so every migrated
   // blog image keeps serving at its original /wp-content/uploads/... URL.
   perth: '/home/perth/public_html/wp-content/uploads',
+  // The Australian Explorer — WP app removed at cut-over, uploads dir kept on disk.
+  auex: '/home/theaustralian/public_html/wp-content/uploads',
 }
 
 const MIME: Record<string, string> = {
