@@ -128,7 +128,22 @@ export default async function LegacyRoute({ params }: { params: Promise<{ legacy
          LIMIT 1`
       author = rows[0] || null
     } catch {}
-    return <ArticleView article={article} tenant={tenant} author={author}/>
+    // If this article lives under a destination's URL path, fetch the
+    // destination's sub-menu so the page renders the same nav as the
+    // destination overview.
+    let destinationSubMenu = null
+    try {
+      const { detectDestinationSlug, getDestinationSubMenu } = await import('@/lib/destination-submenu')
+      const destSlug = await detectDestinationSlug(article.legacy_path, state)
+      if (destSlug) {
+        const [groups, destRow] = await Promise.all([
+          getDestinationSubMenu(destSlug, state),
+          db<Array<{ name: string }>>`SELECT name FROM destinations WHERE slug = ${destSlug} AND (${state}::text IS NULL OR state_code = ${state}::text) LIMIT 1`,
+        ])
+        if (destRow[0] && groups.length > 1) destinationSubMenu = { destinationName: destRow[0].name, groups }
+      }
+    } catch {}
+    return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={destinationSubMenu}/>
   }
 
   // 3. Dead legacy `.html` URL with no article — redirect to the closest

@@ -6,8 +6,11 @@ import { getTenant, stateFilterValue, tourStatesFor, parkStatesFor } from '@/lib
 import { StateCode, TENANTS } from '@/lib/tenants'
 import { SaveButton } from '@/components/features/SaveButton'
 import { DestinationWeather } from '@/components/features/DestinationWeather'
+import { DestinationSubMenu, DestinationHubGrid } from '@/components/features/DestinationSubMenu'
+import { DestinationMiniMenu } from '@/components/features/DestinationMiniMenu'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { poiUrl } from '@/lib/poi'
+import { getDestinationSubMenu } from '@/lib/destination-submenu'
 
 export const revalidate = 600
 
@@ -271,11 +274,12 @@ export async function DestinationPageContent({ params }: { params: Promise<{ slu
   const d = await getDestination(slug, stateFilterValue(tenant))
   if (!d) notFound()
   const data = await aggregate(d)
-  const [climate, marine, driveTimes, destNearby] = await Promise.all([
+  const [climate, marine, driveTimes, destNearby, subMenuGroups] = await Promise.all([
     getClimate(d.id),
     getMarine(d.id),
     getDriveTimes(d.state_code, d.slug),
     getDestNearby(d.id),
+    getDestinationSubMenu(d.slug, stateFilterValue(tenant)),
   ])
   const canonical = `https://${tenant.host}/${d.slug}/`
 
@@ -317,12 +321,12 @@ export async function DestinationPageContent({ params }: { params: Promise<{ slu
       `}</style>
 
       {d.hero_image && (
-        <div style={{ width: '100%', height: 'clamp(260px,38vw,460px)', background: '#0b1420', overflow: 'hidden' as const, position: 'relative' as const }}>
+        <div style={{ width: '100%', height: 'clamp(90px,13vw,155px)', background: '#0b1420', overflow: 'hidden' as const, position: 'relative' as const }}>
           <img src={d.hero_image} alt={d.name} style={{ width: '100%', height: '100%', objectFit: 'cover' as const, opacity: 0.88 }}/>
-          <div style={{ position: 'absolute' as const, inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.6) 100%)' }}/>
-          <div style={{ position: 'absolute' as const, left: 0, right: 0, bottom: 0, padding: '22px 20px' }}>
+          <div style={{ position: 'absolute' as const, inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,0) 20%, rgba(0,0,0,0.7) 100%)' }}/>
+          <div style={{ position: 'absolute' as const, left: 0, right: 0, bottom: 0, padding: '12px 20px' }}>
             <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-              <div style={{ marginBottom: 10 }}>
+              <div style={{ marginBottom: 4 }}>
                 <Breadcrumbs crumbs={[
                   { href: '/', label: 'Home' },
                   { href: '/destinations/', label: 'Destinations' },
@@ -330,14 +334,26 @@ export async function DestinationPageContent({ params }: { params: Promise<{ slu
                   { label: d.name },
                 ]}/>
               </div>
-              <h1 style={{ color: '#fff', fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 'clamp(28px,5vw,44px)', margin: 0, lineHeight: 1.15, textShadow: '0 2px 14px rgba(0,0,0,0.4)' }}>
+              <h1 style={{ color: '#fff', fontFamily: 'Georgia, serif', fontWeight: 800, fontSize: 'clamp(20px,3.4vw,30px)', margin: 0, lineHeight: 1.15, textShadow: '0 2px 14px rgba(0,0,0,0.4)' }}>
                 {d.name}
               </h1>
-              {d.intro && <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: 16, marginTop: 10, lineHeight: 1.5, maxWidth: 720 }}>{d.intro}</p>}
             </div>
           </div>
         </div>
       )}
+      {d.hero_image && d.intro && (
+        <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb' }}>
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '14px 20px' }}>
+            <p style={{ color: '#374151', fontSize: 16, margin: 0, lineHeight: 1.5, maxWidth: 820 }}>{d.intro}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Compact destination sub-nav — category chips with click-to-expand
+          dropdowns. Replaces the old grouped mega-nav (DestinationSubMenu)
+          which was fine for small destinations but dominated the page on
+          ones with 60-70+ subpages. Same place + always shows per Craig. */}
+      <DestinationMiniMenu destinationName={d.name} groups={subMenuGroups} currentPath={`/${d.slug}/`} />
 
       <div className="bb-dest-grid" style={{ maxWidth: 1240, margin: '0 auto', padding: '24px 16px 60px', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 300px', gap: 24, alignItems: 'start' as const }}>
         <div>
@@ -441,6 +457,9 @@ export async function DestinationPageContent({ params }: { params: Promise<{ slu
           )}
 
           <FaqPanel d={d} climate={climate} marine={marine} tenantStateName={tenant.stateName} content={data} driveTimes={driveTimes} nearby={destNearby}/>
+
+          {/* Pillar hub — links to every sub-topic article for this destination */}
+          <DestinationHubGrid destinationName={d.name} groups={subMenuGroups}/>
 
           <Section id="tours" title={`All tours in ${d.name}`} empty="No tours matched to this destination yet.">
             {data.tours.length > 0 && (

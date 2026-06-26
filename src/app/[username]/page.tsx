@@ -143,7 +143,18 @@ export default async function ProfilePage({ params }: Props) {
              LIMIT 1`
           author = arows[0] || null
         } catch {}
-        return <ArticleView article={article} tenant={tenant} author={author}/>
+        // Sub-menu — same as in [...legacy] route
+        let destinationSubMenu = null
+        try {
+          const { detectDestinationSlug, getDestinationSubMenu } = await import('@/lib/destination-submenu')
+          const destSlug = await detectDestinationSlug(article.legacy_path, state)
+          if (destSlug) {
+            const groups = await getDestinationSubMenu(destSlug, state)
+            const drow = await sql`SELECT name FROM destinations WHERE slug = ${destSlug} AND (${state}::text IS NULL OR state_code = ${state}::text) LIMIT 1`
+            if (drow[0] && groups.length > 1) destinationSubMenu = { destinationName: (drow[0] as any).name, groups }
+          }
+        } catch {}
+        return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={destinationSubMenu}/>
       }
     } catch {}
 

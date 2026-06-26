@@ -7,8 +7,10 @@ import { StateCode } from '@/lib/tenants'
 import { BookableTours } from '@/components/features/BookableTours'
 import { DirectAffiliateCTA } from '@/components/features/DirectAffiliateCTA'
 import { ArticleRelated } from '@/components/features/ArticleRelated'
+import { DestinationMiniMenu } from '@/components/features/DestinationMiniMenu'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { demoteBodyH1s, processWpShortcodes } from '@/lib/wp-html'
+import type { SubMenuGroup } from '@/lib/destination-submenu'
 
 export const revalidate = 600
 
@@ -93,7 +95,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return <ArticleView article={a} tenant={tenant} author={author}/>
 }
 
-export function ArticleView({ article: a, tenant, author }: { article: Article; tenant: { host: string; name: string; stateName: string }; author?: AuthorProfile | null }) {
+export function ArticleView({ article: a, tenant, author, destinationSubMenu }: {
+  article: Article
+  tenant: { host: string; name: string; stateName: string }
+  author?: AuthorProfile | null
+  /** When this article is under a destination (legacy_path starts with /<dest>/),
+   *  the caller pre-fetches the destination's sub-menu and passes it here so we
+   *  can render the same nav users see on the destination overview. */
+  destinationSubMenu?: { destinationName: string; groups: SubMenuGroup[] } | null
+}) {
   const canonical = `https://${tenant.host}${a.legacy_path || `/articles/${a.slug}/`}`
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -144,6 +154,13 @@ export function ArticleView({ article: a, tenant, author }: { article: Article; 
           )}
         </div>
       </section>
+      {destinationSubMenu && (
+        <DestinationMiniMenu
+          destinationName={destinationSubMenu.destinationName}
+          groups={destinationSubMenu.groups}
+          currentPath={a.legacy_path || undefined}
+        />
+      )}
       <article style={{ maxWidth: 780, margin: '0 auto', padding: '32px 20px 60px' }}>
         {a.body_html && (
           <div className="article-body" dangerouslySetInnerHTML={{ __html: processWpShortcodes(demoteBodyH1s(a.body_html)) }}/>

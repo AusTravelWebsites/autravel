@@ -8,7 +8,7 @@ import dotenv from 'dotenv'
 dotenv.config({ path: '/var/www/autravel/.env.local' })
 
 const sql = postgres(process.env.DATABASE_URL_POOL || process.env.DATABASE_URL, {
-  prepare: false, ssl: 'require', max: 2, connection: { search_path: 'autravel, public' }
+  prepare: false, ssl: /@(127\.0\.0\.1|localhost)\b/.test(process.env.DATABASE_URL_POOL || process.env.DATABASE_URL || '') ? false : 'require', max: 2, connection: { search_path: 'autravel, public' }
 })
 
 const FORCE = process.argv.includes('--force')
