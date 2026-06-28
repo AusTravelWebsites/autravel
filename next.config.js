@@ -105,6 +105,16 @@ const nextConfig = {
       { source: '/wp-login.php',       destination: '/login',    permanent: true },
       { source: '/wp-json/:path*',     destination: '/',         permanent: true },
       { source: '/wp-:file.php',       destination: '/',         permanent: true },
+      // New Forest legacy /image-files/ static image dir — wasn't preserved at
+      // the WP→autravel rebuild, but the originals were bulk-restored from the
+      // Wayback Machine into R2 (autravel/newforest/image-files/). 301 the old
+      // image URLs (still in Google Images + external backlinks) to the CDN.
+      // Host-scoped so it can't affect the AU tenants. permanent → 301.
+      { source: '/image-files/:path*', has: [{ type: 'host', value: '(www\\.)?new-forest-national-park\\.com' }], destination: 'https://media.bugbitten.com/autravel/newforest/image-files/:path*', permanent: true },
+      // New Forest apple-touch-icon — iOS/browsers probe these bare paths
+      // directly. Host-scoped because the icon lives in NF's own uploads dir.
+      { source: '/apple-touch-icon.png',             has: [{ type: 'host', value: '(www\\.)?new-forest-national-park\\.com' }], destination: '/wp-content/uploads/nfnp-apple-touch-icon.png', permanent: false },
+      { source: '/apple-touch-icon-precomposed.png', has: [{ type: 'host', value: '(www\\.)?new-forest-national-park\\.com' }], destination: '/wp-content/uploads/nfnp-apple-touch-icon.png', permanent: false },
     ]
   },
 }

@@ -74,6 +74,20 @@ export async function middleware(req: NextRequest) {
   const host = req.headers.get('host') || ''
   const tenant = tenantForHost(host)
 
+  // Legacy WordPress taxonomy/author archives (/tag/*, /author/*) — these
+  // routes don't exist in autravel and 404 on every tenant. Old WP-migrated
+  // sites (e.g. New Forest) still get crawler/backlink hits to them, so 301
+  // them to a sensible live destination: tag archives → the article index,
+  // author archives → the authors page. Build the target by hand from the
+  // apex host (NOT new URL(req.url) — that leaks the internal :3001 port).
+  {
+    const p = req.nextUrl.pathname
+    let dest: string | null = null
+    if (p === '/tag' || p.startsWith('/tag/')) dest = '/articles/'
+    else if (p === '/author' || (p.startsWith('/author/') && !p.startsWith('/authors'))) dest = '/authors/'
+    if (dest) return NextResponse.redirect(`https://${tenant.host}${dest}`, 301)
+  }
+
   // www → apex 301 redirect. Every tenant's canonical host is the apex (see
   // tenants.ts `host` vs `aliases`). Internal absolute refs (article cover
   // URLs, OG images, etc.) are all written for apex, so when a user lands
