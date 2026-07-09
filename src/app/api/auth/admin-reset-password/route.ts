@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import {
   verifyResetToken, isResetTokenUsed, markResetTokenUsed,
-  hashPassword, setStoredPasswordHash,
+  hashPassword, setStoredPasswordHash, isKnownAdmin,
   makeCookieValue, ADMIN_COOKIE, ADMIN_MAX_AGE_S,
 } from '@/lib/admin-session'
 import { getIP, rateLimit } from '@/lib/admin'
@@ -28,8 +28,9 @@ export async function POST(req: NextRequest) {
   const verified = verifyResetToken(token)
   if (!verified) return NextResponse.json({ error: 'Invalid or expired reset link' }, { status: 400 })
 
-  const expectedEmail = (process.env.AUTRAVEL_ADMIN_EMAIL || '').trim().toLowerCase()
-  if (!expectedEmail || verified.email !== expectedEmail) {
+  // The token's email must still be a known admin (covers an admin removed after
+  // a reset link was issued).
+  if (!(await isKnownAdmin(verified.email))) {
     return NextResponse.json({ error: 'Invalid or expired reset link' }, { status: 400 })
   }
 

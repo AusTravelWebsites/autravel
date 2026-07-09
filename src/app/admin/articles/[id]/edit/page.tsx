@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { sanitizeForEditor } from '@/lib/wp-html'
+import { slugify } from '@/lib/utils'
+import { TENANT_OPTIONS } from '@/lib/tenants'
 import {
   EditorLinkDialog, type LinkSpec,
   findAnchorAtSelection, saveSelection, restoreSelection, linkHtml, updateAnchor, unwrapAnchor,
@@ -60,6 +62,14 @@ export default function AdminArticleEditPage() {
   const [linkInitial, setLinkInitial] = useState<LinkSpec>({ url: '', text: '', newTab: false })
   const [editingAnchor, setEditingAnchor] = useState<HTMLAnchorElement | null>(null)
   const savedRange = useRef<Range | null>(null)
+  // Auto-derive the URL from the title for freshly-created posts (placeholder
+  // slug `new-post-xxxx`). autoSlug stays on until the user edits the slug by
+  // hand; startedAsPlaceholder keeps the legacy_path synced to the slug for the
+  // whole session (so imported posts, whose slug ≠ legacy_path, are untouched).
+  const [autoSlug, setAutoSlug] = useState(false)
+  const startedAsPlaceholder = useRef(false)
+  // The site the post loaded on, so we can flag a pending move before save.
+  const origState = useRef('')
 
   // Load article
   useEffect(() => {
@@ -68,20 +78,29 @@ export default function AdminArticleEditPage() {
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(d => {
         setA(d.article)
+        origState.current = d.article.state_code
+        const placeholder = /^new-post-[a-z0-9]+$/i.test(d.article.slug || '')
+        startedAsPlaceholder.current = placeholder
+        setAutoSlug(placeholder)
         // Stronger than processWpShortcodes — also strips <script>, <style>,
         // Word-paste XML, deprecated <font>, mso-* styles, etc. so the editor
         // never shows literal markup as text. First save persists the cleaned
         // version back to body_html.
         setBodyHtml(sanitizeForEditor(d.article.body_html || ''))
         setLoading(false)
-        // Fetch authors visible on this article's tenant for the dropdown.
-        fetch(`/api/admin/authors?state=${d.article.state_code}`)
-          .then(r => r.ok ? r.json() : { authors: [] })
-          .then(j => setAuthors(j.authors || []))
-          .catch(() => {})
       })
       .catch(e => { setError(`Failed to load article (${e})`); setLoading(false) })
   }, [id])
+
+  // Authors are per-tenant, so (re)load the byline dropdown whenever the post's
+  // site changes — including after moving it to another site.
+  useEffect(() => {
+    if (!a?.state_code) return
+    fetch(`/api/admin/authors?state=${a.state_code}`)
+      .then(r => r.ok ? r.json() : { authors: [] })
+      .then(j => setAuthors(j.authors || []))
+      .catch(() => {})
+  }, [a?.state_code])
 
   // Populate the WYSIWYG when it first mounts after the article loads, AND
   // whenever bodyHtml changes externally (via load or toggle). We don't update
@@ -104,6 +123,31 @@ export default function AdminArticleEditPage() {
   function setField<K extends keyof Article>(k: K, v: Article[K]) {
     if (!a) return
     setA({ ...a, [k]: v })
+    setDirty(true)
+  }
+
+  // Title drives the URL for new posts (until the slug is hand-edited).
+  function onTitleChange(v: string) {
+    if (!a) return
+    if (autoSlug) {
+      const s = slugify(v).replace(/^-+|-+$/g, '')
+      setA({ ...a, title: v, slug: s || a.slug, legacy_path: s ? `/${s}/` : a.legacy_path })
+    } else {
+      setA({ ...a, title: v })
+    }
+    setDirty(true)
+  }
+
+  // Hand-editing the slug stops title-sync; keep legacy_path matching the slug
+  // ONLY for posts that started as placeholders (never for imported WP posts,
+  // whose legacy_path is the original URL and must be preserved).
+  function onSlugChange(v: string) {
+    if (!a) return
+    setAutoSlug(false)
+    const clean = v.trim().replace(/^\/+|\/+$/g, '')
+    const next: Partial<Article> = { slug: clean }
+    if (startedAsPlaceholder.current) next.legacy_path = clean ? `/${clean}/` : a.legacy_path
+    setA({ ...a, ...next })
     setDirty(true)
   }
 
@@ -153,7 +197,13 @@ export default function AdminArticleEditPage() {
     setLinkOpen(false); setEditingAnchor(null); setDirty(true)
   }
   function unlink() { exec('unlink') }
-  function insertImage() { fileRef.current?.click() }
+  function insertImage() {
+    // Save the caret BEFORE the OS file picker opens. Choosing a file clears the
+    // contentEditable's selection, so without this the image would land at the
+    // top of the post (or nowhere). Same save/restore pattern as the link dialog.
+    if (editorRef.current) { editorRef.current.focus(); savedRange.current = saveSelection() }
+    fileRef.current?.click()
+  }
   async function uploadImage(file: File) {
     try {
       const fd = new FormData()
@@ -162,7 +212,13 @@ export default function AdminArticleEditPage() {
       const r = await fetch('/api/upload', { method: 'POST', body: fd })
       const d = await r.json().catch(() => ({}))
       if (!r.ok || !d.url) throw new Error(d.error || 'Upload failed')
-      exec('insertHTML', `<p><img src="${escAttr(d.url)}" alt="" loading="lazy" /></p>`)
+      const html = `<p><img src="${escAttr(d.url)}" alt="" loading="lazy" style="max-width:100%;height:auto" /></p>`
+      const el = editorRef.current
+      if (!el) return
+      el.focus()
+      restoreSelection(savedRange.current) // caret was cleared by the file dialog
+      if (!document.execCommand('insertHTML', false, html)) el.innerHTML += html
+      setDirty(true)
     } catch (e: any) {
       alert(`Image upload failed: ${e.message}`)
     }
@@ -216,6 +272,7 @@ export default function AdminArticleEditPage() {
         seo_title: a.seo_title,
         seo_description: a.seo_description,
         destination_slug: a.destination_slug,
+        state_code: a.state_code,
       }
       const r = await fetch(`/api/admin/articles/${id}`, {
         method: 'PATCH',
@@ -275,7 +332,7 @@ export default function AdminArticleEditPage() {
             {/* Title */}
             <input
               value={a.title}
-              onChange={e => setField('title', e.target.value)}
+              onChange={e => onTitleChange(e.target.value)}
               placeholder="Title"
               style={{
                 width: '100%', fontSize: 30, fontFamily: 'Georgia, serif', fontWeight: 800,
@@ -288,7 +345,7 @@ export default function AdminArticleEditPage() {
             <div style={{
               position: 'sticky' as const, top: 8, zIndex: 5,
               background: '#fafafa', border: `1px solid ${C.border}`, borderRadius: 10,
-              padding: 8, marginBottom: 10,
+              padding: 8, marginBottom: 10, boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
               display: 'flex', flexWrap: 'wrap' as const, gap: 4, alignItems: 'center',
             }}>
               <select onChange={e => { formatBlock(e.target.value); e.target.value = '' }} defaultValue="" style={tbSelect}>
@@ -415,6 +472,26 @@ export default function AdminArticleEditPage() {
 
           {/* Sidebar */}
           <aside style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
+            <Section title="Site">
+              <select value={a.state_code} onChange={e => setField('state_code', e.target.value)} style={inp}>
+                {TENANT_OPTIONS.map(t => (
+                  <option key={t.code} value={t.code}>{t.name} ({t.code.toUpperCase()})</option>
+                ))}
+              </select>
+              {(() => {
+                const host = TENANT_OPTIONS.find(t => t.code === a.state_code)?.host || ''
+                const moved = origState.current && a.state_code !== origState.current
+                return (
+                  <div style={{ fontSize: 11, color: moved ? C.amber : C.sub, marginTop: 6, lineHeight: 1.5 }}>
+                    {moved
+                      ? <><strong>Moves on save</strong> from {origState.current.toUpperCase()} → {a.state_code.toUpperCase()}. New live URL: </>
+                      : <>The website this post appears on. Live URL: </>}
+                    <span style={{ wordBreak: 'break-all' as const, color: C.text }}>{host}{a.legacy_path || `/articles/${a.slug}/`}</span>
+                  </div>
+                )
+              })()}
+            </Section>
+
             <Section title="Publish">
               <Row label="Status">
                 <select value={a.status} onChange={e => setField('status', e.target.value)} style={inp}>
@@ -453,7 +530,7 @@ export default function AdminArticleEditPage() {
             </Section>
 
             <Section title="URL">
-              <Row label="Slug"><input value={a.slug} onChange={e => setField('slug', e.target.value)} style={inp} /></Row>
+              <Row label="Slug"><input value={a.slug} onChange={e => onSlugChange(e.target.value)} style={inp} /></Row>
               <Row label="Legacy path">
                 <input value={a.legacy_path || ''} onChange={e => setField('legacy_path', e.target.value || null)}
                   placeholder="/the-best-things-to-do-in-…" style={inp} />

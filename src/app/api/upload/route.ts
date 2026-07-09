@@ -3,7 +3,7 @@ import sharp from 'sharp'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { randomUUID } from 'crypto'
 import { getAdminAuth } from '@/lib/firebase-admin'
-import { rateLimit, getIP } from '@/lib/admin'
+import { rateLimit, getIP, verifyAdmin } from '@/lib/admin'
 import sql from '@/lib/db'
 
 const ALLOWED_FOLDERS = new Set([
@@ -11,6 +11,13 @@ const ALLOWED_FOLDERS = new Set([
 ])
 
 async function getViewer(req: NextRequest) {
+  // The CMS article editor authenticates with the admin HMAC cookie
+  // (__autravel_admin), NOT a Firebase session — so accept that first, else
+  // the admin can't upload cover/inline images ("Sign in to upload").
+  const admin = await verifyAdmin(req)
+  if (admin) return { id: `admin:${admin.id}`, is_banned: false }
+
+  // Community users authenticate via the Firebase session cookie.
   const s = req.cookies.get('__session')?.value
   if (!s) return null
   try {

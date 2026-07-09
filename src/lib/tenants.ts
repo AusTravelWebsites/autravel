@@ -339,3 +339,8 @@ export function tenantForState(code: StateCode): TenantConfig {
 }
 
 export const ALL_STATE_CODES: StateCode[] = Object.keys(TENANTS) as StateCode[]
+
+/** Lightweight {code, name, host} list for admin tenant pickers. tenants.ts has
+ *  no server deps, so this is safe to import into client components. */
+export const TENANT_OPTIONS: Array<{ code: StateCode; name: string; host: string }> =
+  ALL_STATE_CODES.map(code => ({ code, name: TENANTS[code].name, host: TENANTS[code].host }))

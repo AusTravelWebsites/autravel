@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
-import { makeResetToken, RESET_TOKEN_TTL_S } from '@/lib/admin-session'
+import { makeResetToken, RESET_TOKEN_TTL_S, isKnownAdmin } from '@/lib/admin-session'
 import { getIP, rateLimit } from '@/lib/admin'
 import { tenantForHost } from '@/lib/tenants'
 
@@ -20,10 +20,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Bad request' }, { status: 400 })
   }
 
-  const expectedEmail = (process.env.AUTRAVEL_ADMIN_EMAIL || '').trim().toLowerCase()
-
-  if (email && expectedEmail && email === expectedEmail && resend) {
-    const { token, expiresAt } = makeResetToken(expectedEmail)
+  // Send a reset link to any known admin address (a DB credential row or the
+  // bootstrap superadmin). Always return generic success below regardless, so
+  // the form never reveals which addresses are admins.
+  if (email && resend && (await isKnownAdmin(email))) {
+    const { token, expiresAt } = makeResetToken(email)
     const host = req.headers.get('host') || ''
     const tenant = tenantForHost(host)
     const origin = `https://${host}`
@@ -37,12 +38,16 @@ export async function POST(req: NextRequest) {
       <div style="font-size:11px;color:#6b7280;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">${tenant.name}</div>
       <h1 style="margin:0 0 14px;font-family:Georgia,serif;font-size:22px;color:#111827;line-height:1.3">Reset your admin password</h1>
       <p style="margin:0 0 16px;color:#374151;font-size:14px;line-height:1.55">
-        Click the button below to set a new password for the ${expectedEmail} admin account.
+        Click the button below to set a new password for the ${email} admin account.
         This link expires in ${minutes} minutes and can only be used once.
       </p>
       <div style="text-align:center;margin:18px 0 8px">
-        <a href="${resetUrl}" style="display:inline-block;background:var(--brand);color:#ffffff;text-decoration:none;font-weight:700;padding:12px 26px;border-radius:8px;font-size:14px">Set new password</a>
+        <a href="${resetUrl}" style="display:inline-block;background:#0d9488;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 26px;border-radius:8px;font-size:14px">Set new password</a>
       </div>
+      <p style="margin:14px 0 0;color:#6b7280;font-size:12px;line-height:1.5;text-align:center">
+        Or paste this link into your browser:<br/>
+        <a href="${resetUrl}" style="color:#0d9488;word-break:break-all">${resetUrl}</a>
+      </p>
       <p style="margin:18px 0 0;color:#9ca3af;font-size:12px;line-height:1.55">
         If you didn't request this, you can ignore this email — your password won't change.
         Reset requested from ${origin} at ${new Date(expiresAt * 1000 - RESET_TOKEN_TTL_S * 1000).toISOString()}.
@@ -59,7 +64,7 @@ export async function POST(req: NextRequest) {
       // which site they reset.
       const r = await resend.emails.send({
         from: `${tenant.name} Admin <noreply@bugbitten.com>`,
-        to: expectedEmail,
+        to: email,
         subject: `Reset your ${tenant.name} admin password`,
         html,
       })

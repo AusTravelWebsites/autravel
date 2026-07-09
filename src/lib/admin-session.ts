@@ -56,23 +56,78 @@ export const ADMIN_COOKIE = COOKIE_NAME
 export const ADMIN_MAX_AGE_S = MAX_AGE_S
 export const RESET_TOKEN_TTL_S = RESET_TTL_S
 
-// --- Password hash storage (DB row takes precedence, env is bootstrap fallback) ---
+// --- Admin accounts (multi-admin) --------------------------------------------
+// Any email with a row in autravel.admin_credentials is an admin. The env
+// AUTRAVEL_ADMIN_EMAIL + AUTRAVEL_ADMIN_PASSWORD_HASH pair is the "bootstrap"
+// superadmin: a recovery account that always exists even with an empty table
+// and cannot be removed from the UI.
+
+function bootstrapEmail(): string {
+  return (process.env.AUTRAVEL_ADMIN_EMAIL || '').trim().toLowerCase()
+}
+function bootstrapHash(): string {
+  return process.env.AUTRAVEL_ADMIN_PASSWORD_HASH || ''
+}
+
+/** True if `email` is the configured bootstrap superadmin. */
+export function isBootstrapAdminEmail(email: string): boolean {
+  const boot = bootstrapEmail()
+  return !!boot && email.trim().toLowerCase() === boot
+}
 
 export async function getStoredPasswordHash(email: string): Promise<string | null> {
+  const e = email.trim().toLowerCase()
   try {
-    const [row] = await db`SELECT password_hash FROM autravel.admin_credentials WHERE email = ${email} LIMIT 1`
+    const [row] = await db`SELECT password_hash FROM autravel.admin_credentials WHERE email = ${e} LIMIT 1`
     if (row?.password_hash) return row.password_hash as string
-  } catch (e) { console.error('[getStoredPasswordHash]', e) }
-  const env = process.env.AUTRAVEL_ADMIN_PASSWORD_HASH || ''
-  return env || null
+  } catch (err) { console.error('[getStoredPasswordHash]', err) }
+  // The env hash is a bootstrap fallback for the superadmin ONLY. Returning it
+  // for any other email would let every address log in with one shared password.
+  if (e && isBootstrapAdminEmail(e) && bootstrapHash()) return bootstrapHash()
+  return null
 }
 
 export async function setStoredPasswordHash(email: string, hash: string): Promise<void> {
   await db`
     INSERT INTO autravel.admin_credentials (email, password_hash)
-    VALUES (${email}, ${hash})
+    VALUES (${email.trim().toLowerCase()}, ${hash})
     ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, updated_at = now()
   `
+}
+
+/** Is this email allowed to reset/log in — has a credential row or is bootstrap? */
+export async function isKnownAdmin(email: string): Promise<boolean> {
+  const e = email.trim().toLowerCase()
+  if (!e) return false
+  if (isBootstrapAdminEmail(e) && bootstrapHash()) return true
+  try {
+    const [row] = await db`SELECT 1 FROM autravel.admin_credentials WHERE email = ${e} LIMIT 1`
+    return !!row
+  } catch (err) { console.error('[isKnownAdmin]', err); return false }
+}
+
+export type AdminAccount = { email: string; updatedAt: string | null; bootstrap: boolean }
+
+/** Every admin account: DB credential rows unioned with the bootstrap superadmin. */
+export async function listAdmins(): Promise<AdminAccount[]> {
+  const boot = bootstrapEmail()
+  const map = new Map<string, AdminAccount>()
+  if (boot && bootstrapHash()) map.set(boot, { email: boot, updatedAt: null, bootstrap: true })
+  try {
+    const rows = await db<Array<{ email: string; updated_at: string }>>`
+      SELECT email, updated_at FROM autravel.admin_credentials ORDER BY email ASC`
+    for (const r of rows) {
+      map.set(r.email, { email: r.email, updatedAt: r.updated_at, bootstrap: r.email === boot })
+    }
+  } catch (e) { console.error('[listAdmins]', e) }
+  return Array.from(map.values()).sort((a, b) => a.email.localeCompare(b.email))
+}
+
+/** Remove an admin. The bootstrap superadmin cannot be removed. */
+export async function deleteAdmin(email: string): Promise<void> {
+  const e = email.trim().toLowerCase()
+  if (isBootstrapAdminEmail(e)) throw new Error('The primary admin account cannot be removed')
+  await db`DELETE FROM autravel.admin_credentials WHERE email = ${e}`
 }
 
 // --- Password-reset tokens (signed, single-use via reset_used table) ---

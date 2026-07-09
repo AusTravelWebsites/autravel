@@ -19,15 +19,11 @@ export async function POST(req: NextRequest) {
   }
   if (!email || !password) return NextResponse.json({ error: 'Email and password required' }, { status: 400 })
 
-  const expectedEmail = (process.env.AUTRAVEL_ADMIN_EMAIL || '').trim().toLowerCase()
-  if (!expectedEmail) {
-    return NextResponse.json({ error: 'Admin login not configured' }, { status: 500 })
-  }
-  const storedHash = await getStoredPasswordHash(expectedEmail)
-  if (!storedHash) {
-    return NextResponse.json({ error: 'Admin login not configured' }, { status: 500 })
-  }
-  if (email !== expectedEmail || !verifyPassword(password, storedHash)) {
+  // Multi-admin: any email with a credential row (or the bootstrap superadmin)
+  // can sign in. getStoredPasswordHash only returns the env bootstrap hash for
+  // the configured superadmin, so unknown emails resolve to null → rejected.
+  const storedHash = await getStoredPasswordHash(email)
+  if (!storedHash || !verifyPassword(password, storedHash)) {
     return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
   }
 

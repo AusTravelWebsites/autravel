@@ -31,6 +31,7 @@ const navGroups: Array<{ heading: string; items: Array<{ href: string; label: st
   ]},
   { heading: 'Site', items: [
     { href: '/admin/settings',        label: 'Site settings' },
+    { href: '/admin/admins',          label: 'Admin accounts' },
     { href: '/admin/actions',         label: 'Audit log' },
     { href: '/admin/client-errors',   label: 'Client errors' },
     { href: '/admin/csp-violations',  label: 'CSP violations' },
@@ -105,7 +106,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>← Back to site</Link>
         </div>
       </aside>
-      <main style={{ flex: 1, overflow: 'auto' as const }}>
+      {/* No `overflow: auto` here: it would make <main> the scroll container,
+          but content grows and the WINDOW scrolls instead — which silently
+          breaks `position: sticky` toolbars inside admin pages (they had no
+          scrollport to stick to). The sidebar stays put via its own
+          position:sticky against the window, so main doesn't need to clip.
+          minWidth:0 lets wide children (tables) manage their own overflow
+          without stretching the flex row. */}
+      <main style={{ flex: 1, minWidth: 0 }}>
         {children}
       </main>
     </div>

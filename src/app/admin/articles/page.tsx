@@ -24,6 +24,7 @@ export default function AdminArticlesPage() {
   const [search, setSearch] = useState(() => sp?.get('search') || '')
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [creating, setCreating] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -68,11 +69,36 @@ export default function AdminArticlesPage() {
     await patch(id, { affiliate_links: Object.keys(next).length ? next : null })
   }
 
+  // Create a blank draft for the current tenant (or the selected state filter)
+  // and jump straight into the full editor.
+  async function newPost() {
+    if (creating) return
+    setCreating(true)
+    try {
+      // POST to the trailing-slash URL directly — the app has trailingSlash:true,
+      // and a 308 redirect on a POST is unreliable in browser fetch (body/method
+      // can be dropped). Hitting /api/admin/articles/ avoids the redirect entirely.
+      const r = await fetch('/api/admin/articles/', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state ? { state_code: state } : {}),
+      })
+      const j = await r.json().catch(() => ({}))
+      if (r.ok && j.id) { window.location.href = j.edit_url || `/admin/articles/${j.id}/edit/`; return }
+      alert(j.error || `Failed to create post (HTTP ${r.status})`); setCreating(false)
+    } catch (e: any) { alert('Failed to create post: ' + (e?.message || 'network error')); setCreating(false) }
+  }
+
   return (
     <div style={{ padding: '20px 24px', maxWidth: 1400, margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap' as const, gap: 10 }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Articles</h1>
-        <div style={{ fontSize: 12, color: C.sub }}>{count.toLocaleString()} total · archives stay in DB forever</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ fontSize: 12, color: C.sub }}>{count.toLocaleString()} total · archives stay in DB forever</div>
+          <button onClick={newPost} disabled={creating}
+            style={{ padding: '9px 18px', background: C.teal, color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 13, cursor: creating ? 'wait' : 'pointer', opacity: creating ? 0.6 : 1 }}>
+            {creating ? 'Creating…' : `+ New Post${state ? ` (${state.toUpperCase()})` : ''}`}
+          </button>
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const, marginBottom: 14, fontSize: 12 }}>

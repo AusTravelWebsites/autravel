@@ -1,6 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { db } from '@/lib/db'
 import { verifyAdmin } from '@/lib/admin'
+import { tenantForHost, ALL_STATE_CODES } from '@/lib/tenants'
+
+// Create a brand-new draft post, then the admin edits it in the full rich
+// editor at /admin/articles/<id>/edit (create-then-edit, like WordPress "Add
+// New"). state_code defaults to the tenant of the host the admin is on (so
+// "New Post" on new-forest-national-park.com/admin makes a UK post); an
+// explicit state_code in the body overrides it. Seeds a unique placeholder
+// slug/legacy_path + published_at so it sorts + dates correctly once published.
+export async function POST(req: NextRequest) {
+  const admin = await verifyAdmin(req)
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const body = await req.json().catch(() => ({} as any))
+  const hostState = tenantForHost(req.headers.get('host')).state_code
+  const state_code = ALL_STATE_CODES.includes(body?.state_code) ? body.state_code : hostState
+
+  const sfx = randomUUID().slice(0, 8)
+  const slug = `new-post-${sfx}`
+  const legacy_path = `/${slug}/`
+
+  const [row] = await db<Array<{ id: string }>>`
+    INSERT INTO articles
+      (state_code, slug, legacy_path, title, excerpt, body_html, post_type,
+       status, source, published_at, created_at, updated_at)
+    VALUES
+      (${state_code}, ${slug}, ${legacy_path}, ${'Untitled post'}, ${''}, ${''}, ${'post'},
+       ${'draft'}, ${'manual'}, ${new Date()}, ${new Date()}, ${new Date()})
+    RETURNING id::text AS id`
+
+  return NextResponse.json({ id: row.id, slug, state_code, edit_url: `/admin/articles/${row.id}/edit` })
+}
 
 export async function GET(req: NextRequest) {
   const admin = await verifyAdmin(req)
