@@ -18,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE}/destinations/`, changeFrequency: 'daily',   priority: 0.95, lastModified: now },
     { url: `${SITE}/parks/`,        changeFrequency: 'daily',   priority: 0.95, lastModified: now },
     { url: `${SITE}/tours/`,        changeFrequency: 'daily',   priority: 0.95, lastModified: now },
+    { url: `${SITE}/trains/`,       changeFrequency: 'weekly',  priority: 0.8,  lastModified: now },
     { url: `${SITE}/distances/`,    changeFrequency: 'weekly',  priority: 0.7,  lastModified: now },
     { url: `${SITE}/about/`,        changeFrequency: 'monthly', priority: 0.6,  lastModified: now },
     { url: `${SITE}/contact/`,      changeFrequency: 'monthly', priority: 0.5,  lastModified: now },
@@ -99,6 +100,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   } catch {}
 
+  let trains: Entry[] = []
+  try {
+    const rows = await db`
+      SELECT slug, cover_image, COALESCE(updated_at, created_at) AS lm
+      FROM autravel.trains
+      WHERE active = true AND (${state}::text IS NULL OR ${state}::text = ANY(state_codes))
+      LIMIT 200`
+    trains = (rows as any[]).map(t => {
+      const e: Entry = { url: `${SITE}/trains/${t.slug}/`, lastModified: t.lm ? new Date(t.lm) : now, changeFrequency: 'monthly', priority: 0.65 }
+      if (t.cover_image) e.images = [t.cover_image]
+      return e
+    })
+  } catch {}
+
   let distances: Entry[] = []
   try {
     const rows = await db`
@@ -137,5 +152,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     } catch {}
   }
 
-  return [...staticPages, ...destinations, ...parks, ...tours, ...articles, ...distances, ...trails]
+  return [...staticPages, ...destinations, ...parks, ...tours, ...articles, ...distances, ...trains, ...trails]
 }
