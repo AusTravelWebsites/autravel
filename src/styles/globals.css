@@ -30,7 +30,7 @@
   --color-sunset-700: #c2410c;
 }
 
-/* ─── BugBitten Design Tokens ──────────────────────────────────────────────── */
+/* ─── Shared Design Tokens (per-tenant --brand override applied in layout.tsx) ─── */
 :root {
   /* Brand — Earth (primary) */
   --earth-900: #1D1D1F;

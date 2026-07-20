@@ -24,7 +24,7 @@ export function ShareButton({ url, text, label = 'Share' }: Props) {
 
   const tryNative = async () => {
     if (typeof navigator !== 'undefined' && 'share' in navigator) {
-      try { await (navigator as any).share({ url, text, title: text || 'BugBitten' }); return true; } catch {}
+      try { await (navigator as any).share({ url, text, title: text || 'Check this out' }); return true; } catch {}
     }
     return false;
   };

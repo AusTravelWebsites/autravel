@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/db';
+import { getTenant } from '@/lib/get-tenant';
 
 export const revalidate = 1800; // 30 min ISR — country inventories change slowly
 import type { Metadata } from 'next';
@@ -26,6 +27,8 @@ const FMT_CATS = (cats: { category: string; c: number }[]) =>
 
 export default async function CountryPlacesPage({ params }: Props) {
   const { country } = await params;
+  const tenant = await getTenant();
+  const SITE_URL = `https://${tenant.host}`;
   const realName = await resolveCountry(country);
   if (!realName) notFound();
 
@@ -66,19 +69,19 @@ export default async function CountryPlacesPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'TouristDestination',
     name: realName,
-    description: `Top tourist attractions, activities, parks, and places to visit in ${realName} — curated on BugBitten.`,
-    url: `https://bugbitten.com/country/${country}`,
+    description: `Top tourist attractions, activities, parks, and places to visit in ${realName} — curated on ${tenant.name}.`,
+    url: `${SITE_URL}/country/${country}`,
     containedInPlace: { '@type': 'Country', name: realName },
-    isPartOf: { '@type': 'WebSite', name: 'BugBitten', url: 'https://bugbitten.com' },
+    isPartOf: { '@type': 'WebSite', name: tenant.name, url: SITE_URL },
   };
 
   const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bugbitten.com/' },
-      { '@type': 'ListItem', position: 2, name: 'Explore', item: 'https://bugbitten.com/explore' },
-      { '@type': 'ListItem', position: 3, name: realName, item: `https://bugbitten.com/country/${country}` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Explore', item: `${SITE_URL}/explore` },
+      { '@type': 'ListItem', position: 3, name: realName, item: `${SITE_URL}/country/${country}` },
     ],
   };
 
@@ -262,16 +265,17 @@ export default async function CountryPlacesPage({ params }: Props) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { country } = await params;
+  const tenant = await getTenant();
   const realName = await resolveCountry(country);
   if (!realName) return { title: 'Country not found' };
   const total = await db`SELECT COUNT(*)::int AS c FROM places WHERE country = ${realName}`.then(r => (r[0] as any).c).catch(() => 0);
   const title = `Things to do in ${realName} — ${total} places`;
-  const description = `${total} tourist attractions, parks, activities and places to visit in ${realName}. Traveller reviews, photos and trip ideas on BugBitten.`;
-  const url = `https://bugbitten.com/country/${country}`;
+  const description = `${total} tourist attractions, parks, activities and places to visit in ${realName}. Traveller reviews, photos and trip ideas on ${tenant.name}.`;
+  const url = `https://${tenant.host}/country/${country}`;
   return {
     title, description,
     alternates: { canonical: url },
-    openGraph: { type: 'website', title, description, url, siteName: 'BugBitten' },
+    openGraph: { type: 'website', title, description, url, siteName: tenant.name },
     twitter: { card: 'summary_large_image', title, description },
   };
 }

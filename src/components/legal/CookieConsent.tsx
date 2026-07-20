@@ -43,7 +43,16 @@ function savePrefs(prefs: Prefs) {
 // Expose global `openCookieSettings()` so footer / other places can re-open
 declare global { interface Window { bbConsent?: Prefs; openCookieSettings?: () => void } }
 
-export function CookieConsent() {
+interface CookieConsentProps {
+  /** Current tenant's brand name. Passed down from the server-rendered root
+   *  layout (which already resolves the tenant via getTenant()) so this
+   *  shared, multi-tenant client component reads correctly on every one of
+   *  the 10 domains it's mounted on. Falls back to a generic phrase if a
+   *  caller ever renders it without the prop. */
+  siteName?: string;
+}
+
+export function CookieConsent({ siteName = 'this site' }: CookieConsentProps) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
@@ -78,12 +87,12 @@ export function CookieConsent() {
         <div role="dialog" aria-label="Cookie preferences" style={{ background: '#fff', borderRadius: 14, maxWidth: 520, width: '100%', padding: 28, boxShadow: '0 20px 40px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
           <h2 style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 700, color: '#111827' }}>Cookie preferences</h2>
           <p style={{ margin: '0 0 20px', fontSize: 14, color: sub, lineHeight: 1.55 }}>
-            BugBitten uses cookies to make the site work and to improve it. You can accept all, reject non-essential, or choose which categories to allow. You can change your choice any time via "Cookie settings" in the footer. See our <a href="/cookies" style={{ color: teal }}>Cookie Policy</a> and <a href="/privacy" style={{ color: teal }}>Privacy Policy</a>.
+            {siteName} uses cookies to make the site work and to improve it. You can accept all, reject non-essential, or choose which categories to allow. You can change your choice any time via "Cookie settings" in the footer. See our <a href="/cookies" style={{ color: teal }}>Cookie Policy</a> and <a href="/privacy" style={{ color: teal }}>Privacy Policy</a>.
           </p>
 
           {[
             { title: 'Strictly necessary', desc: 'Required for login, session handling, security and basic site functionality. Cannot be disabled.', value: true, locked: true, set: () => {} },
-            { title: 'Analytics', desc: 'Helps us understand how BugBitten is used (page views, errors) so we can improve it. Anonymous and aggregated.', value: analytics, locked: false, set: setAnalytics },
+            { title: 'Analytics', desc: `Helps us understand how ${siteName} is used (page views, errors) so we can improve it. Anonymous and aggregated.`, value: analytics, locked: false, set: setAnalytics },
             { title: 'Marketing', desc: 'Used for personalised advertising on other sites. Off by default.', value: marketing, locked: false, set: setMarketing },
           ].map(row => (
             <div key={row.title} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '12px 0', borderTop: `1px solid ${border}` }}>
@@ -130,7 +139,7 @@ export function CookieConsent() {
       <div style={{ flex: '1 1 280px', minWidth: 0 }}>
         <div style={{ fontWeight: 700, fontSize: 15, color: '#111827', marginBottom: 4 }}>We use cookies</div>
         <div style={{ fontSize: 13, color: sub, lineHeight: 1.55 }}>
-          We use strictly necessary cookies to make BugBitten work. With your consent, we also use analytics and marketing cookies to improve the site. See our <a href="/cookies" style={{ color: teal }}>Cookie Policy</a> and <a href="/privacy" style={{ color: teal }}>Privacy Policy</a>.
+          We use strictly necessary cookies to make {siteName} work. With your consent, we also use analytics and marketing cookies to improve the site. See our <a href="/cookies" style={{ color: teal }}>Cookie Policy</a> and <a href="/privacy" style={{ color: teal }}>Privacy Policy</a>.
         </div>
       </div>
       <div style={{ display: 'flex', gap: 8, flexShrink: 0, flexWrap: 'wrap' }}>

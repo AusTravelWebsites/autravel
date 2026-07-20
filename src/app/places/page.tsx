@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 import { db } from '@/lib/db';
+import { getTenant } from '@/lib/get-tenant';
 import { PlacesCountrySearch } from '@/components/features/PlacesCountrySearch';
 
 export const revalidate = 1800;
@@ -32,18 +33,22 @@ const CONTINENT_OF: Record<string, string> = {
   Morocco:'Africa',Egypt:'Africa',Kenya:'Africa',Tanzania:'Africa','South Africa':'Africa',Namibia:'Africa',Botswana:'Africa',Zambia:'Africa',Zimbabwe:'Africa',Ethiopia:'Africa',Rwanda:'Africa',Uganda:'Africa',Ghana:'Africa',Senegal:'Africa',Tunisia:'Africa',Madagascar:'Africa',Mozambique:'Africa','Sri Lanka':'Asia',
 };
 
-export const metadata: Metadata = {
-  title: 'Explore Places by Country',
-  description: 'Find real travel destinations by country. Browse cities, beaches, nature, food and hotels across the globe — every review GPS-verified by travellers who were actually there.',
-  alternates: { canonical: 'https://bugbitten.com/places' },
-  openGraph: {
-    title: 'Explore Places by Country — BugBitten',
-    description: 'Browse real, GPS-verified travel places by country and category.',
-    url: 'https://bugbitten.com/places',
-    siteName: 'BugBitten',
-    type: 'website',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await getTenant();
+  const url = `https://${tenant.host}/places`;
+  return {
+    title: 'Explore Places by Country',
+    description: 'Find real travel destinations by country. Browse cities, beaches, nature, food and hotels across the globe — every review GPS-verified by travellers who were actually there.',
+    alternates: { canonical: url },
+    openGraph: {
+      title: `Explore Places by Country — ${tenant.name}`,
+      description: 'Browse real, GPS-verified travel places by country and category.',
+      url,
+      siteName: tenant.name,
+      type: 'website',
+    },
+  };
+}
 
 // 2026-05-25 — cached 30 min. Country distribution barely changes.
 const getCountries = unstable_cache(
@@ -74,6 +79,7 @@ const getCountries = unstable_cache(
 )
 
 export default async function PlacesOverviewPage() {
+  const tenant = await getTenant();
   const countries = await getCountries();
   const total = countries.reduce((s: number, c: any) => s + Number(c.place_count || 0), 0);
 
@@ -91,8 +97,8 @@ export default async function PlacesOverviewPage() {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bugbitten.com/' },
-          { '@type': 'ListItem', position: 2, name: 'Places', item: 'https://bugbitten.com/places' },
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `https://${tenant.host}/` },
+          { '@type': 'ListItem', position: 2, name: 'Places', item: `https://${tenant.host}/places` },
         ],
       }) }} />
 

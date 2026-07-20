@@ -237,7 +237,7 @@ try {
           authors={mega.authors.slice(0, 4).map(a => ({ slug: a.slug, name: a.name }))}
           topDestinations={mega.destinations.slice(0, 8).map(d => ({ slug: d.slug, name: d.name }))}
         />
-        <CookieConsent />
+        <CookieConsent siteName={tenant.name} />
         <ClientErrorReporter />
         {bodyEndCode && (
           <div id="bb-body-end" dangerouslySetInnerHTML={{ __html: bodyEndCode }} />

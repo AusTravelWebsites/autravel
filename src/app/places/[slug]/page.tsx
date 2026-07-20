@@ -13,6 +13,7 @@ interface Props { params: Promise<{ slug: string }> }
 export default async function PlacePage({ params }: Props) {
   const { slug } = await params
   const tenant = await getTenant()
+  const SITE_URL = `https://${tenant.host}`
   const state = stateFilterValue(tenant)
   let place: any = null
   try {
@@ -116,14 +117,14 @@ export default async function PlacePage({ params }: Props) {
     : cat === 'hotels' || cat === 'hotel' || cat === 'hostels' || cat === 'accommodation' ? 'LodgingBusiness'
     : cat === 'bar' || cat === 'nightlife' ? 'BarOrPub'
     : ['LocalBusiness', 'TouristAttraction']
-  const pageUrl = `https://bugbitten.com/places/${slug}`
+  const pageUrl = `${SITE_URL}/places/${slug}`
   const allImages = [place.cover_image, ...wall.map(p => p.url)].filter(Boolean).slice(0, 10)
   const jsonLd: any = {
     '@context': 'https://schema.org',
     '@type': ldType,
     name: place.name,
     url: pageUrl,
-    description: place.description || `${place.name} on BugBitten — traveller photos, reviews and check-ins.`,
+    description: place.description || `${place.name} on ${tenant.name} — traveller photos, reviews and check-ins.`,
     image: allImages.length ? allImages : undefined,
     address: {
       '@type': 'PostalAddress',
@@ -158,8 +159,8 @@ export default async function PlacePage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Explore', item: 'https://bugbitten.com/explore' },
-      ...(place.country ? [{ '@type': 'ListItem', position: 2, name: place.country, item: `https://bugbitten.com/country/${place.country.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}` }] : []),
+      { '@type': 'ListItem', position: 1, name: 'Explore', item: `${SITE_URL}/explore` },
+      ...(place.country ? [{ '@type': 'ListItem', position: 2, name: place.country, item: `${SITE_URL}/country/${place.country.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}` }] : []),
       { '@type': 'ListItem', position: place.country ? 3 : 2, name: place.name, item: pageUrl },
     ],
   }
@@ -217,7 +218,7 @@ export default async function PlacePage({ params }: Props) {
           <a href={'/check-in?place=' + place.id} style={{ background: 'var(--brand)', color: '#fff', padding: '12px 24px', borderRadius: 20, fontSize: 14, fontWeight: 700, textDecoration: 'none' }}>Check In Here</a>
           <a href={'/reviews/new?place=' + place.id} style={{ background: '#fff', border: '1px solid var(--brand)', color: 'var(--brand)', padding: '12px 24px', borderRadius: 20, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>Write a Review</a>
           <FavouriteButton placeId={place.id} />
-          <ShareButton url={`https://bugbitten.com/places/${place.slug}`} text={`${place.name} — ${place.city || place.country || ''} on BugBitten`} />
+          <ShareButton url={`${SITE_URL}/places/${place.slug}`} text={`${place.name} — ${place.city || place.country || ''} on ${tenant.name}`} />
         </div>
 
         {/* Photo wall */}

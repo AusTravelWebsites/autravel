@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
+import { getTenant } from '@/lib/get-tenant'
 import {
   C, slugify, resolveCountry, fetchCountryData, fetchCountryGuide, mergeGuideCopy, isoForName,
   TourCard, CountryFlag,
@@ -36,12 +37,13 @@ const TABS = [
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { country } = await params
+  const tenant = await getTenant()
   const resolved = await resolveCountry(country)
-  if (!resolved) return { title: 'Country not found · BugBitten' }
+  if (!resolved) return { title: `Country not found · ${tenant.name}` }
   const { name } = resolved
-  const url = `https://bugbitten.com/country/${country}/guide`
-  const title = `${name} Travel Guide — Tours, Cities & Traveller Reviews | BugBitten`
-  const description = `The complete travel guide to ${name}: live tours, GPS-verified reviews, city search, must-see highlights, and practical travel tips from real backpackers on BugBitten.`
+  const url = `https://${tenant.host}/country/${country}/guide`
+  const title = `${name} Travel Guide — Tours, Cities & Traveller Reviews | ${tenant.name}`
+  const description = `The complete travel guide to ${name}: live tours, GPS-verified reviews, city search, must-see highlights, and practical travel tips from real backpackers on ${tenant.name}.`
   return {
     title,
     description,
@@ -60,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url,
-      siteName: 'BugBitten',
+      siteName: tenant.name,
     },
     twitter: { card: 'summary_large_image', title, description },
   }
@@ -68,6 +70,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CountryGuidePage({ params }: Props) {
   const { country } = await params
+  const tenant = await getTenant()
+  const SITE_URL = `https://${tenant.host}`
   const resolved = await resolveCountry(country)
   if (!resolved) notFound()
   const { name, code } = resolved
@@ -90,18 +94,18 @@ export default async function CountryGuidePage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'TouristDestination',
     name,
-    description: `Travel guide to ${name} — tours, cities, attractions and traveller reviews on BugBitten.`,
-    url: `https://bugbitten.com/country/${country}/guide`,
+    description: `Travel guide to ${name} — tours, cities, attractions and traveller reviews on ${tenant.name}.`,
+    url: `${SITE_URL}/country/${country}/guide`,
     containedInPlace: { '@type': 'Country', name },
-    isPartOf: { '@type': 'WebSite', name: 'BugBitten', url: 'https://bugbitten.com' },
+    isPartOf: { '@type': 'WebSite', name: tenant.name, url: SITE_URL },
   }
   const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home',   item: 'https://bugbitten.com/' },
-      { '@type': 'ListItem', position: 2, name,           item: `https://bugbitten.com/country/${country}` },
-      { '@type': 'ListItem', position: 3, name: 'Guide',  item: `https://bugbitten.com/country/${country}/guide` },
+      { '@type': 'ListItem', position: 1, name: 'Home',   item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name,           item: `${SITE_URL}/country/${country}` },
+      { '@type': 'ListItem', position: 3, name: 'Guide',  item: `${SITE_URL}/country/${country}/guide` },
     ],
   }
   const faqLd = {

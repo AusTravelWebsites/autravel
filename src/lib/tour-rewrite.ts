@@ -1,5 +1,7 @@
 // AI rewrite of an imported tour's description and highlights.
-// Input: raw Viator/WeTravel text. Output: original-voice BugBitten copy.
+// Input: raw Viator/WeTravel text. Output: original-voice copy for whichever
+// tenant site imported the tour (this app serves 10 different travel
+// domains from one codebase — see src/lib/tenants.ts).
 // Never copies verbatim — Viator's Partner Agreement forbids that, and it's
 // also what makes us different.
 
@@ -25,7 +27,7 @@ export type RewriteOutput = {
   model: string
 }
 
-const SYSTEM = `You are a travel writer for BugBitten, a traveller-first community. You rewrite tour-operator blurb into fresh, honest, search-friendly copy.
+const SYSTEM = `You are a travel writer for an independent, traveller-first travel guide. You rewrite tour-operator blurb into fresh, honest, search-friendly copy.
 
 HARD RULES:
 - Never copy phrases verbatim from the source text. If a sentence in the source is distinctive, paraphrase it. No "don't miss", no "once-in-a-lifetime", no "immerse yourself".

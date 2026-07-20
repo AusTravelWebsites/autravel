@@ -171,7 +171,7 @@ export function PlaceCard({
             <span className="text-xs text-mist">
               {recentVisitors.length > 4
                 ? `${recentVisitors.length} recent visitors`
-                : `${recentVisitors.length} BugBitten travellers visited`}
+                : `${recentVisitors.length} travellers visited`}
             </span>
           </div>
         )}

@@ -4,7 +4,14 @@ import { makeResetToken, RESET_TOKEN_TTL_S, isKnownAdmin } from '@/lib/admin-ses
 import { getIP, rateLimit } from '@/lib/admin'
 import { tenantForHost } from '@/lib/tenants'
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+// Per-tenant Resend account, same resolution as /api/contact: a tenant on its
+// own Resend account (e.g. the UK / New Forest tenant, whose domain is
+// verified in a separate account) sets RESEND_API_KEY_<STATECODE>; every
+// other tenant falls back to the shared RESEND_API_KEY.
+function resendFor(stateCode: string): Resend | null {
+  const key = process.env[`RESEND_API_KEY_${stateCode.toUpperCase()}`] || process.env.RESEND_API_KEY
+  return key ? new Resend(key) : null
+}
 
 export async function POST(req: NextRequest) {
   const ip = getIP(req)
@@ -20,13 +27,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Bad request' }, { status: 400 })
   }
 
+  const host = req.headers.get('host') || ''
+  const tenant = tenantForHost(host)
+  const resend = resendFor(tenant.state_code)
+
   // Send a reset link to any known admin address (a DB credential row or the
   // bootstrap superadmin). Always return generic success below regardless, so
   // the form never reveals which addresses are admins.
   if (email && resend && (await isKnownAdmin(email))) {
     const { token, expiresAt } = makeResetToken(email)
-    const host = req.headers.get('host') || ''
-    const tenant = tenantForHost(host)
     const origin = `https://${host}`
     const resetUrl = `${origin}/admin/reset-password?token=${encodeURIComponent(token)}`
     const minutes = Math.round(RESET_TOKEN_TTL_S / 60)
@@ -57,13 +66,12 @@ export async function POST(req: NextRequest) {
 </body></html>`
 
     try {
-      // 2026-06-03 — was per-tenant `noreply@<tenant>.com.au`; Resend rejects
-      // those with 403 because the autravel domains aren't verified senders.
-      // bugbitten.com IS verified, so route admin reset emails from there.
-      // The email body still shows the tenant brand so the recipient knows
-      // which site they reset.
+      // Per-tenant verified sender (same domain the /api/contact form sends
+      // from) rather than the old bugbitten.com fallback — that domain isn't
+      // one of this app's own verified senders and leaked the wrong brand
+      // into recipients' inboxes across all 10 tenants.
       const r = await resend.emails.send({
-        from: `${tenant.name} Admin <noreply@bugbitten.com>`,
+        from: `${tenant.name} Admin <${tenant.fromEmail}>`,
         to: email,
         subject: `Reset your ${tenant.name} admin password`,
         html,
