@@ -31,6 +31,7 @@ type Tour = {
   slug: string
   title: string
   country: string | null
+  country_code: string | null
   city: string | null
   state_code: string | null
   duration_label: string | null
@@ -46,16 +47,17 @@ type Tour = {
   highlights_ai: string[] | null
   what_to_expect_ai: string | null
   good_to_know_ai: string | null
+  meta_description_ai: string | null
   source: string
 }
 
 async function getTour(slug: string, tourStates: StateCode[] | null): Promise<Tour | null> {
   try {
     const [row] = await db<Tour[]>`
-      SELECT slug, title, country, city, state_code, duration_label, duration_min,
+      SELECT slug, title, country, country_code, city, state_code, duration_label, duration_min,
              price_from, currency, rating, review_count,
              cover_image, images, booking_url,
-             summary_ai, highlights_ai, what_to_expect_ai, good_to_know_ai, source
+             summary_ai, highlights_ai, what_to_expect_ai, good_to_know_ai, meta_description_ai, source
       FROM tours
       WHERE slug = ${slug}
         AND active = true
@@ -113,14 +115,49 @@ export default async function TourDetailPage({ params }: { params: Params }) {
   // (TouristTrip alone is NOT a supported parent). Product MUST come first —
   // Google treats the first @type as the parent node when validating rich results,
   // and listing TouristTrip first triggers "Invalid object type for field parent_node".
+  //
+  // Google treats Product+offers as a Merchant Listing, so the offers block must
+  // include shippingDetails, hasMerchantReturnPolicy, and a global identifier (we
+  // use brand). Tours are digital bookings — shipping is zero-cost/instant and
+  // there are no merchandise returns (cancellation policy varies per operator and
+  // is shown on the partner's checkout, not a return policy).
+  const offerCountry = tour.country_code || undefined
+  const shippingDetails = {
+    '@type': 'OfferShippingDetails',
+    shippingRate: { '@type': 'MonetaryAmount', value: 0, currency: tour.currency || 'AUD' },
+    shippingDestination: offerCountry
+      ? { '@type': 'DefinedRegion', addressCountry: offerCountry }
+      : { '@type': 'DefinedRegion', name: 'Worldwide' },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+      transitTime:  { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+    },
+  }
+  const merchantReturnPolicy = {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: offerCountry || 'AU',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+  }
+  // GSC was flagging "Missing field description" on Products where summary_ai
+  // hadn't been generated yet. Fall back through meta → summary → a deterministic
+  // sentence built from what we always have (title + location + duration) so the
+  // Product node always carries a non-empty description.
+  const productDescription = (
+    tour.meta_description_ai ||
+    tour.summary_ai ||
+    `${tour.title}${[tour.city, tour.country].filter(Boolean).length ? ` in ${[tour.city, tour.country].filter(Boolean).join(', ')}` : ''}${tour.duration_label ? ` — ${tour.duration_label}` : ''}. Book this ${partnerLabel} tour via ${tenant.name}.`
+  ).slice(0, 500)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': ['Product', 'TouristTrip'],
     name: tour.title,
-    description: tour.summary_ai || undefined,
+    description: productDescription,
     image: tour.cover_image || undefined,
     url: canonical,
     touristType: [tour.city, tour.country].filter(Boolean).join(', ') || undefined,
+    // Brand satisfies Google's "global identifier" requirement (gtin/brand) for Product.
+    brand: { '@type': 'Brand', name: partnerLabel },
     // Google rejects aggregateRating when reviewCount is 0 — require at least 1.
     aggregateRating: tour.rating && Number(tour.review_count || 0) > 0 ? {
       '@type': 'AggregateRating',
@@ -135,6 +172,8 @@ export default async function TourDetailPage({ params }: { params: Params }) {
       priceCurrency: tour.currency || 'AUD',
       availability: 'https://schema.org/InStock',
       url: tour.booking_url,
+      shippingDetails,
+      hasMerchantReturnPolicy: merchantReturnPolicy,
     } : undefined,
   }
 
