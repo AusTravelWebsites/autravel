@@ -24,6 +24,7 @@ const args = process.argv.slice(2)
 function arg(n, d = null) { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d }
 const WHAT = arg('what') || 'destinations'
 const LIMIT = Number(arg('limit', '0')) || null
+const STATE = arg('state', null)
 const DRY = args.includes('--dry-run')
 const DELAY = Number(arg('delay', '1200'))
 
@@ -72,7 +73,8 @@ function extractFirstImgFromBody(html) {
 }
 
 async function main() {
-  const sql = postgres(DB, { prepare: false, ssl: 'require', max: 4, connection: { search_path: 'autravel, public' } })
+  const isLocalhost = /@(127\.0\.0\.1|localhost)\b/.test(DB)
+  const sql = postgres(DB, { prepare: false, ssl: isLocalhost ? false : 'require', max: 4, connection: { search_path: 'autravel, public' } })
   const started = Date.now()
   let ok = 0, skipped = 0, failed = 0
 
@@ -122,7 +124,7 @@ async function main() {
     }
 
     const rows = await sql`SELECT id::text, state_code, slug, title, destination_slug, body_html FROM articles
-      WHERE status = 'published' AND (cover_image IS NULL OR cover_image = '')${LIMIT ? sql` LIMIT ${LIMIT}` : sql``}`
+      WHERE status = 'published' AND (cover_image IS NULL OR cover_image = '')${STATE ? sql` AND state_code = ${STATE}` : sql``}${LIMIT ? sql` LIMIT ${LIMIT}` : sql``}`
     console.log(`articles to backfill: ${rows.length}`)
     let sBody = 0, sDest = 0, sState = 0, sUnsplash = 0
     for (const a of rows) {
