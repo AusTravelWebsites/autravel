@@ -11,8 +11,9 @@ import postgres from 'postgres'
 import dotenv from 'dotenv'
 dotenv.config({ path: '/var/www/autravel/.env.local' })
 
-const sql = postgres(process.env.DATABASE_URL_POOL || process.env.DATABASE_URL, {
-  prepare: false, ssl: 'require', max: 2, connection: { search_path: 'autravel, public' }
+const CONN = process.env.DATABASE_URL_POOL || process.env.DATABASE_URL
+const sql = postgres(CONN, {
+  prepare: false, ssl: /@(127\.0\.0\.1|localhost)\b/.test(CONN) ? false : 'require', max: 2, connection: { search_path: 'autravel, public' }
 })
 
 const DRY = process.argv.includes('--dry-run')

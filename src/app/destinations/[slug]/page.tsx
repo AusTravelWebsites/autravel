@@ -11,6 +11,7 @@ import { DestinationMiniMenu } from '@/components/features/DestinationMiniMenu'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { poiUrl } from '@/lib/poi'
 import { getDestinationSubMenu } from '@/lib/destination-submenu'
+import { ArticleView } from '@/app/articles/[slug]/page'
 
 export const revalidate = 600
 
@@ -203,8 +204,38 @@ export async function generateDestinationMetadata(slug: string): Promise<Metadat
 }
 
 // /destinations/<slug>/ → 301 → /<slug>/ — single source of truth at the short URL.
-export async function generateMetadata(_: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  return { robots: { index: false, follow: true } }
+// (Falls back to serving a legacy article in place when `slug` isn't a real
+// destination — see the gotcha note on RedirectDestination below — so this
+// needs real metadata for that case rather than a blanket noindex.)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const tenant = await getTenant()
+  const state = stateFilterValue(tenant)
+
+  if (await getDestination(slug, state)) return { robots: { index: false, follow: true } }
+
+  const pathWithSlash = `/destinations/${slug}/`
+  const pathNoSlash = `/destinations/${slug}`
+  const a = await getArticleByLegacyPath(pathWithSlash, pathNoSlash, state)
+  if (!a) return {}
+
+  const rawTitle = a.seo_title || a.title
+  const title = rawTitle.length > 45 ? rawTitle.slice(0, 42).replace(/\s+\S*$/, '') + '…' : rawTitle
+  const bodyFirst = a.body_html ? String(a.body_html).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s/).slice(0, 2).join(' ') : ''
+  const rawDesc = a.seo_description
+    || a.excerpt
+    || (bodyFirst && bodyFirst.length > 60 ? bodyFirst : '')
+    || `${a.title} — travel guide for ${tenant.stateName} from ${tenant.name}.`
+  const desc = rawDesc.length > 155 ? rawDesc.slice(0, 152).replace(/\s+\S*$/, '') + '…' : rawDesc
+  const url = `https://${tenant.host}${a.legacy_path || `/articles/${a.slug}/`}`
+  return {
+    title,
+    description: desc,
+    alternates: { canonical: url },
+    robots: a.noindex ? { index: false, follow: true } : undefined,
+    openGraph: { title, description: desc, type: 'article', url, images: a.cover_image ? [a.cover_image] : [] },
+    twitter: { card: 'summary_large_image', title, description: desc, images: a.cover_image ? [a.cover_image] : [] },
+  }
 }
 
 const C = { bg: '#f3f4f6', card: '#fff', border: '#e5e7eb', text: '#111827', sub: '#6b7280', teal: 'var(--brand)', tealLight: 'var(--brand-light)' }
@@ -263,9 +294,69 @@ async function getDriveTimes(state: string, slug: string): Promise<DriveTime[]> 
 // The actual rendering lives in `DestinationPageContent` below, which the
 // [username] catch-all route imports + calls when a single-segment URL
 // resolves to a destination slug.
+//
+// GOTCHA (found 2026-07-27): this route matches ANY /destinations/<slug>/
+// request, not just ones for a real destination. Some pre-WP-migration
+// articles have a `legacy_path` that itself starts with `/destinations/`
+// (an old WP permalink, unrelated to this app's own /destinations/ route) —
+// blindly stripping the prefix broke those into a single-segment path that
+// no longer matches anything, 404ing content that otherwise renders fine.
+// So: only take the flatten-redirect when `slug` is a real active
+// destination; otherwise fall back to the same redirect-table + legacy
+// article lookup the [...legacy] catch-all uses, before giving up.
+async function findLegacyRedirect(pathWithSlash: string, pathNoSlash: string, state: StateCode | null): Promise<string | null> {
+  try {
+    const [row] = await db<any[]>`
+      SELECT to_path FROM redirects
+      WHERE match_type = 'exact' AND is_active = true
+        AND (state_code = ${state} OR state_code IS NULL)
+        AND from_path = ANY(${[pathWithSlash, pathNoSlash]}::text[])
+      ORDER BY state_code NULLS LAST
+      LIMIT 1`
+    return row?.to_path || null
+  } catch { return null }
+}
+
+async function getArticleByLegacyPath(pathWithSlash: string, pathNoSlash: string, state: StateCode | null) {
+  try {
+    const [row] = await db<any[]>`
+      SELECT * FROM articles
+      WHERE status = 'published'
+        AND (${state}::text IS NULL OR state_code = ${state}::text)
+        AND legacy_path = ANY(${[pathWithSlash, pathNoSlash]}::text[])
+      LIMIT 1`
+    return row || null
+  } catch { return null }
+}
+
 export default async function RedirectDestination({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  permanentRedirect(`/${slug}/`)
+  const tenant = await getTenant()
+  const state = stateFilterValue(tenant)
+
+  const isRealDestination = await getDestination(slug, state)
+  if (isRealDestination) permanentRedirect(`/${slug}/`)
+
+  const pathWithSlash = `/destinations/${slug}/`
+  const pathNoSlash = `/destinations/${slug}`
+
+  const redirectTarget = await findLegacyRedirect(pathWithSlash, pathNoSlash, state)
+  if (redirectTarget) permanentRedirect(redirectTarget)
+
+  const article = await getArticleByLegacyPath(pathWithSlash, pathNoSlash, state)
+  if (article) {
+    let author = null
+    try {
+      const rows = await db<Array<{ slug: string; name: string; role: string | null; bio: string | null; avatar_url: string | null }>>`
+        SELECT slug, name, role, bio, avatar_url FROM autravel.authors
+         WHERE is_active = true AND (slug = ${article.author_slug ?? ''} OR name = ${article.author ?? ''})
+         LIMIT 1`
+      author = rows[0] || null
+    } catch {}
+    return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={null}/>
+  }
+
+  notFound()
 }
 
 export async function DestinationPageContent({ params }: { params: Promise<{ slug: string }> }) {

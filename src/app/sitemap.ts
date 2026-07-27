@@ -7,6 +7,20 @@ export const revalidate = 3600
 
 type Entry = MetadataRoute.Sitemap[number]
 
+// Next's sitemap.ts serializer does not XML-escape `&` inside <image:loc> (or
+// <loc>), so any image URL containing a raw & (query string, or — as with the
+// Wayback-restored jso8-bids tracking-pixel URLs — a literal & baked into the
+// path) produces invalid XML and can get the whole sitemap rejected by a
+// crawler. Escape defensively at the source.
+function xmlEscape(url: string): string {
+  return url.replace(/&/g, '&amp;')
+}
+
+function withEscapedImages(e: Entry): Entry {
+  if (e.images?.length) return { ...e, images: e.images.map(xmlEscape) }
+  return e
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const tenant = await getTenant()
   const state = stateFilterValue(tenant)
@@ -153,4 +167,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [...staticPages, ...destinations, ...parks, ...tours, ...articles, ...distances, ...trains, ...trails]
+    .map(withEscapedImages)
 }
