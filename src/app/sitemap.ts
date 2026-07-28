@@ -97,17 +97,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Preserved WP URLs: legacy_path is the canonical public URL (served by
     // the [...legacy] catch-all). When an article has no legacy_path, it was
     // created fresh on autravel and lives at /articles/<slug>/.
+    //
+    // Excludes articles whose legacy_path is shadowed by an active redirect
+    // (e.g. a slug-rename rule sending the old .html path straight to a
+    // destination page) — those URLs never render the article, they just
+    // redirect elsewhere, so listing them in the sitemap only adds a
+    // pointless extra hop for crawlers. Found 2026-07-28: 52 on wa, 170 on
+    // tas, 1 on qld.
     const rows = await db`
       SELECT slug, legacy_path, cover_image, noindex,
              COALESCE(published_at, updated_at, created_at) AS lm
-      FROM articles
+      FROM articles a
       WHERE status = 'published'
         AND (noindex IS NULL OR noindex = false)
         AND (${state}::text IS NULL OR state_code = ${state}::text)
+        AND NOT EXISTS (
+          SELECT 1 FROM redirects r
+          WHERE r.is_active
+            AND (r.state_code = a.state_code OR r.state_code IS NULL)
+            AND r.from_path IN ('/' || trim(both '/' FROM a.legacy_path) || '/', '/' || trim(both '/' FROM a.legacy_path))
+        )
       ORDER BY COALESCE(published_at, created_at) DESC
       LIMIT 50000`
     articles = (rows as any[]).map(a => {
-      const path = a.legacy_path || `/articles/${a.slug}/`
+      // .html legacy paths settle at the no-trailing-slash form (LiteSpeed's
+      // own static-file trailing-slash handling strips it before the app
+      // ever sees the request) — list that form directly so crawlers don't
+      // take a pointless extra hop through the with-slash sitemap URL.
+      let path = a.legacy_path || `/articles/${a.slug}/`
+      if (path.endsWith('.html/')) path = path.slice(0, -1)
       const e: Entry = { url: `${SITE}${path}`, lastModified: a.lm ? new Date(a.lm) : now, changeFrequency: 'monthly', priority: 0.7 }
       if (a.cover_image) e.images = [a.cover_image]
       return e
