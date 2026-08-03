@@ -7,16 +7,16 @@
 const cspReportOnly = [
   "default-src 'self'",
   // Scripts: self, inline (gtag consent bootstrap + JSON-LD dangerouslySet),
-  // gtag, firebase, leaflet CDN, + Google AdSense (was blocked → $0 ad revenue fleet-wide, fixed 2026-08-03)
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://www.gstatic.com https://apis.google.com https://unpkg.com https://maps.googleapis.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google https://*.google.com https://*.gstatic.com",
+  // gtag, firebase, leaflet CDN
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://www.gstatic.com https://apis.google.com https://unpkg.com https://maps.googleapis.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   // Images: all the hosts we actually pull from + OSM tile CDNs (a-c).tile.openstreetmap.org
-  "img-src 'self' data: blob: https://media.bugbitten.com https://images.unsplash.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com https://*.g.doubleclick.net https://api.qrserver.com https://media-cdn.tripadvisor.com https://cache.graphicslib.viator.com https://*.viator.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com",
+  "img-src 'self' data: blob: https://media.bugbitten.com https://images.unsplash.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com https://*.g.doubleclick.net https://api.qrserver.com https://media-cdn.tripadvisor.com https://cache.graphicslib.viator.com https://*.viator.com",
   // XHR / fetch — our own API + Google Places, Firebase, analytics (incl. regional GA4 endpoints)
-  "connect-src 'self' https://media.bugbitten.com https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.firebaseapp.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://api.qrserver.com https://unpkg.com https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google https://*.google.com",
-  // Iframes: Firebase Auth handler + YouTube embeds + AdSense ad frames
-  "frame-src https://*.firebaseapp.com https://accounts.google.com https://www.youtube.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.adtrafficquality.google",
+  "connect-src 'self' https://media.bugbitten.com https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.firebaseapp.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://api.qrserver.com https://unpkg.com https://*.ingest.us.sentry.io https://*.ingest.sentry.io",
+  // Iframes: Firebase Auth handler + YouTube embeds
+  "frame-src https://*.firebaseapp.com https://accounts.google.com https://www.youtube.com",
   "frame-ancestors 'self'",
   "form-action 'self'",
   "base-uri 'self'",

@@ -57,6 +57,17 @@ export default function AdminArticleEditPage() {
   const [bodyHtml, setBodyHtml] = useState('')
   const editorRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  // Inline-image editing: click an <img> in the body to get a small toolbar
+  // (replace / alt / align / remove), WordPress-style.
+  const selectedImgRef = useRef<HTMLImageElement | null>(null)
+  const replaceFileRef = useRef<HTMLInputElement>(null)
+  const [imgTool, setImgTool] = useState<{ top: number; left: number } | null>(null)
+  // Floating (WordPress-style) toolbar. `position: sticky` doesn't hold inside
+  // the admin shell's nested flex+grid, so we pin the bar with position:fixed on
+  // scroll and keep a same-height spacer in flow so the article doesn't jump.
+  const toolbarWrapRef = useRef<HTMLDivElement>(null)
+  const toolbarRef = useRef<HTMLDivElement>(null)
+  const [floatBar, setFloatBar] = useState<{ left: number; width: number; height: number; top: number } | null>(null)
   // Link dialog state
   const [linkOpen, setLinkOpen] = useState(false)
   const [linkInitial, setLinkInitial] = useState<LinkSpec>({ url: '', text: '', newTab: false })
@@ -118,6 +129,71 @@ export default function AdminArticleEditPage() {
     window.addEventListener('beforeunload', h)
     return () => window.removeEventListener('beforeunload', h)
   }, [dirty])
+
+  // Keep the floating image toolbar pinned to its image while scrolling/resizing.
+  // Depend on a boolean (open/closed) so repositioning doesn't re-subscribe.
+  const imgToolOpen = !!imgTool
+  useEffect(() => {
+    if (!imgToolOpen) return
+    const reposition = () => {
+      const img = selectedImgRef.current
+      if (!img || !img.isConnected) { setImgTool(null); return }
+      const r = img.getBoundingClientRect()
+      setImgTool({ top: r.top, left: r.left })
+    }
+    window.addEventListener('scroll', reposition, true)
+    window.addEventListener('resize', reposition)
+    return () => {
+      window.removeEventListener('scroll', reposition, true)
+      window.removeEventListener('resize', reposition)
+    }
+  }, [imgToolOpen])
+
+  // Float the editor toolbar: when its in-flow slot scrolls above the 8px line,
+  // pin the bar to the viewport (position:fixed) matching the column's left/width
+  // and hold the slot open with the spacer's height. Reverts when scrolled back up.
+  useEffect(() => {
+    if (loading) return
+    // The public site header (nav.bb-nav) is sticky at the top of the admin page
+    // (~136px). Pin the toolbar BELOW it, not at top:8 — otherwise it floats
+    // hidden behind the header and looks like it never floats at all. Measured
+    // live so it adapts to mobile / other tenants / a collapsed header.
+    const stickyTopOffset = () => {
+      const nav = document.querySelector('nav.bb-nav') as HTMLElement | null
+      if (nav) {
+        const cs = getComputedStyle(nav)
+        if (cs.position === 'sticky' || cs.position === 'fixed') {
+          const b = nav.getBoundingClientRect().bottom
+          if (b > 0 && b < 400) return Math.round(b) + 6
+        }
+      }
+      return 8
+    }
+    const update = () => {
+      const wrap = toolbarWrapRef.current, bar = toolbarRef.current
+      if (!wrap || !bar) return
+      const off = stickyTopOffset()
+      const rect = wrap.getBoundingClientRect()
+      if (rect.top < off) {
+        const left = Math.round(rect.left)
+        const width = Math.round(wrap.clientWidth)
+        const height = bar.offsetHeight
+        setFloatBar(prev => (prev && prev.left === left && prev.width === width && prev.height === height && prev.top === off) ? prev : { left, width, height, top: off })
+      } else {
+        setFloatBar(prev => (prev ? null : prev))
+      }
+    }
+    update()
+    // Capture phase (3rd arg true) so we catch scroll from ANY element — the
+    // window normally, but also an inner scroll container if some browser or
+    // extension makes one. A plain bubbling window listener misses inner scrolls.
+    window.addEventListener('scroll', update, { passive: true, capture: true })
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update, { capture: true })
+      window.removeEventListener('resize', update)
+    }
+  }, [loading, showHtml])
 
   // Patch helper
   function setField<K extends keyof Article>(k: K, v: Article[K]) {
@@ -222,6 +298,53 @@ export default function AdminArticleEditPage() {
     } catch (e: any) {
       alert(`Image upload failed: ${e.message}`)
     }
+  }
+
+  // ---- Inline image editing (click an image in the body) ----
+  function selectImage(img: HTMLImageElement) {
+    selectedImgRef.current = img
+    // Select the node so it reads as focused and Backspace/Delete removes it.
+    try {
+      const r = document.createRange(); r.selectNode(img)
+      const s = window.getSelection(); s?.removeAllRanges(); s?.addRange(r)
+    } catch {}
+    const rect = img.getBoundingClientRect()
+    setImgTool({ top: rect.top, left: rect.left })
+  }
+  function closeImgTool() { setImgTool(null); selectedImgRef.current = null }
+  function removeSelectedImage() {
+    const img = selectedImgRef.current
+    if (img) { (img.closest('figure') || img).remove(); setDirty(true) }
+    closeImgTool()
+  }
+  function altSelectedImage() {
+    const img = selectedImgRef.current; if (!img) return
+    const alt = window.prompt('Image description (alt text — read by screen readers and search engines):', img.alt || '')
+    if (alt !== null) { img.alt = alt; setDirty(true) }
+  }
+  function alignSelectedImage(kind: 'left' | 'center' | 'right' | 'full') {
+    const img = selectedImgRef.current; if (!img) return
+    if (kind === 'left') img.style.cssText = 'height:auto;float:left;margin:4px 18px 12px 0;max-width:48%'
+    else if (kind === 'right') img.style.cssText = 'height:auto;float:right;margin:4px 0 12px 18px;max-width:48%'
+    else if (kind === 'center') img.style.cssText = 'height:auto;float:none;display:block;margin:14px auto;max-width:100%'
+    else img.style.cssText = 'height:auto;float:none;display:block;margin:14px 0;max-width:100%'
+    setDirty(true)
+    const rect = img.getBoundingClientRect(); setImgTool({ top: rect.top, left: rect.left })
+  }
+  function replaceSelectedImage() { replaceFileRef.current?.click() }
+  async function uploadReplacement(file: File) {
+    const img = selectedImgRef.current; if (!img) return
+    try {
+      const fd = new FormData(); fd.append('file', file); fd.append('folder', 'blog')
+      const r = await fetch('/api/upload', { method: 'POST', body: fd })
+      const d = await r.json().catch(() => ({}))
+      if (!r.ok || !d.url) throw new Error(d.error || 'Upload failed')
+      // Drop the old WP srcset/dimensions so the new R2 image sizes responsively.
+      img.src = d.url
+      img.removeAttribute('srcset'); img.removeAttribute('width'); img.removeAttribute('height')
+      setDirty(true)
+      const rect = img.getBoundingClientRect(); setImgTool({ top: rect.top, left: rect.left })
+    } catch (e: any) { alert(`Replace failed: ${e.message}`) }
   }
   async function uploadCover(file: File) {
     try {
@@ -341,11 +464,17 @@ export default function AdminArticleEditPage() {
               }}
             />
 
-            {/* Toolbar */}
-            <div style={{
-              position: 'sticky' as const, top: 8, zIndex: 5,
+            {/* Toolbar — floats on scroll via JS (see the floatBar effect). The
+                outer div is an in-flow spacer that holds the slot open while the
+                inner bar is pinned with position:fixed. */}
+            <div ref={toolbarWrapRef} style={{ marginBottom: 10, height: floatBar ? floatBar.height : undefined }}>
+            <div ref={toolbarRef} style={{
+              ...(floatBar
+                ? { position: 'fixed' as const, top: floatBar.top, left: floatBar.left, width: floatBar.width }
+                : { position: 'relative' as const }),
+              zIndex: 30, boxSizing: 'border-box' as const,
               background: '#fafafa', border: `1px solid ${C.border}`, borderRadius: 10,
-              padding: 8, marginBottom: 10, boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+              padding: 8, boxShadow: floatBar ? '0 8px 20px rgba(0,0,0,0.16)' : '0 2px 10px rgba(0,0,0,0.06)',
               display: 'flex', flexWrap: 'wrap' as const, gap: 4, alignItems: 'center',
             }}>
               <select onChange={e => { formatBlock(e.target.value); e.target.value = '' }} defaultValue="" style={tbSelect}>
@@ -387,6 +516,7 @@ export default function AdminArticleEditPage() {
                 ⟨/⟩ HTML
               </TBtn>
             </div>
+            </div>
 
             {/* Editor / source view */}
             {showHtml ? (
@@ -413,7 +543,9 @@ export default function AdminArticleEditPage() {
                   // focus). Always cancel — Craig wants cursor placement, not
                   // navigation. The ↗ button in the header opens the live page.
                   const t = e.target as HTMLElement
+                  if (t.tagName === 'IMG') { e.preventDefault(); selectImage(t as HTMLImageElement); return }
                   if (t.closest('a')) e.preventDefault()
+                  if (imgTool) closeImgTool()
                 }}
                 onKeyDown={e => {
                   if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openLinkDialog() }
@@ -462,7 +594,8 @@ export default function AdminArticleEditPage() {
               [contenteditable] li { margin: 0.2em 0; }
               [contenteditable] a { color: var(--brand); text-decoration: underline; }
               [contenteditable] blockquote { border-left: 4px solid var(--brand); padding: 8px 14px; color: #374151; background: var(--brand-light); margin: 0 0 1em; font-style: italic; }
-              [contenteditable] img { max-width: 100%; height: auto; border-radius: 8px; margin: 0.6em 0; }
+              [contenteditable] img { max-width: 100%; height: auto; border-radius: 8px; margin: 0.6em 0; cursor: pointer; }
+              [contenteditable] img:hover { outline: 2px solid #0d9488; outline-offset: 2px; }
               [contenteditable] pre { background: #f3f4f6; padding: 10px 12px; border-radius: 8px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 13px; }
               [contenteditable] code { background: #f3f4f6; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.92em; }
               [contenteditable] table { border-collapse: collapse; width: 100%; margin: 0 0 1em; }
@@ -602,8 +735,40 @@ export default function AdminArticleEditPage() {
         onRemove={removeLinkSpec}
         onCancel={() => { setLinkOpen(false); setEditingAnchor(null) }}
       />
+
+      {/* Hidden input for "Replace" — swaps the selected image's src in place. */}
+      <input ref={replaceFileRef} type="file" accept="image/*" style={{ display: 'none' }}
+        onChange={e => { const f = e.target.files?.[0]; if (f) uploadReplacement(f); e.target.value = '' }} />
+
+      {/* Floating image toolbar — appears just above a clicked image. */}
+      {imgTool && (
+        <div
+          onMouseDown={e => e.preventDefault() /* keep the image selected */}
+          style={{
+            position: 'fixed', top: Math.max(8, imgTool.top - 46), left: Math.max(8, imgTool.left), zIndex: 60,
+            display: 'flex', gap: 2, alignItems: 'center', background: '#111827',
+            padding: 5, borderRadius: 9, boxShadow: '0 6px 22px rgba(0,0,0,0.28)',
+          }}>
+          <button onClick={replaceSelectedImage} style={imgBtn()} title="Replace this image">Replace</button>
+          <button onClick={altSelectedImage} style={imgBtn()} title="Edit alt text">Alt</button>
+          <span style={{ width: 1, alignSelf: 'stretch', background: '#374151', margin: '0 3px' }} />
+          <button onClick={() => alignSelectedImage('left')} style={imgBtn()} title="Float left">◧</button>
+          <button onClick={() => alignSelectedImage('center')} style={imgBtn()} title="Center">▣</button>
+          <button onClick={() => alignSelectedImage('right')} style={imgBtn()} title="Float right">◨</button>
+          <button onClick={() => alignSelectedImage('full')} style={imgBtn()} title="Full width">▭</button>
+          <span style={{ width: 1, alignSelf: 'stretch', background: '#374151', margin: '0 3px' }} />
+          <button onClick={removeSelectedImage} style={imgBtn(true)} title="Remove image">Remove</button>
+        </div>
+      )}
     </div>
   )
+}
+
+function imgBtn(danger?: boolean): React.CSSProperties {
+  return {
+    background: 'transparent', color: danger ? '#fca5a5' : '#fff', border: 'none',
+    borderRadius: 5, padding: '5px 9px', fontSize: 13, cursor: 'pointer', lineHeight: 1, fontWeight: 600,
+  }
 }
 
 // --- helpers ---

@@ -57,8 +57,24 @@ export function demoteBodyH1s(html: string): string {
 // Migrated WP body_html still contains shortcodes like [caption]…[/caption] and
 // [gallery …] which render as literal text when piped through dangerouslySetInnerHTML.
 // Convert the common ones to native HTML and strip the rest so nothing leaks.
+// Migrated WordPress bodies frequently carry FULLY-ABSOLUTE media URLs pointing
+// at the site's own domain — usually the www. host, e.g.
+//   https://www.new-forest-national-park.com/wp-content/uploads/x.webp
+// Pages are served from the apex origin, so under CSP `img-src 'self'` those
+// www. URLs are a *different origin* and the browser BLOCKS them (broken image) —
+// even though www→apex redirects, because CSP is enforced on the request URL
+// before any redirect runs. Root-relativising same-site media URLs collapses
+// them onto the page origin so they always pass `'self'`, whether the page is
+// served from apex or www. Scoped to WP media paths (/wp-content/, /image-files/)
+// which our [...path] handlers always serve same-origin, so genuinely external
+// images (Unsplash, Viator, media.bugbitten.com) are left untouched.
+export function relativizeSameSiteMedia(html: string): string {
+  if (!html) return html
+  return html.replace(/https?:\/\/[^\s"'()<>]+?(\/(?:wp-content|image-files)\/)/gi, '$1')
+}
+
 export function processWpShortcodes(html: string): string {
-  let out = html
+  let out = relativizeSameSiteMedia(html)
   // Migration corruption: every "[/caption]\r\n" was rewritten to "[/captio<figure>"
   // (n]\r\n → <figure>) somewhere in the import pipeline, leaving an orphan
   // <figure> opener. Repair both the closing tag and drop the orphan opener

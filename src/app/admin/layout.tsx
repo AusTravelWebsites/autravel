@@ -50,7 +50,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   )
   useEffect(() => {
     if (isPublicAuthPath) { setChecking(false); return }
-    fetch('/api/admin/check')
+    fetch('/api/admin/check/') // trailing slash: app is trailingSlash:true, avoids a 308 hop
       .then(r => { if (!r.ok) router.replace('/admin/login/'); else setChecking(false) })
       .catch(() => router.replace('/admin/login/'))
   }, [router, isPublicAuthPath])
