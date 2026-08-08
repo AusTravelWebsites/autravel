@@ -36,7 +36,9 @@ export async function POST(req: NextRequest) {
   // the form never reveals which addresses are admins.
   if (email && resend && (await isKnownAdmin(email))) {
     const { token, expiresAt } = makeResetToken(email)
-    const origin = `https://${host}`
+    // tenant.host, not the raw Host header: this link is emailed and clicked later, so it must
+    // point at the tenant's canonical domain rather than whatever host the request arrived on.
+    const origin = `https://${tenant.host}`
     const resetUrl = `${origin}/admin/reset-password?token=${encodeURIComponent(token)}`
     const minutes = Math.round(RESET_TOKEN_TTL_S / 60)
 
