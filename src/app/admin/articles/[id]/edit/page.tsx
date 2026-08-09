@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { sanitizeForEditor } from '@/lib/wp-html'
 import { slugify } from '@/lib/utils'
-import { TENANT_OPTIONS } from '@/lib/tenants'
+import { TENANT_OPTIONS, tenantUrl } from '@/lib/tenants'
 import {
   EditorLinkDialog, type LinkSpec,
   findAnchorAtSelection, saveSelection, restoreSelection, linkHtml, updateAnchor, unwrapAnchor,
@@ -421,7 +421,7 @@ export default function AdminArticleEditPage() {
   if (error && !a) return <div style={{ padding: 60, textAlign: 'center', color: C.red }}>{error}</div>
   if (!a) return null
 
-  const liveUrl = a.legacy_path || `/articles/${a.slug}/`
+  const liveUrl = tenantUrl(a.state_code, a.legacy_path || `/articles/${a.slug}/`)
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, padding: '16px 20px' }}>
@@ -719,7 +719,7 @@ export default function AdminArticleEditPage() {
               </select>
               <div style={{ fontSize: 11, color: C.sub, marginTop: 6 }}>
                 {a.author_slug
-                  ? <>Visible on this article's byline. <a href={`/author/${a.author_slug}/`} target="_blank" rel="noopener" style={{ color: C.teal }}>View profile ↗</a></>
+                  ? <>Visible on this article's byline. <a href={tenantUrl(a.state_code, `/author/${a.author_slug}/`)} target="_blank" rel="noopener" style={{ color: C.teal }}>View profile ↗</a></>
                   : <>Add or edit authors in <a href="/admin/authors/" style={{ color: C.teal }}>Authors admin</a>.</>}
               </div>
             </Section>

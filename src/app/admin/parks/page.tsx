@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { tenantUrl } from '@/lib/tenants'
 
 type Park = {
   id: string; slug: string; state_code: string; name: string
@@ -102,7 +102,7 @@ export default function AdminParksPage() {
                 return (
                   <tr key={p.id} style={{ borderBottom: `1px solid ${C.border}` }}>
                     <td style={td}>
-                      <Link href={`/parks/${p.slug}`} target="_blank" style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>{p.name}</Link>
+                      <a href={tenantUrl(p.state_code, `/parks/${p.slug}`)} target="_blank" rel="noopener" style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>{p.name}</a>
                       <div style={{ fontSize: 11, color: C.sub }}>{p.suburb ? `${p.suburb}` : ''} · {p.slug}</div>
                     </td>
                     <td style={td}>{p.state_code.toUpperCase()}</td>

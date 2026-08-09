@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { tenantUrl } from '@/lib/tenants'
 
 type Dest = {
   id: string; state_code: string; slug: string; name: string
@@ -100,7 +100,7 @@ export default function AdminDestinationsPage() {
               : rows.map(d => (
                 <tr key={d.id} style={{ borderBottom: `1px solid ${C.border}` }}>
                   <td style={td}>
-                    <Link href={`/${d.slug}`} target="_blank" style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>{d.name}</Link>
+                    <a href={tenantUrl(d.state_code, `/${d.slug}`)} target="_blank" rel="noopener" style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>{d.name}</a>
                     <div style={{ fontSize: 11, color: C.sub }}>{d.slug}</div>
                   </td>
                   <td style={td}>{d.state_code.toUpperCase()}</td>

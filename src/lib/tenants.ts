@@ -344,3 +344,19 @@ export const ALL_STATE_CODES: StateCode[] = Object.keys(TENANTS) as StateCode[]
  *  no server deps, so this is safe to import into client components. */
 export const TENANT_OPTIONS: Array<{ code: StateCode; name: string; host: string }> =
   ALL_STATE_CODES.map(code => ({ code, name: TENANTS[code].name, host: TENANTS[code].host }))
+
+/** Absolute public URL for `path` on the tenant owning `code`.
+ *
+ *  The admin console is one app served from every tenant host, but the rows it
+ *  lists are per-tenant. A relative "view live" link therefore resolves against
+ *  whichever domain the admin happens to be open on, which 404s whenever the row
+ *  belongs to a different site (editing an nsw article from qldtravel.com.au).
+ *  Always build live links from the row's own state_code, never the current host.
+ *
+ *  Unknown/absent codes fall back to the relative path — same behaviour as
+ *  before, so a row with a null state_code degrades rather than breaking. */
+export function tenantUrl(code: string | null | undefined, path: string): string {
+  const p = path.startsWith('/') ? path : `/${path}`
+  const t = code ? TENANTS[code as StateCode] : undefined
+  return t ? `https://${t.host}${p}` : p
+}

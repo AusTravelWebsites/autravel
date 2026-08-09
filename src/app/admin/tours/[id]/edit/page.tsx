@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { sanitizeForEditor } from '@/lib/wp-html'
+import { tenantUrl } from '@/lib/tenants'
 import {
   EditorLinkDialog, type LinkSpec,
   findAnchorAtSelection, saveSelection, restoreSelection, linkHtml, updateAnchor, unwrapAnchor,
@@ -225,7 +226,7 @@ export default function AdminTourEditPage() {
   if (error && !t) return <div style={{ padding: 60, textAlign: 'center', color: C.red }}>{error}</div>
   if (!t) return null
 
-  const liveUrl = `/tours/${t.slug}/`
+  const liveUrl = tenantUrl(t.state_code, `/tours/${t.slug}/`)
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, padding: '16px 20px' }}>

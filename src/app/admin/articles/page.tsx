@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { tenantUrl } from '@/lib/tenants'
 
 type A = {
   id: string; state_code: string; slug: string; legacy_path: string | null
@@ -140,7 +141,7 @@ export default function AdminArticlesPage() {
                   <td style={td}>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
                       <Link href={`/admin/articles/${a.id}/edit/`} style={{ color: C.teal, textDecoration: 'none', fontWeight: 600 }}>{a.title}</Link>
-                      <a href={a.legacy_path || `/articles/${a.slug}/`} target="_blank" rel="noopener" title="Open live page in new tab" style={{ color: C.sub, fontSize: 11, textDecoration: 'none' }}>↗</a>
+                      <a href={tenantUrl(a.state_code, a.legacy_path || `/articles/${a.slug}/`)} target="_blank" rel="noopener" title="Open live page in new tab" style={{ color: C.sub, fontSize: 11, textDecoration: 'none' }}>↗</a>
                     </div>
                     <div style={{ fontSize: 11, color: C.sub }}>{a.slug}{a.published_at ? ` · ${new Date(a.published_at).toLocaleDateString()}` : ''}</div>
                   </td>
