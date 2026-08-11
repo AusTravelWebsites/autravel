@@ -19,21 +19,22 @@
     "wh-guildford-heritage",
     "bt-swan-valley-wine-ride",
     "bt-ebike-hire-compared",
-    "wh-zig-zag-scenic"
+    "wh-zig-zag-scenic",
+    "gc-bike-shop-guide"
   ],
   "recent_personas": [
-    "dylan-cho",
     "tess-marlowe",
     "nina-forrest",
     "dylan-cho",
-    "tess-marlowe"
+    "tess-marlowe",
+    "dylan-cho"
   ],
   "recent_images": [
-    "bike-dirt-road",
     "forest-walk-2",
     "bike-cyclist",
     "coastal-walk",
-    "forest-walk-1"
+    "forest-walk-1",
+    "bike-group"
   ],
-  "last_run_at": "2026-08-10T00:57:10.793Z"
+  "last_run_at": "2026-08-10T23:09:20.571Z"
 }
