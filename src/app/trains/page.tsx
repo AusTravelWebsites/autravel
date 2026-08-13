@@ -56,6 +56,7 @@ function Section({ title, blurb, trains }: { title: string; blurb?: string; trai
 
 export default async function TrainsHub() {
   const tenant = await getTenant()
+  const isUK = tenant.state_code === 'uk'
   const trains = await listTrains(stateFilterValue(tenant))
 
   const national = trains.filter(t => t.is_national && !t.is_heritage)
@@ -78,7 +79,9 @@ export default async function TrainsHub() {
           <Breadcrumbs crumbs={crumbs} variant="light" />
           <h1 style={{ fontSize: 32, fontWeight: 800, fontFamily: 'Georgia, serif', margin: '12px 0 8px' }}>Trains in {tenant.stateName}</h1>
           <p style={{ margin: 0, fontSize: 16, maxWidth: 720, opacity: 0.95, lineHeight: 1.5 }}>
-            From transcontinental expeditions to regional railcars and heritage steam — here is every passenger train you can ride{tenant.aggregator ? ' across Australia' : ` in ${tenant.stateName}`}, with routes, classes and where to book.
+            {isUK
+              ? 'From the London main line to branch-line shuttles and heritage steam — here is every train that takes you to and around the New Forest, with routes, tips and where to book.'
+              : `From transcontinental expeditions to regional railcars and heritage steam — here is every passenger train you can ride${tenant.aggregator ? ' across Australia' : ` in ${tenant.stateName}`}, with routes, classes and where to book.`}
           </p>
         </div>
       </div>
@@ -86,8 +89,8 @@ export default async function TrainsHub() {
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 20px 50px' }}>
         {trains.length === 0 && <p style={{ color: C.sub }}>Train information for this region is coming soon.</p>}
         <Section title="Great rail journeys of Australia" blurb="The all-inclusive, long-distance expeditions that cross states and continents." trains={national} />
-        <Section title={`Regional & long-distance trains`} blurb={tenant.aggregator ? 'Scheduled state rail services around the country.' : `Scheduled services run by the state rail operator.`} trains={regional} />
-        <Section title="Scenic & heritage railways" blurb="Restored steam, rack-and-pinion mountain lines and outback rail-motor adventures." trains={heritage} />
+        <Section title={isUK ? 'Getting to & around the New Forest' : `Regional & long-distance trains`} blurb={isUK ? 'The National Rail services that bring you to the Forest — and the branch line that potters around it.' : tenant.aggregator ? 'Scheduled state rail services around the country.' : `Scheduled services run by the state rail operator.`} trains={regional} />
+        <Section title="Scenic & heritage railways" blurb={isUK ? 'Steam days out in and around the Forest — from Exbury’s garden railway to Victorian carriages on the Isle of Wight.' : 'Restored steam, rack-and-pinion mountain lines and outback rail-motor adventures.'} trains={heritage} />
       </div>
     </main>
   )
