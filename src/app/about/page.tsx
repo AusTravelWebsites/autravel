@@ -74,6 +74,18 @@ export default async function AboutPage() {
               : `${tenant.name} is part of a network of state-specific Australian travel guides. Heading interstate? See our sister sites at aunztravel.com.au.`}
           </p>
         </div>
+
+        {/* Editorial cross-reference to the traveller-journal side of what our
+            team runs. Tenant-varied phrasing so this isn't a copy-paste footprint
+            across all 8 aunztravel sites. Small, in-body, contextually relevant
+            (both sites are about travel) — the kind of link a real editor writes. */}
+        <p style={{ fontSize: 14, color: C.sub, lineHeight: 1.7, marginTop: 24, fontStyle: 'italic' }}>
+          {tenant.aggregator
+            ? <>Also from our editors: <a href="https://bugbitten.com" style={{ color: C.teal }}>BugBitten</a>, an online travel journal where travellers document their trips and swap real reviews and photos from where they&rsquo;ve actually been.</>
+            : tenant.stateName
+              ? <>If you like keeping a record of your own trips, some of our editors also contribute to <a href="https://bugbitten.com" style={{ color: C.teal }}>BugBitten</a> &mdash; a travel journal where you can pin the {tenant.stateName} spots you&rsquo;ve visited and read what other travellers thought of them.</>
+              : <>Some of our editors also write for <a href="https://bugbitten.com" style={{ color: C.teal }}>BugBitten</a>, a traveller-journal community for documenting trips and honest place reviews.</>}
+        </p>
       </div>
     </div>
   )
