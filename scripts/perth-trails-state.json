@@ -28,21 +28,22 @@
     "gt-segway-tours",
     "sg-avon-descent",
     "wh-araluen-botanic",
-    "bp-kep-track"
+    "bp-kep-track",
+    "bt-guided-cycling-tours"
   ],
   "recent_personas": [
-    "dylan-cho",
     "mick-gallagher",
     "nina-forrest",
     "tess-marlowe",
-    "dylan-cho"
+    "dylan-cho",
+    "mick-gallagher"
   ],
   "recent_images": [
-    "forest-walk-3",
     "forest-walk-2",
     "coastal-walk",
     "forest-walk-1",
-    "bike-dirt-road"
+    "bike-dirt-road",
+    "bike-group"
   ],
-  "last_run_at": "2026-08-22T23:25:20.215Z"
+  "last_run_at": "2026-08-24T01:27:27.191Z"
 }
