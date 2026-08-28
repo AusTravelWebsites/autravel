@@ -360,3 +360,34 @@ export function tenantUrl(code: string | null | undefined, path: string): string
   const t = code ? TENANTS[code as StateCode] : undefined
   return t ? `https://${t.host}${p}` : p
 }
+
+/** True when `rawHost` is a host we actually serve — a tenant apex or one of
+ *  its declared aliases. */
+export function isKnownHost(rawHost: string | null | undefined): boolean {
+  if (!rawHost) return false
+  return !!HOST_INDEX[rawHost.toLowerCase().split(':')[0].trim()]
+}
+
+/** Canonical apex for an unrecognised host, or null if it maps to no tenant.
+ *
+ *  cPanel auto-adds mail./webmail./cpanel./whm./autodiscover./… as ServerAliases
+ *  on each site's vhost, and that vhost proxies EVERYTHING to this app. Those
+ *  hostnames are meant to carry mail/cPanel service records only, but they
+ *  reached the app, missed HOST_INDEX, and fell back to DEFAULT_TENANT — so
+ *  mail.nswtravel.com.au served a full, indexable QLD Travel site.
+ *
+ *  Strip labels off the front until what's left is a host we serve
+ *  (mail.nswtravel.com.au → nswtravel.com.au) so the caller can 301 there.
+ *  Returns null for hosts that map to no tenant (localhost, the haproxy health
+ *  check's `Host: localhost`, direct-IP hits) — those keep their old
+ *  DEFAULT_TENANT behaviour, which is what dev and the health probe rely on. */
+export function canonicalHostFor(rawHost: string | null | undefined): string | null {
+  if (!rawHost) return null
+  let h = rawHost.toLowerCase().split(':')[0].trim()
+  for (let i = 0; i < 5 && h.includes('.'); i++) {
+    const code = HOST_INDEX[h]
+    if (code) return TENANTS[code].host
+    h = h.slice(h.indexOf('.') + 1)
+  }
+  return null
+}

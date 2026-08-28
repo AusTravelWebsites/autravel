@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { tenantForHost } from '@/lib/tenants'
+import { tenantForHost, isKnownHost, canonicalHostFor } from '@/lib/tenants'
 
 const PROTECTED = ['/admin']
 
@@ -73,6 +73,32 @@ export async function middleware(req: NextRequest) {
   // server component / API route can read it via `headers()`.
   const host = req.headers.get('host') || ''
   const tenant = tenantForHost(host)
+
+  // Unknown-host guard. cPanel auto-adds mail./webmail./cpanel./whm./
+  // autodiscover./… as ServerAliases on each tenant's vhost, and that vhost
+  // proxies EVERY hostname it answers to this app. Those subdomains exist to
+  // carry mail + cPanel service records only, but they reached Next, missed
+  // HOST_INDEX, and fell through to DEFAULT_TENANT — so mail.nswtravel.com.au
+  // served a complete, indexable QLD Travel site (duplicate content on a host
+  // that should never render a page).
+  //
+  // Send any host we don't actually serve to the canonical apex of the domain
+  // it belongs to. canonicalHostFor() returns null for hosts that map to no tenant (localhost,
+  // the haproxy health check's `Host: localhost`, direct-IP hits), and those
+  // fall through untouched — the probe must never be redirected or all three
+  // instances fail their check at once.
+  // Drop the path — do NOT carry it across. Every one of these hosts rendered
+  // DEFAULT_TENANT (qld), so the only paths that ever returned 200 on them were
+  // QLD paths. Forwarding mail.nswtravel.com.au/noosa/ to nswtravel.com.au/noosa/
+  // just turns a wrong 200 into a 404 (Noosa is a QLD destination). The path is
+  // an artifact of the bug, not a real URL on the target site, so send every
+  // request to the apex homepage.
+  if (!isKnownHost(host)) {
+    const apex = canonicalHostFor(host)
+    if (apex) {
+      return NextResponse.redirect(`https://${apex}/`, 301)
+    }
+  }
 
   // Legacy WordPress taxonomy/author archives (/tag/*, /author/*) — these
   // routes don't exist in autravel and 404 on every tenant. Old WP-migrated
