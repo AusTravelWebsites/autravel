@@ -35,21 +35,22 @@
     "hg-kattamordo-trail",
     "gp-transport-to-trailheads",
     "wh-john-forrest-np",
-    "gt-kayak-bike-combo"
+    "gt-kayak-bike-combo",
+    "wh-bold-park"
   ],
   "recent_personas": [
-    "nina-forrest",
     "tess-marlowe",
     "nina-forrest",
     "tess-marlowe",
-    "mick-gallagher"
+    "mick-gallagher",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "wildflowers",
     "coastal-walk",
     "forest-walk-2",
     "forest-walk-1",
-    "bike-group"
+    "bike-group",
+    "forest-walk-3"
   ],
-  "last_run_at": "2026-09-02T00:34:52.352Z"
+  "last_run_at": "2026-09-02T23:38:34.206Z"
 }
