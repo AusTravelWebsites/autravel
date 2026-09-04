@@ -36,21 +36,22 @@
     "gp-transport-to-trailheads",
     "wh-john-forrest-np",
     "gt-kayak-bike-combo",
-    "wh-bold-park"
+    "wh-bold-park",
+    "gp-freo-after-a-ride"
   ],
   "recent_personas": [
-    "tess-marlowe",
     "nina-forrest",
     "tess-marlowe",
     "mick-gallagher",
-    "tess-marlowe"
+    "tess-marlowe",
+    "nina-forrest"
   ],
   "recent_images": [
-    "coastal-walk",
     "forest-walk-2",
     "forest-walk-1",
     "bike-group",
-    "forest-walk-3"
+    "forest-walk-3",
+    "wildflowers"
   ],
-  "last_run_at": "2026-09-02T23:38:34.206Z"
+  "last_run_at": "2026-09-03T23:49:26.618Z"
 }
