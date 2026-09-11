@@ -43,21 +43,22 @@
     "gt-rottnest-tour-options",
     "bp-reid-highway-loop",
     "gt-guided-hills-walks",
-    "sg-tide-dependent-coast"
+    "sg-tide-dependent-coast",
+    "wh-bibbulmun-kalamunda"
   ],
   "recent_personas": [
-    "nina-forrest",
     "mick-gallagher",
     "dylan-cho",
     "mick-gallagher",
-    "nina-forrest"
+    "nina-forrest",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "coastal-walk",
     "forest-walk-2",
     "bike-dirt-road",
     "bike-group",
-    "wildflowers"
+    "wildflowers",
+    "forest-walk-1"
   ],
-  "last_run_at": "2026-09-09T23:36:23.889Z"
+  "last_run_at": "2026-09-11T00:01:54.517Z"
 }
