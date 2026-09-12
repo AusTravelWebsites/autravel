@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "bp-freo-perth",
     "cp-dwellingup-camping",
     "sg-summer-coastal-walks",
     "cc-kalamunda-vs-mundaring",
@@ -44,21 +43,22 @@
     "bp-reid-highway-loop",
     "gt-guided-hills-walks",
     "sg-tide-dependent-coast",
-    "wh-bibbulmun-kalamunda"
+    "wh-bibbulmun-kalamunda",
+    "fw-lake-monger"
   ],
   "recent_personas": [
-    "mick-gallagher",
     "dylan-cho",
     "mick-gallagher",
     "nina-forrest",
-    "tess-marlowe"
+    "tess-marlowe",
+    "nina-forrest"
   ],
   "recent_images": [
-    "forest-walk-2",
     "bike-dirt-road",
     "bike-group",
     "wildflowers",
-    "forest-walk-1"
+    "forest-walk-1",
+    "coastal-walk"
   ],
-  "last_run_at": "2026-09-11T00:01:54.517Z"
+  "last_run_at": "2026-09-12T01:21:22.004Z"
 }
