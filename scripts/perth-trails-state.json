@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "sg-summer-coastal-walks",
     "cc-kalamunda-vs-mundaring",
     "cp-serpentine-camping",
     "bp-canning-river",
@@ -44,21 +43,22 @@
     "sg-tide-dependent-coast",
     "wh-bibbulmun-kalamunda",
     "fw-lake-monger",
-    "bp-heritage-rail-trails"
+    "bp-heritage-rail-trails",
+    "fw-whiteman-park-walks"
   ],
   "recent_personas": [
-    "mick-gallagher",
     "nina-forrest",
     "tess-marlowe",
     "nina-forrest",
-    "dylan-cho"
+    "dylan-cho",
+    "nina-forrest"
   ],
   "recent_images": [
-    "bike-group",
     "wildflowers",
     "forest-walk-1",
     "coastal-walk",
-    "bike-cyclist"
+    "bike-cyclist",
+    "forest-walk-3"
   ],
-  "last_run_at": "2026-09-13T01:16:12.102Z"
+  "last_run_at": "2026-09-13T23:42:33.041Z"
 }
