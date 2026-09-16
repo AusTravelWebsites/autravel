@@ -32,6 +32,7 @@ export default async function DistancesIndex() {
     WHERE (${state}::text IS NULL OR state_code = ${state}::text)
     ORDER BY state_code, from_name, to_name`
   const scope = tenant.aggregator ? 'Australia' : tenant.stateName
+  const isUK = tenant.state_code === 'uk'
 
   const breadcrumbLd = {
     '@context': 'https://schema.org',
@@ -73,6 +74,11 @@ export default async function DistancesIndex() {
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 15, margin: '0 auto', lineHeight: 1.55, maxWidth: 600 }}>
             Real-road distance and drive time between every major destination — plus where to break the journey overnight, the parks at either end, and tours en route.
           </p>
+          {isUK && (
+            <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 14, margin: '12px auto 0', lineHeight: 1.55, maxWidth: 600 }}>
+              Driving these <Link href="/how-visitors-change-wildfire-risk-on-open-heath/" style={{ color: '#fff', textDecoration: 'underline' }}>distances</Link> puts you on the Forest’s narrow lanes — here is why where you park changes how fast a fire crew can reach open heath.
+            </p>
+          )}
         </div>
       </section>
 

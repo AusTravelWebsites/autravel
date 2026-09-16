@@ -112,3 +112,151 @@ export function processWpShortcodes(html: string): string {
   }
   return out
 }
+
+
+// ─── Lead image placement ────────────────────────────────────────────────────
+// Craig's standing rule (2026-09-16): a post's featured image must never sit at
+// the top of the article. The reader gets text first; the image lands mid-way,
+// where it breaks up the read instead of pushing the opening copy below the fold.
+// Same rule already enforced on imaginehealth.care — mirrored here so it is
+// structural rather than something each post has to remember.
+//
+// This is a RENDER-time transform, not a content edit: body_html in the DB is
+// untouched, so the admin editor still shows exactly what was authored.
+
+/** Block-level elements we treat as top-level units when scanning a body. */
+const BLOCK_TAGS = 'p|h1|h2|h3|h4|h5|h6|ul|ol|figure|blockquote|table|div|pre|section|aside|dl'
+/**
+ * Is this block purely media — a figure, a bare img, or a p/div wrapping only
+ * an img? Every branch requires an actual <img>: WP bodies carry image-less
+ * <figure> wrappers left over from the migration, and those are structure, not
+ * a featured image, so they must stay where the author put them.
+ */
+function isMediaBlock(html: string): boolean {
+  if (!/<img\b/i.test(html)) return false
+  if (/^<img\b/i.test(html)) return true
+  if (/^<figure\b/i.test(html)) return true
+  return /^<(p|div)\b[^>]*>\s*(?:<a\b[^>]*>\s*)?<img\b[^>]*\/?>(?:\s*<\/a\s*>)?\s*<\/(?:p|div)>$/i.test(html.trim())
+}
+/** An image inside the first this-many characters of copy is the post's lead image. */
+const LEAD_TEXT_WINDOW = 600
+/** Bodies shorter than this have no meaningful "middle" — left alone. */
+const MIN_BODY_TEXT = 300
+
+function textLen(html: string): number {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length
+}
+
+/** Split `html` into the offsets of its top-level block elements, in order. */
+function topLevelBlocks(html: string): { start: number; end: number; html: string }[] {
+  const out: { start: number; end: number; html: string }[] = []
+  const open = new RegExp(`<(${BLOCK_TAGS}|img|hr)\\b[^>]*?(/?)>`, 'gi')
+  let i = 0
+  while (i < html.length) {
+    open.lastIndex = i
+    const m = open.exec(html)
+    if (!m) break
+    const tag = m[1].toLowerCase()
+    const start = m.index
+    if (tag === 'img' || tag === 'hr' || m[2] === '/') {
+      out.push({ start, end: start + m[0].length, html: m[0] })
+      i = start + m[0].length
+      continue
+    }
+    // Walk forward counting same-name opens/closes to find the matching close.
+    const pair = new RegExp(`<(/?)${tag}\\b[^>]*?(/?)>`, 'gi')
+    pair.lastIndex = start
+    let depth = 0
+    let end = -1
+    let p: RegExpExecArray | null
+    while ((p = pair.exec(html))) {
+      if (p[2] === '/') continue          // self-closing, not a nesting level
+      depth += p[1] === '/' ? -1 : 1
+      if (depth === 0) { end = p.index + p[0].length; break }
+    }
+    if (end === -1) return []             // unbalanced markup — bail out, change nothing
+    out.push({ start, end, html: html.slice(start, end) })
+    i = end
+  }
+  return out
+}
+
+/**
+ * Move a post's lead image(s) out of the opening and down to the middle of the
+ * article, so the reader always meets text first.
+ *
+ * An image counts as a "lead image" when fewer than `floor` characters of copy
+ * precede it; every such image moves, so a body that opens with a stack of
+ * pictures does not leave one behind. The destination is the block boundary
+ * nearest the halfway mark that still has `floor` characters above it,
+ * preferring an h2/h3 so the image lands on a section break. Because the same
+ * `floor` governs both detection and destination, the result is stable: a
+ * second pass finds no lead image and changes nothing.
+ *
+ * An explicit `<!-- image -->` comment in the body overrides the computed
+ * midpoint, matching the imaginehealth convention.
+ */
+export function leadImageBelowIntro(html: string): string {
+  if (!html) return html
+
+  const blocks = topLevelBlocks(html)
+  if (blocks.length < 3) return html
+
+  const total = blocks.reduce((n, b) => n + textLen(b.html), 0)
+  if (total < MIN_BODY_TEXT) return html
+  // Long posts get a fixed one-paragraph run-up; short ones a proportional one,
+  // so even a brief article still opens with text rather than a picture.
+  const floor = Math.min(LEAD_TEXT_WINDOW, total * 0.4)
+
+  // Collect every media block sitting above the floor, and the text that isn't.
+  const leads: number[] = []
+  let seen = 0
+  for (let n = 0; n < blocks.length; n++) {
+    if (seen >= floor) break
+    if (isMediaBlock(blocks[n].html)) leads.push(n)
+    else seen += textLen(blocks[n].html)
+  }
+  if (leads.length === 0) return html
+  // All copy is above the floor and none below it — nowhere to move to.
+  if (seen < floor) return html
+
+  const leadSet = new Set(leads)
+  const media = leads.map(n => blocks[n].html).join('\n')
+
+  // Rebuild the body without the lead images, tracking where each surviving
+  // block starts in the new string so we can pick an insertion point.
+  let out = ''
+  let cursor = 0
+  const kept: { at: number; html: string }[] = []
+  for (let n = 0; n < blocks.length; n++) {
+    const b = blocks[n]
+    out += html.slice(cursor, b.start)
+    if (!leadSet.has(n)) kept.push({ at: out.length, html: b.html })
+    if (!leadSet.has(n)) out += b.html
+    cursor = b.end
+  }
+  out += html.slice(cursor)
+
+  // An explicit marker wins over the computed midpoint.
+  const marker = /<!--\s*image\s*-->/i
+  if (marker.test(out)) return out.replace(marker, media)
+
+  // Otherwise: the boundary nearest the halfway mark with `floor` above it,
+  // preferring a heading so the image lands on a section break.
+  const target = total / 2
+  let bestHeading: { at: number; dist: number } | null = null
+  let bestAny: { at: number; dist: number } | null = null
+  let above = 0
+  for (const k of kept) {
+    if (above >= floor) {
+      const dist = Math.abs(above - target)
+      if (/^<h[23]\b/i.test(k.html) && (!bestHeading || dist < bestHeading.dist)) bestHeading = { at: k.at, dist }
+      if (!bestAny || dist < bestAny.dist) bestAny = { at: k.at, dist }
+    }
+    above += textLen(k.html)
+  }
+  const pick = bestHeading || bestAny
+  if (!pick) return html
+
+  return out.slice(0, pick.at) + media + '\n' + out.slice(pick.at)
+}

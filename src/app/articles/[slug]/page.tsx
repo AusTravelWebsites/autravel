@@ -9,7 +9,7 @@ import { DirectAffiliateCTA } from '@/components/features/DirectAffiliateCTA'
 import { ArticleRelated } from '@/components/features/ArticleRelated'
 import { DestinationMiniMenu } from '@/components/features/DestinationMiniMenu'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
-import { demoteBodyH1s, processWpShortcodes } from '@/lib/wp-html'
+import { demoteBodyH1s, processWpShortcodes, leadImageBelowIntro } from '@/lib/wp-html'
 import type { SubMenuGroup } from '@/lib/destination-submenu'
 
 export const revalidate = 600
@@ -163,7 +163,7 @@ export function ArticleView({ article: a, tenant, author, destinationSubMenu }: 
       )}
       <article style={{ maxWidth: 780, margin: '0 auto', padding: '32px 20px 60px' }}>
         {a.body_html && (
-          <div className="article-body" dangerouslySetInnerHTML={{ __html: processWpShortcodes(demoteBodyH1s(a.body_html)) }}/>
+          <div className="article-body" dangerouslySetInnerHTML={{ __html: leadImageBelowIntro(processWpShortcodes(demoteBodyH1s(a.body_html))) }}/>
         )}
         {a.destination_slug && (
           <div style={{ marginTop: 28, padding: '16px 18px', background: 'var(--brand-light)', border: '1px solid #a7f3d0', borderRadius: 12 }}>

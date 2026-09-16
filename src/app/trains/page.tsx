@@ -83,6 +83,11 @@ export default async function TrainsHub() {
               ? 'From the London main line to branch-line shuttles and heritage steam — here is every train that takes you to and around the New Forest, with routes, tips and where to book.'
               : `From transcontinental expeditions to regional railcars and heritage steam — here is every passenger train you can ride${tenant.aggregator ? ' across Australia' : ` in ${tenant.stateName}`}, with routes, classes and where to book.`}
           </p>
+          {isUK && (
+            <p style={{ margin: '12px 0 0', fontSize: 14.5, maxWidth: 720, opacity: 0.9, lineHeight: 1.55 }}>
+              Arriving <Link href="/how-visitors-change-wildfire-risk-on-open-heath/" style={{ color: '#fff', textDecoration: 'underline' }}>by train</Link> also keeps a car off the Forest’s narrow lanes — verge parking is the single most common way visitors slow a fire crew down on open heath.
+            </p>
+          )}
         </div>
       </div>
 

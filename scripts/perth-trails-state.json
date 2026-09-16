@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "cp-serpentine-camping",
     "bp-canning-river",
     "cp-caravan-parks-trailheads",
     "gp-margaret-river-south-west",
@@ -44,21 +43,22 @@
     "fw-lake-monger",
     "bp-heritage-rail-trails",
     "fw-whiteman-park-walks",
-    "bp-kwinana-loop"
+    "bp-kwinana-loop",
+    "sg-winter-waterfalls"
   ],
   "recent_personas": [
-    "tess-marlowe",
     "nina-forrest",
     "dylan-cho",
     "nina-forrest",
-    "dylan-cho"
+    "dylan-cho",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "forest-walk-1",
     "coastal-walk",
     "bike-cyclist",
     "forest-walk-3",
-    "bike-dirt-road"
+    "bike-dirt-road",
+    "wildflowers"
   ],
-  "last_run_at": "2026-09-15T01:32:51.683Z"
+  "last_run_at": "2026-09-16T01:05:26.212Z"
 }
