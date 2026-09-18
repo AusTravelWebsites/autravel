@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "cp-caravan-parks-trailheads",
     "gp-margaret-river-south-west",
     "wh-kings-park",
     "gp-rottnest-beyond-bikes",
@@ -44,21 +43,22 @@
     "fw-whiteman-park-walks",
     "bp-kwinana-loop",
     "sg-winter-waterfalls",
-    "gc-summer-riding"
+    "gc-summer-riding",
+    "cp-dwellingup-camping"
   ],
   "recent_personas": [
-    "dylan-cho",
     "nina-forrest",
     "dylan-cho",
     "tess-marlowe",
-    "dylan-cho"
+    "dylan-cho",
+    "beth-hartley"
   ],
   "recent_images": [
-    "bike-cyclist",
     "forest-walk-3",
     "bike-dirt-road",
     "wildflowers",
-    "forest-walk-2"
+    "forest-walk-2",
+    "coastal-walk"
   ],
-  "last_run_at": "2026-09-17T00:13:14.224Z"
+  "last_run_at": "2026-09-18T01:22:18.953Z"
 }
