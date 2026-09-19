@@ -17,6 +17,7 @@ import { db } from '@/lib/db'
 import { getTenant, stateFilterValue } from '@/lib/get-tenant'
 import { StateCode } from '@/lib/tenants'
 import { ArticleView } from '@/app/articles/[slug]/page'
+import { getAdSlots } from '@/lib/ads'
 
 // Look up an admin-configured redirect row for this path, tenant-scoped.
 // Returns the destination path or null if no match.
@@ -143,7 +144,8 @@ export default async function LegacyRoute({ params }: { params: Promise<{ legacy
         if (destRow[0] && groups.length > 1) destinationSubMenu = { destinationName: destRow[0].name, groups }
       }
     } catch {}
-    return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={destinationSubMenu}/>
+    const adSlots = await getAdSlots(tenant.state_code)
+    return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={destinationSubMenu} adSlots={adSlots}/>
   }
 
   // 3. Dead legacy `.html` URL with no article — redirect to the closest

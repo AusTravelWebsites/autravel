@@ -1,3 +1,4 @@
+import { getAdSlots } from '@/lib/ads'
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
@@ -138,7 +139,7 @@ export default async function CategoryPage({ params }: Props) {
           AND (${state}::text IS NULL OR state_code = ${state}::text)
           AND legacy_path = ANY(${[path, noSlashPath]}::text[])
         LIMIT 1`
-      if (rows[0]) return <ArticleView article={rows[0] as any} tenant={tenant as any}/>
+      if (rows[0]) return <ArticleView article={rows[0] as any} tenant={tenant as any} adSlots={await getAdSlots(tenant.state_code)}/>
     } catch {}
   }
 

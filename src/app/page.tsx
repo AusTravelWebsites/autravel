@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { unstable_cache } from 'next/cache'
 import { db } from '@/lib/db'
 import { getTenant, stateFilterValue, tourStatesFor, parkStatesFor } from '@/lib/get-tenant'
+import { getAdSlots, adUnitHtml } from '@/lib/ads'
 import { StateCode } from '@/lib/tenants'
 import { HeroSearch } from '@/components/features/HeroSearch'
 import { trailsCopy } from '@/lib/trails'
@@ -87,6 +88,7 @@ export default async function HomePage() {
     destinations: [] as Destination[], featuredTours: [] as Tour[], topParks: [] as Park[], recentArticles: [] as Article[], trails: [] as Trail[], tracks: [] as Track[], counts: { d: 0, t: 0, p: 0, a: 0 },
   }))
   const scope = tenant.aggregator ? 'Australia' : tenant.stateName
+  const homeAd = adUnitHtml(await getAdSlots(tenant.state_code), 'home_mid')
   const trailCopy = trailsCopy(tenant)
 
   return (
@@ -268,6 +270,10 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+      )}
+
+      {homeAd && (
+        <div style={{ background: '#fff', paddingTop: 8 }} dangerouslySetInnerHTML={{ __html: homeAd }}/>
       )}
 
       {data.recentArticles.length > 0 && (

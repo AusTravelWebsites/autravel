@@ -9,7 +9,8 @@ import { DirectAffiliateCTA } from '@/components/features/DirectAffiliateCTA'
 import { ArticleRelated } from '@/components/features/ArticleRelated'
 import { DestinationMiniMenu } from '@/components/features/DestinationMiniMenu'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
-import { demoteBodyH1s, processWpShortcodes, leadImageBelowIntro } from '@/lib/wp-html'
+import { demoteBodyH1s, processWpShortcodes, leadImageBelowIntro, externalLinksNewTab, insertAdUnits } from '@/lib/wp-html'
+import { getAdSlots, adUnitHtml, type AdSlots } from '@/lib/ads'
 import type { SubMenuGroup } from '@/lib/destination-submenu'
 
 export const revalidate = 600
@@ -92,13 +93,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const a = await getArticle(slug, stateFilterValue(tenant))
   if (!a) notFound()
   const author = await getAuthor({ slug: a.author_slug, name: a.author })
-  return <ArticleView article={a} tenant={tenant} author={author}/>
+  const adSlots = await getAdSlots(tenant.state_code)
+  return <ArticleView article={a} tenant={tenant} author={author} adSlots={adSlots}/>
 }
 
-export function ArticleView({ article: a, tenant, author, destinationSubMenu }: {
+export function ArticleView({ article: a, tenant, author, destinationSubMenu, adSlots }: {
   article: Article
   tenant: { host: string; name: string; stateName: string }
   author?: AuthorProfile | null
+  /** Hand-placed AdSense slots for this tenant. Omitted or empty = no ads. */
+  adSlots?: AdSlots
   /** When this article is under a destination (legacy_path starts with /<dest>/),
    *  the caller pre-fetches the destination's sub-menu and passes it here so we
    *  can render the same nav users see on the destination overview. */
@@ -163,7 +167,14 @@ export function ArticleView({ article: a, tenant, author, destinationSubMenu }: 
       )}
       <article style={{ maxWidth: 780, margin: '0 auto', padding: '32px 20px 60px' }}>
         {a.body_html && (
-          <div className="article-body" dangerouslySetInnerHTML={{ __html: leadImageBelowIntro(processWpShortcodes(demoteBodyH1s(a.body_html))) }}/>
+          <div className="article-body" dangerouslySetInnerHTML={{ __html: insertAdUnits(
+            externalLinksNewTab(leadImageBelowIntro(processWpShortcodes(demoteBodyH1s(a.body_html))), tenant.host),
+            {
+              in_article_1: adUnitHtml(adSlots || {}, 'in_article_1'),
+              in_article_2: adUnitHtml(adSlots || {}, 'in_article_2'),
+              content_end: adUnitHtml(adSlots || {}, 'content_end'),
+            },
+          ) }}/>
         )}
         {a.destination_slug && (
           <div style={{ marginTop: 28, padding: '16px 18px', background: 'var(--brand-light)', border: '1px solid #a7f3d0', borderRadius: 12 }}>

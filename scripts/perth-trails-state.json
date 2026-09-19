@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "gp-margaret-river-south-west",
     "wh-kings-park",
     "gp-rottnest-beyond-bikes",
     "bp-psp-network",
@@ -44,21 +43,22 @@
     "bp-kwinana-loop",
     "sg-winter-waterfalls",
     "gc-summer-riding",
-    "cp-dwellingup-camping"
+    "cp-dwellingup-camping",
+    "cc-psp-vs-riverside"
   ],
   "recent_personas": [
-    "nina-forrest",
     "dylan-cho",
     "tess-marlowe",
     "dylan-cho",
-    "beth-hartley"
+    "beth-hartley",
+    "dylan-cho"
   ],
   "recent_images": [
-    "forest-walk-3",
     "bike-dirt-road",
     "wildflowers",
     "forest-walk-2",
-    "coastal-walk"
+    "coastal-walk",
+    "bike-group"
   ],
-  "last_run_at": "2026-09-18T01:22:18.953Z"
+  "last_run_at": "2026-09-19T00:48:13.510Z"
 }

@@ -1,3 +1,4 @@
+import { getAdSlots } from '@/lib/ads'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
@@ -353,7 +354,8 @@ export default async function RedirectDestination({ params }: { params: Promise<
          LIMIT 1`
       author = rows[0] || null
     } catch {}
-    return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={null}/>
+    const adSlots = await getAdSlots(tenant.state_code)
+    return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={null} adSlots={adSlots}/>
   }
 
   notFound()

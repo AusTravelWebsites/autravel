@@ -8,6 +8,7 @@ import { ProfileRating } from '@/components/features/ProfileRating';
 import { BlockButton } from '@/components/features/BlockButton';
 import { ProfileSelfTips } from '@/components/features/ProfileSelfTips';
 import sql from '@/lib/db';
+import { getAdSlots } from '@/lib/ads';
 
 interface Props { params: Promise<{ username: string }> }
 
@@ -154,7 +155,8 @@ export default async function ProfilePage({ params }: Props) {
             if (drow[0] && groups.length > 1) destinationSubMenu = { destinationName: (drow[0] as any).name, groups }
           }
         } catch {}
-        return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={destinationSubMenu}/>
+        const adSlots = await getAdSlots(tenant.state_code)
+        return <ArticleView article={article} tenant={tenant} author={author} destinationSubMenu={destinationSubMenu} adSlots={adSlots}/>
       }
     } catch {}
 

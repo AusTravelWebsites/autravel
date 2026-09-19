@@ -424,3 +424,23 @@ html body {
   --brand-dark: #0f766e;
   --brand-light: #f0fdfa;
 }
+
+/* ---------- Hand-placed ad units (src/lib/ads.ts) ----------
+   The box reserves the ad's height before it loads, so a slot that fills late —
+   or never fills at all — cannot shift the article under the reader. This is the
+   fix for what Auto ads was doing: unreserved slots injected mid-paragraph. */
+.at-ad {
+  min-height: 300px;
+  max-width: 336px;
+  margin: 30px auto;
+  text-align: center;
+}
+.at-ad-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8f98;
+  margin-bottom: 6px;
+}
+.at-ad ins.adsbygoogle { display: block; width: 100%; height: 280px; }

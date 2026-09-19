@@ -181,6 +181,37 @@ function topLevelBlocks(html: string): { start: number; end: number; html: strin
   return out
 }
 
+/** Container tags that wrap a whole body without being content themselves. */
+const WRAPPER_TAGS = /^<(div|section|article|main)\b/i
+
+/**
+ * Top-level blocks of the article's actual CONTENT.
+ *
+ * Migrated WP bodies are often a single wrapper <div> holding every paragraph,
+ * which makes a plain top-level scan see one block and no paragraphs at all —
+ * 995 articles of 500+ words were being treated as thin for this reason alone.
+ * When the scan yields a lone container, descend into it and rescan, mapping the
+ * offsets back onto the original string so callers can still splice safely.
+ */
+function contentBlocks(html: string): { start: number; end: number; html: string }[] {
+  let blocks = topLevelBlocks(html)
+  let base = 0
+  let guard = 0
+  while (blocks.length === 1 && WRAPPER_TAGS.test(blocks[0].html) && guard++ < 5) {
+    const open = blocks[0].html.match(/^<[^>]+>/)
+    const close = blocks[0].html.match(/<\/(?:div|section|article|main)>$/i)
+    if (!open || !close) break
+    const innerStart = blocks[0].start + open[0].length
+    const inner = html.slice(innerStart, blocks[0].end - close[0].length)
+    const nested = topLevelBlocks(inner)
+    if (nested.length === 0) break
+    base = innerStart
+    blocks = nested.map(b => ({ start: b.start + base, end: b.end + base, html: b.html }))
+    if (blocks.length > 1) break
+  }
+  return blocks
+}
+
 /**
  * Move a post's lead image(s) out of the opening and down to the middle of the
  * article, so the reader always meets text first.
@@ -199,7 +230,7 @@ function topLevelBlocks(html: string): { start: number; end: number; html: strin
 export function leadImageBelowIntro(html: string): string {
   if (!html) return html
 
-  const blocks = topLevelBlocks(html)
+  const blocks = contentBlocks(html)
   if (blocks.length < 3) return html
 
   const total = blocks.reduce((n, b) => n + textLen(b.html), 0)
@@ -259,4 +290,176 @@ export function leadImageBelowIntro(html: string): string {
   if (!pick) return html
 
   return out.slice(0, pick.at) + media + '\n' + out.slice(pick.at)
+}
+
+
+// ─── External links open in a new tab ────────────────────────────────────────
+// Craig's rule (2026-09-19): every external link in article copy opens in a new
+// page, so a reader following a citation or a sponsor link doesn't lose the
+// article. Done here rather than in each post's HTML — the site's own
+// components already set target="_blank" on affiliate/tour links, but body_html
+// is author-written and can't be relied on to remember.
+//
+// Render-time only: body_html in the DB is untouched, so the admin editor keeps
+// showing what was authored. Links that already carry a target are left exactly
+// as the author set them.
+
+/** Hosts that count as "this site" for a given tenant host. */
+function isSameSite(linkHost: string, tenantHost: string): boolean {
+  const bare = (h: string) => h.toLowerCase().replace(/^www\./, '')
+  return bare(linkHost) === bare(tenantHost)
+}
+
+/**
+ * Add target="_blank" (plus rel="noopener") to every off-site link in a body.
+ *
+ * Left alone: root-relative and relative hrefs, same-site absolute URLs (with or
+ * without www.), in-page anchors, and the non-navigational schemes (mailto:,
+ * tel:, javascript:). `rel` is merged, never replaced, so an author's existing
+ * nofollow/sponsored survives. We add `noopener` but NOT `noreferrer`, so the
+ * destination still sees the referral — that attribution matters for the
+ * sponsored placements these articles carry.
+ */
+export function externalLinksNewTab(html: string, tenantHost: string): string {
+  if (!html) return html
+  return html.replace(/<a\b([^>]*)>/gi, (tag, attrs: string) => {
+    const href = (attrs.match(/\bhref\s*=\s*"([^"]*)"/i) || attrs.match(/\bhref\s*=\s*'([^']*)'/i) || [])[1]
+    if (!href) return tag
+    const h = href.trim()
+    if (/^(?:#|\/|\?|mailto:|tel:|sms:|javascript:|data:)/i.test(h)) return tag
+    let linkHost: string
+    if (/^https?:\/\//i.test(h)) {
+      try { linkHost = new URL(h).host } catch { return tag }
+    } else if (h.startsWith('//')) {
+      try { linkHost = new URL('https:' + h).host } catch { return tag }
+    } else {
+      return tag                                    // document-relative: internal
+    }
+    if (isSameSite(linkHost, tenantHost)) return tag
+    if (/\btarget\s*=/i.test(attrs)) return tag     // author already chose
+
+    const rel = (attrs.match(/\brel\s*=\s*"([^"]*)"/i) || [])[1]
+    const tokens = new Set((rel || '').split(/\s+/).filter(Boolean))
+    tokens.add('noopener')
+    const relAttr = ` rel="${[...tokens].join(' ')}"`
+    const withoutRel = attrs.replace(/\s*\brel\s*=\s*"[^"]*"/i, '')
+    return `<a${withoutRel} target="_blank"${relAttr}>`
+  })
+}
+
+
+// ─── In-article ad placement ─────────────────────────────────────────────────
+// Ported from stkp-ads.php on stkildapenguins, where hand-placed units replaced
+// Auto ads (12-21 unreserved slots per page, mobile CLS 0.38-0.61). Same rules:
+// a thin-content gate, fixed positions by paragraph count, and never landing
+// inside a figure or a list.
+//
+// One thing stkildapenguins did not have to handle: leadImageBelowIntro() puts
+// the featured image in the MIDDLE of the article, which is exactly where the
+// second ad wants to go. Two guards keep them apart — an ad is never placed
+// next to a heavy block, and never within MIN_GAP_TEXT characters of COPY of
+// one. Measuring the gap in copy rather than in markup matters: a figure is
+// ~400 characters of HTML but zero characters of reading, so an offset-based
+// gap looks satisfied while the ad still lands under the image.
+
+/** Body text needed before an article carries any in-article ad. */
+const AD_MIN_WORDS = 500
+/** Paragraph counts at which the first and second in-article ads unlock. */
+const AD_MIN_PARAS = 4
+const AD_SECOND_MIN_PARAS = 10
+/** Characters of readable copy required between an ad and an image or other ad. */
+const MIN_GAP_TEXT = 400
+/** Paragraph and copy floors before the FIRST ad may appear. Without a floor,
+ *  "nearest spot to paragraph 3" happily lands on paragraph 1 when the spots
+ *  around 3 are blocked by the mid-article image — which put an ad 593px down a
+ *  360px-wide screen, after 33 words. An ad must never be the first thing a
+ *  reader meets. */
+const AD_FIRST_MIN_PARA = 3
+const AD_FIRST_MIN_TEXT = 600
+
+/** Blocks an ad should never sit beside: images and other bulky, non-prose runs. */
+function isHeavyBlock(html: string): boolean {
+  return /<img\b/i.test(html) || /^<(figure|ul|ol|table|blockquote|pre)\b/i.test(html)
+}
+
+/**
+ * Insert the configured in-article ads into a rendered body.
+ *
+ * `ads` holds the HTML for each position; an empty string means that position
+ * is not configured and nothing renders. Returns the body unchanged when the
+ * article is too short, so thin pages never carry ads.
+ */
+export function insertAdUnits(
+  html: string,
+  ads: { in_article_1?: string; in_article_2?: string; content_end?: string },
+): string {
+  if (!html) return html
+  if (!ads.in_article_1 && !ads.in_article_2 && !ads.content_end) return html
+
+  const blocks = contentBlocks(html)
+  if (blocks.length === 0) return html
+
+  const words = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length
+  const paras = blocks.filter(b => /^<p\b/i.test(b.html)).length
+  // Too short to carry ads at all — not even the end-of-content slot. This is
+  // what keeps ads off thin directory stubs, contact pages and policy pages.
+  if (words < AD_MIN_WORDS || paras < AD_MIN_PARAS) return html
+
+  // Copy position of each block, so gaps can be measured in reading length.
+  const textAt: number[] = []
+  let acc = 0
+  for (const b of blocks) { textAt.push(acc); acc += textLen(b.html) }
+
+  const heavyText = blocks.map((b, i) => (isHeavyBlock(b.html) ? textAt[i] : -1)).filter(t => t >= 0)
+
+  // A spot sits between blocks[i-1] and blocks[i]. Neither neighbour may be a
+  // heavy block, which rules out adjacency outright.
+  type Spot = { at: number; text: number; paraNo: number }
+  const spots: Spot[] = []
+  let paraNo = 0
+  for (let i = 0; i < blocks.length; i++) {
+    if (/^<p\b/i.test(blocks[i].html)) paraNo++
+    const next = blocks[i + 1]
+    if (!next) break
+    if (isHeavyBlock(blocks[i].html) || isHeavyBlock(next.html)) continue
+    spots.push({ at: next.start, text: textAt[i + 1], paraNo })
+  }
+  if (spots.length === 0) return html
+
+  const placedText: number[] = []
+  const clear = (s: Spot) =>
+    heavyText.every(t => Math.abs(t - s.text) >= MIN_GAP_TEXT) &&
+    placedText.every(t => Math.abs(t - s.text) >= MIN_GAP_TEXT)
+
+  /**
+   * Nearest clear spot to `targetPara` that also clears the floors, or null.
+   * `minPara`/`minText` are hard minimums, not preferences: an ad placed above
+   * them would sit too near the top of the article.
+   */
+  const pick = (targetPara: number, minPara: number, minText: number): Spot | null => {
+    const pool = spots.filter(s =>
+      !placedText.includes(s.text) && s.paraNo >= minPara && s.text >= minText && clear(s))
+    if (pool.length === 0) return null
+    return pool.reduce((best, s) =>
+      Math.abs(s.paraNo - targetPara) < Math.abs(best.paraNo - targetPara) ? s : best, pool[0])
+  }
+
+  const inserts: { at: number; html: string }[] = []
+  let firstText = 0
+  if (ads.in_article_1) {
+    const s = pick(AD_FIRST_MIN_PARA, AD_FIRST_MIN_PARA, AD_FIRST_MIN_TEXT)
+    if (s) { inserts.push({ at: s.at, html: ads.in_article_1 }); placedText.push(s.text); firstText = s.text }
+  }
+  if (ads.in_article_2 && paras >= AD_SECOND_MIN_PARAS) {
+    // Never above the first ad, and never above the floors either.
+    const s = pick(Math.round(paras * 0.65), AD_FIRST_MIN_PARA, Math.max(AD_FIRST_MIN_TEXT, firstText + MIN_GAP_TEXT))
+    if (s) { inserts.push({ at: s.at, html: ads.in_article_2 }); placedText.push(s.text) }
+  }
+
+  // Splice from the end so earlier offsets stay valid.
+  let out = html
+  for (const ins of inserts.sort((a, b) => b.at - a.at)) {
+    out = out.slice(0, ins.at) + ins.html + '\n' + out.slice(ins.at)
+  }
+  return out + (ads.content_end || '')
 }
