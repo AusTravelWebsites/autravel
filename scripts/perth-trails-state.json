@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "bp-psp-network",
     "hg-beeliar-wetlands",
     "wh-hovea-falls",
     "cc-rottnest-hire-vs-own-bike",
@@ -44,21 +43,22 @@
     "cp-dwellingup-camping",
     "cc-psp-vs-riverside",
     "cp-serpentine-camping",
-    "bt-rottnest-loop"
+    "bt-rottnest-loop",
+    "fw-leschenaultia"
   ],
   "recent_personas": [
-    "dylan-cho",
     "beth-hartley",
     "dylan-cho",
     "beth-hartley",
-    "dylan-cho"
+    "dylan-cho",
+    "nina-forrest"
   ],
   "recent_images": [
-    "forest-walk-2",
     "coastal-walk",
     "bike-group",
     "forest-walk-3",
-    "bike-cyclist"
+    "bike-cyclist",
+    "bike-dirt-road"
   ],
-  "last_run_at": "2026-09-21T01:36:23.011Z"
+  "last_run_at": "2026-09-22T00:40:59.321Z"
 }
