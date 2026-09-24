@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "wh-hovea-falls",
     "cc-rottnest-hire-vs-own-bike",
     "wh-serpentine-np",
     "bp-point-walter",
@@ -44,21 +43,22 @@
     "cp-serpentine-camping",
     "bt-rottnest-loop",
     "fw-leschenaultia",
-    "hg-golden-pipeline"
+    "hg-golden-pipeline",
+    "gp-day-trips-from-perth"
   ],
   "recent_personas": [
-    "dylan-cho",
     "beth-hartley",
     "dylan-cho",
     "nina-forrest",
-    "dylan-cho"
+    "dylan-cho",
+    "nina-forrest"
   ],
   "recent_images": [
-    "bike-group",
     "forest-walk-3",
     "bike-cyclist",
     "bike-dirt-road",
-    "wildflowers"
+    "wildflowers",
+    "coastal-walk"
   ],
-  "last_run_at": "2026-09-22T23:53:30.532Z"
+  "last_run_at": "2026-09-24T00:02:12.911Z"
 }
