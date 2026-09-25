@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "cc-rottnest-hire-vs-own-bike",
     "wh-serpentine-np",
     "bp-point-walter",
     "wh-guildford-heritage",
@@ -44,21 +43,22 @@
     "bt-rottnest-loop",
     "fw-leschenaultia",
     "hg-golden-pipeline",
-    "gp-day-trips-from-perth"
+    "gp-day-trips-from-perth",
+    "bt-dwellingup-day-trip"
   ],
   "recent_personas": [
-    "beth-hartley",
     "dylan-cho",
     "nina-forrest",
     "dylan-cho",
-    "nina-forrest"
+    "nina-forrest",
+    "dylan-cho"
   ],
   "recent_images": [
-    "forest-walk-3",
     "bike-cyclist",
     "bike-dirt-road",
     "wildflowers",
-    "coastal-walk"
+    "coastal-walk",
+    "bike-group"
   ],
-  "last_run_at": "2026-09-24T00:02:12.911Z"
+  "last_run_at": "2026-09-25T01:46:58.033Z"
 }
