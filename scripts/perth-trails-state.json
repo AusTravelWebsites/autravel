@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "bp-point-walter",
     "wh-guildford-heritage",
     "bt-swan-valley-wine-ride",
     "bt-ebike-hire-compared",
@@ -44,21 +43,22 @@
     "hg-golden-pipeline",
     "gp-day-trips-from-perth",
     "bt-dwellingup-day-trip",
-    "hg-beeliar-wetlands"
+    "hg-beeliar-wetlands",
+    "bp-canning-river"
   ],
   "recent_personas": [
-    "nina-forrest",
     "dylan-cho",
     "nina-forrest",
     "dylan-cho",
-    "nina-forrest"
+    "nina-forrest",
+    "dylan-cho"
   ],
   "recent_images": [
-    "bike-dirt-road",
     "wildflowers",
     "coastal-walk",
     "bike-group",
-    "forest-walk-1"
+    "forest-walk-1",
+    "bike-cyclist"
   ],
-  "last_run_at": "2026-09-26T00:27:39.402Z"
+  "last_run_at": "2026-09-27T01:50:58.930Z"
 }
