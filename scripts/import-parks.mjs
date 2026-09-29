@@ -110,9 +110,11 @@ function extract(details) {
   return { suburb, postcode, region, state }
 }
 
-function photoUrl(ref, max = 1200) {
-  return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${max}&photoreference=${ref}&key=${KEY}`
-}
+// Photos are NOT stored here. A Places photo URL expires (Google answers 400) and
+// carries the API key into page HTML — 191 parks shipped broken that way from this
+// importer (June 2026). Covers go to R2 via
+//   node scripts/reimport-place-photos.mjs --only=parks
+// which fetches a fresh photo per place_id, uploads it, and stores the R2 URL.
 
 async function run() {
   const started_at = new Date()
@@ -140,7 +142,7 @@ async function run() {
           if (state && !state.toLowerCase().includes(STATE_NAME.toLowerCase())) { skipped++; continue }
           const name = det.name || hit.name
           const slug = slugify(`${name}-${suburb || region || STATE}`)
-          const cover = det.photos?.[0]?.photo_reference ? photoUrl(det.photos[0].photo_reference) : null
+          const cover = null   // see note above run(): covers come from reimport-place-photos.mjs
           const row = {
             state_code: STATE,
             slug,

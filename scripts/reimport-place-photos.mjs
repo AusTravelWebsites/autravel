@@ -6,6 +6,9 @@
 //
 // Cost guard: caps at MAX_ROWS rows total (default unlimited) and emits a cost
 // estimate at the start. Idempotent — skips rows that already have an image.
+// A stored Places photo URL counts as NO image: those expire (400) and leak the
+// API key into page HTML — 191 parks shipped with them from import-parks /
+// import-caravan-parks-targeted in June 2026 and were re-sourced here 2026-09-30.
 
 import { readFileSync } from 'fs'
 import postgres from 'postgres'
@@ -37,6 +40,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(a => {
 const ONLY = args.only          // 'parks' | 'destinations' | undefined (both)
 const MAX = args.max ? parseInt(args.max, 10) : null
 const DRY = !!args.dry
+const EXPIRING = '%maps.googleapis.com/maps/api/place/photo%'
 
 // --- helpers ---
 
@@ -91,8 +95,8 @@ async function processRow({ table, idCol, urlCol, getPlaceIdFn, keyPrefix, row }
     // Already uploaded earlier; just point the DB at it.
     const newUrl = `${PUBLIC}/${key}`
     if (!DRY) {
-      const q = `UPDATE ${table} SET ${urlCol} = $1 WHERE id = $2 AND ${urlCol} IS NULL`
-      await sql.unsafe(q, [newUrl, row.id])
+      const q = `UPDATE ${table} SET ${urlCol} = $1 WHERE id = $2 AND (${urlCol} IS NULL OR ${urlCol} LIKE $3)`
+      await sql.unsafe(q, [newUrl, row.id, EXPIRING])
     }
     return { status: 'reused', url: newUrl }
   }
@@ -117,8 +121,8 @@ async function processRow({ table, idCol, urlCol, getPlaceIdFn, keyPrefix, row }
 
   await r2Put(key, webp)
   const newUrl = `${PUBLIC}/${key}`
-  const q = `UPDATE ${table} SET ${urlCol} = $1 WHERE id = $2 AND ${urlCol} IS NULL`
-  await sql.unsafe(q, [newUrl, row.id])
+  const q = `UPDATE ${table} SET ${urlCol} = $1 WHERE id = $2 AND (${urlCol} IS NULL OR ${urlCol} LIKE $3)`
+  await sql.unsafe(q, [newUrl, row.id, EXPIRING])
   return { status: 'uploaded', url: newUrl, kb: (webp.length / 1024).toFixed(0), name: det.name }
 }
 
@@ -128,7 +132,7 @@ async function runParks() {
   const rows = await sql`
     SELECT id::text AS id, slug, state_code, name, google_place_id
       FROM autravel.parks
-     WHERE active AND cover_image IS NULL AND google_place_id IS NOT NULL
+     WHERE active AND (cover_image IS NULL OR cover_image LIKE ${EXPIRING}) AND google_place_id IS NOT NULL
      ORDER BY state_code, name`
   console.log(`PARKS: ${rows.length} candidates`)
   const ROWS = MAX ? rows.slice(0, MAX) : rows
@@ -146,13 +150,23 @@ async function runParks() {
     console.log(`  [${i + 1}/${ROWS.length}] ${r.state_code}/${r.slug}: ${res.status}${res.reason ? ' — ' + res.reason : ''}${res.kb ? ` (${res.kb}KB)` : ''}`)
   }
   console.log(`PARKS done: ${ok} OK / ${skip} skipped`)
+
+  // Gallery arrays: drop any stored Places photo URL (expired + key leak); the
+  // rest of the gallery stays. An emptied gallery becomes NULL.
+  if (!DRY) {
+    const res = await sql`
+      UPDATE autravel.parks SET images = (
+        SELECT jsonb_agg(x) FROM jsonb_array_elements(images) x WHERE x::text NOT LIKE ${EXPIRING})
+      WHERE images::text LIKE ${EXPIRING}`
+    console.log(`PARKS galleries: stripped expiring Places URLs from ${res.count} rows`)
+  }
 }
 
 async function runDestinations() {
   const rows = await sql`
     SELECT id::text AS id, slug, state_code, name
       FROM autravel.destinations
-     WHERE active AND hero_image IS NULL
+     WHERE active AND (hero_image IS NULL OR hero_image LIKE ${EXPIRING})
      ORDER BY state_code, name`
   console.log(`DESTINATIONS: ${rows.length} candidates`)
   const ROWS = MAX ? rows.slice(0, MAX) : rows
