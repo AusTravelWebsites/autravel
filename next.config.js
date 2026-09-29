@@ -12,7 +12,9 @@ const cspReportOnly = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   // Images: all the hosts we actually pull from + OSM tile CDNs (a-c).tile.openstreetmap.org
-  "img-src 'self' data: blob: https://media.bugbitten.com https://images.unsplash.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com https://*.g.doubleclick.net https://api.qrserver.com https://media-cdn.tripadvisor.com https://cache.graphicslib.viator.com https://*.viator.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com",
+  // *.tripadvisor.com: Viator tour images now 301 from media-cdn to dynamic-media-cdn, and CSP
+  // checks the redirect target too — allowing only media-cdn broke ~40% of tour images (2026-09-30).
+  "img-src 'self' data: blob: https://media.bugbitten.com https://images.unsplash.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com https://*.g.doubleclick.net https://api.qrserver.com https://*.tripadvisor.com https://cache.graphicslib.viator.com https://*.viator.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://maps.googleapis.com https://*.adtrafficquality.google",
   // XHR / fetch — our own API + Google Places, Firebase, analytics (incl. regional GA4 endpoints)
   "connect-src 'self' https://media.bugbitten.com https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.firebaseapp.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://api.qrserver.com https://unpkg.com https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google https://*.google.com",
   // Iframes: Firebase Auth handler + YouTube embeds + AdSense ad frames
@@ -78,6 +80,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '*.aunztravel.com.au' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'media-cdn.tripadvisor.com' },
+      { protocol: 'https', hostname: 'dynamic-media-cdn.tripadvisor.com' },
       { protocol: 'https', hostname: 'cache.graphicslib.viator.com' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'https', hostname: '*.googleusercontent.com' },
