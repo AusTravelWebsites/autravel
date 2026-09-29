@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "bt-swan-valley-wine-ride",
     "bt-ebike-hire-compared",
     "wh-zig-zag-scenic",
     "gc-bike-shop-guide",
@@ -44,21 +43,22 @@
     "bt-dwellingup-day-trip",
     "hg-beeliar-wetlands",
     "bp-canning-river",
-    "wh-serpentine-np"
+    "wh-serpentine-np",
+    "bp-whiteman-park"
   ],
   "recent_personas": [
-    "nina-forrest",
     "dylan-cho",
     "nina-forrest",
     "dylan-cho",
-    "tess-marlowe"
+    "tess-marlowe",
+    "dylan-cho"
   ],
   "recent_images": [
-    "coastal-walk",
     "bike-group",
     "forest-walk-1",
     "bike-cyclist",
-    "forest-walk-3"
+    "forest-walk-3",
+    "bike-dirt-road"
   ],
-  "last_run_at": "2026-09-27T23:59:25.073Z"
+  "last_run_at": "2026-09-28T23:54:26.986Z"
 }
