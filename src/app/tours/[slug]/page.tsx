@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { db } from '@/lib/db'
 import { getTenant, tourStatesFor } from '@/lib/get-tenant'
 import { StateCode } from '@/lib/tenants'
@@ -69,6 +69,30 @@ async function getTour(slug: string, tourStates: StateCode[] | null): Promise<To
   }
 }
 
+// A tour Viator has deactivated: send its URL to the most similar live tour on
+// this tenant (tours.replaced_by_slug, kept current by bugbitten's
+// scripts/redirect-dead-tours.mjs after each weekly sweep), else to the
+// country's tour listing. The replacement must pass the same tenant scope, or
+// the redirect would land on a 404.
+async function getDeadTourRedirect(slug: string, tourStates: StateCode[] | null): Promise<string | null> {
+  try {
+    const [row] = await db<{ replacement: string | null; country: string | null }[]>`
+      SELECT r.slug AS replacement, d.country
+      FROM tours d
+      LEFT JOIN tours r ON r.slug = d.replaced_by_slug AND r.active = true
+        AND ${tourStates === null ? db`true` : db`r.state_code = ANY(${tourStates})`}
+      WHERE d.slug = ${slug}
+        AND d.active = false
+        AND ${tourStates === null ? db`true` : db`d.state_code = ANY(${tourStates})`}
+      LIMIT 1`
+    if (!row) return null
+    if (row.replacement) return `/tours/${row.replacement}/`
+    return row.country ? `/tours/?country=${encodeURIComponent(row.country)}` : '/tours/'
+  } catch {
+    return null
+  }
+}
+
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params
   const tenant = await getTenant()
@@ -96,7 +120,11 @@ export default async function TourDetailPage({ params }: { params: Params }) {
   const { slug } = await params
   const tenant = await getTenant()
   const tour = await getTour(slug, tourStatesFor(tenant))
-  if (!tour) notFound()
+  if (!tour) {
+    const dest = await getDeadTourRedirect(slug, tourStatesFor(tenant))
+    if (dest) permanentRedirect(dest)
+    notFound()
+  }
 
   const gallery = (tour.images || []).filter(Boolean)
   const partnerLabel = tour.source === 'viator' ? 'Viator' : tour.source === 'wetravel' ? 'WeTravel' : 'our partners'
