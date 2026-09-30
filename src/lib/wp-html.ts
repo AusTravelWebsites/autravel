@@ -463,3 +463,45 @@ export function insertAdUnits(
   }
   return out + (ads.content_end || '')
 }
+
+// ── FAQPage schema ────────────────────────────────────────────────────────────
+// The SEO toolkit emits FAQPage JSON-LD for posts that carry an FAQ. Detection is
+// deliberately narrow: only an explicit "FAQ" / "FAQs" / "Frequently asked
+// questions" <h2> counts, and only the <h3> questions under it (up to the next
+// <h2>). Question-shaped H2s elsewhere in a body are ordinary section headings,
+// and FAQ markup must describe Q&As the reader can actually see on the page.
+
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', mdash: '—', ndash: '–',
+  lsquo: '‘', rsquo: '’', ldquo: '“', rdquo: '”', hellip: '…',
+}
+function decodeEntities(s: string): string {
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e: string) => {
+    if (e[0] === '#') {
+      const n = e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10)
+      return Number.isFinite(n) && n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : m
+    }
+    return NAMED_ENTITIES[e.toLowerCase()] ?? m
+  })
+}
+const plainText = (html: string) =>
+  decodeEntities(html.replace(/<figure\b[\s\S]*?<\/figure>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()
+
+/** Q&A pairs from the body's FAQ section; [] unless there are at least two. */
+export function extractFaq(html: string): { question: string; answer: string }[] {
+  if (!html) return []
+  const head = html.match(/<h2\b[^>]*>\s*(?:<[^>]+>\s*)*(?:FAQs?|Frequently asked questions)\b[\s\S]*?<\/h2>/i)
+  if (!head || head.index === undefined) return []
+  let section = html.slice(head.index + head[0].length)
+  const next = section.search(/<h2\b/i)
+  if (next >= 0) section = section.slice(0, next)
+  const out: { question: string; answer: string }[] = []
+  for (const part of section.split(/(?=<h3\b)/i)) {
+    const m = part.match(/^<h3\b[^>]*>([\s\S]*?)<\/h3>([\s\S]*)$/i)
+    if (!m) continue
+    const question = plainText(m[1])
+    const answer = plainText(m[2].split(/<h[1-6]\b/i)[0])
+    if (question.endsWith('?') && answer.length >= 20) out.push({ question, answer })
+  }
+  return out.length >= 2 ? out : []
+}

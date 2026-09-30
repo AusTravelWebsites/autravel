@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "bt-ebike-hire-compared",
     "wh-zig-zag-scenic",
     "gc-bike-shop-guide",
     "sg-wildflower-season",
@@ -44,21 +43,22 @@
     "hg-beeliar-wetlands",
     "bp-canning-river",
     "wh-serpentine-np",
-    "bp-whiteman-park"
+    "bp-whiteman-park",
+    "sg-shoulder-season-hills"
   ],
   "recent_personas": [
-    "dylan-cho",
     "nina-forrest",
     "dylan-cho",
     "tess-marlowe",
-    "dylan-cho"
+    "dylan-cho",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "bike-group",
     "forest-walk-1",
     "bike-cyclist",
     "forest-walk-3",
-    "bike-dirt-road"
+    "bike-dirt-road",
+    "coastal-walk"
   ],
-  "last_run_at": "2026-09-28T23:54:26.986Z"
+  "last_run_at": "2026-09-29T23:06:21.672Z"
 }

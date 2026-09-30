@@ -9,7 +9,7 @@ import { DirectAffiliateCTA } from '@/components/features/DirectAffiliateCTA'
 import { ArticleRelated } from '@/components/features/ArticleRelated'
 import { DestinationMiniMenu } from '@/components/features/DestinationMiniMenu'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
-import { demoteBodyH1s, processWpShortcodes, leadImageBelowIntro, externalLinksNewTab, insertAdUnits } from '@/lib/wp-html'
+import { demoteBodyH1s, processWpShortcodes, leadImageBelowIntro, externalLinksNewTab, insertAdUnits, extractFaq } from '@/lib/wp-html'
 import { getAdSlots, adUnitHtml, type AdSlots } from '@/lib/ads'
 import type { SubMenuGroup } from '@/lib/destination-submenu'
 
@@ -116,7 +116,11 @@ export function ArticleView({ article: a, tenant, author, destinationSubMenu, ad
     description: a.excerpt || undefined,
     image: a.cover_image || undefined,
     datePublished: a.published_at || undefined,
-    author: a.author ? { '@type': 'Person', name: a.author } : undefined,
+    author: a.author
+      ? { '@type': 'Person', name: a.author,
+          url: author?.slug ? `https://${tenant.host}/authors/${author.slug}/` : undefined,
+          jobTitle: author?.role || undefined }
+      : undefined,
     publisher: { '@type': 'Organization', name: tenant.name, logo: { '@type': 'ImageObject', url: `https://${tenant.host}/favicon.ico` } },
     mainEntityOfPage: canonical,
   }
@@ -129,11 +133,19 @@ export function ArticleView({ article: a, tenant, author, destinationSubMenu, ad
       { '@type': 'ListItem', position: 3, name: a.title,    item: canonical },
     ],
   }
+  // FAQPage only when the body has an explicit FAQ section (see extractFaq).
+  const faq = a.body_html ? extractFaq(processWpShortcodes(demoteBodyH1s(a.body_html))) : []
+  const faqLd = faq.length ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map(f => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
+  } : null
   const eyebrow = (a.categories || [])[0] || 'Articles'
   return (
     <main style={{ minHeight: '100vh', background: C.bg }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}/>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}/>
+      {faqLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd).replace(/</g, '\\u003c') }}/>}
       <section style={{ background: 'linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%)', padding: '32px 20px 28px', textAlign: 'center' as const }}>
         <div style={{ maxWidth: 780, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
