@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: Props) {
     }
   } catch {}
   try {
-    const rows = await sql`SELECT username, display_name, bio, avatar_url, location, visited_countries FROM users WHERE username = ${username} LIMIT 1`;
+    const rows = await sql`SELECT username, display_name, bio, avatar_url, location FROM users WHERE username = ${username} LIMIT 1`;
     if (rows[0]) {
       const { getTenant } = await import('@/lib/get-tenant');
       const tenant = await getTenant();
@@ -197,9 +197,13 @@ export default async function ProfilePage({ params }: Props) {
 
   // autravel doesn't have bugbitten's full user-profile schema (no travel_status,
   // follows, journal_entries, trips, reviews, user_locations). If the lookup
-  // fails, treat as not-found rather than 500.
+  // fails, treat as not-found rather than 500. Check the username exists first
+  // (autravel.users has no rows), so stray single-segment URLs don't run the full
+  // query and log a missing-column error every time.
   let users: any[] = [];
   try {
+    const [known] = await sql`SELECT 1 FROM users WHERE username = ${username} LIMIT 1`;
+    if (!known) notFound();
     users = await sql`
       SELECT u.id, u.username, u.firebase_uid,
              COALESCE(u.display_name, u.username) as display_name,
