@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "gc-bike-shop-guide",
     "sg-wildflower-season",
     "bt-munda-biddi-perth-hills",
     "hg-manning-park",
@@ -44,21 +43,22 @@
     "wh-serpentine-np",
     "bp-whiteman-park",
     "sg-shoulder-season-hills",
-    "bt-ebike-hire-compared"
+    "bt-ebike-hire-compared",
+    "gp-margaret-river-south-west"
   ],
   "recent_personas": [
-    "dylan-cho",
     "tess-marlowe",
     "dylan-cho",
     "tess-marlowe",
-    "dylan-cho"
+    "dylan-cho",
+    "nina-forrest"
   ],
   "recent_images": [
-    "bike-cyclist",
     "forest-walk-3",
     "bike-dirt-road",
     "coastal-walk",
-    "forest-walk-2"
+    "forest-walk-2",
+    "wildflowers"
   ],
-  "last_run_at": "2026-09-30T23:17:22.144Z"
+  "last_run_at": "2026-10-02T00:39:24.969Z"
 }
