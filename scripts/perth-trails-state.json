@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "hg-manning-park",
     "bp-swan-river-loops",
     "gt-segway-tours",
     "sg-avon-descent",
@@ -44,21 +43,22 @@
     "bt-ebike-hire-compared",
     "gp-margaret-river-south-west",
     "bp-freo-perth",
-    "wh-zig-zag-scenic"
+    "wh-zig-zag-scenic",
+    "gc-bike-shop-guide"
   ],
   "recent_personas": [
-    "tess-marlowe",
     "dylan-cho",
     "nina-forrest",
     "dylan-cho",
-    "tess-marlowe"
+    "tess-marlowe",
+    "dylan-cho"
   ],
   "recent_images": [
-    "coastal-walk",
     "forest-walk-2",
     "wildflowers",
     "bike-cyclist",
-    "forest-walk-1"
+    "forest-walk-1",
+    "forest-walk-3"
   ],
-  "last_run_at": "2026-10-04T01:04:56.085Z"
+  "last_run_at": "2026-10-06T01:37:07.107Z"
 }
