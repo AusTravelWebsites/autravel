@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "gt-segway-tours",
     "sg-avon-descent",
     "wh-araluen-botanic",
     "bp-kep-track",
@@ -44,21 +43,22 @@
     "bp-freo-perth",
     "wh-zig-zag-scenic",
     "gc-bike-shop-guide",
-    "gp-rottnest-beyond-bikes"
+    "gp-rottnest-beyond-bikes",
+    "bp-swan-river-loops"
   ],
   "recent_personas": [
-    "nina-forrest",
     "dylan-cho",
     "tess-marlowe",
     "dylan-cho",
-    "nina-forrest"
+    "nina-forrest",
+    "dylan-cho"
   ],
   "recent_images": [
-    "wildflowers",
     "bike-cyclist",
     "forest-walk-1",
     "forest-walk-3",
-    "coastal-walk"
+    "coastal-walk",
+    "bike-dirt-road"
   ],
-  "last_run_at": "2026-10-07T00:15:25.722Z"
+  "last_run_at": "2026-10-08T00:10:13.873Z"
 }
