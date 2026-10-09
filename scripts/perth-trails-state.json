@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "sg-avon-descent",
     "wh-araluen-botanic",
     "bp-kep-track",
     "bt-guided-cycling-tours",
@@ -44,21 +43,22 @@
     "wh-zig-zag-scenic",
     "gc-bike-shop-guide",
     "gp-rottnest-beyond-bikes",
-    "bp-swan-river-loops"
+    "bp-swan-river-loops",
+    "wh-guildford-heritage"
   ],
   "recent_personas": [
-    "dylan-cho",
     "tess-marlowe",
     "dylan-cho",
     "nina-forrest",
-    "dylan-cho"
+    "dylan-cho",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "bike-cyclist",
     "forest-walk-1",
     "forest-walk-3",
     "coastal-walk",
-    "bike-dirt-road"
+    "bike-dirt-road",
+    "forest-walk-2"
   ],
-  "last_run_at": "2026-10-08T00:10:13.873Z"
+  "last_run_at": "2026-10-09T01:36:17.024Z"
 }
