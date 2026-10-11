@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "bp-kep-track",
     "bt-guided-cycling-tours",
     "wh-lesmurdie-falls",
     "fw-elizabeth-quay",
@@ -44,21 +43,22 @@
     "gp-rottnest-beyond-bikes",
     "bp-swan-river-loops",
     "wh-guildford-heritage",
-    "bt-munda-biddi-perth-hills"
+    "bt-munda-biddi-perth-hills",
+    "sg-wildflower-season"
   ],
   "recent_personas": [
-    "dylan-cho",
     "nina-forrest",
     "dylan-cho",
     "tess-marlowe",
-    "dylan-cho"
+    "dylan-cho",
+    "nina-forrest"
   ],
   "recent_images": [
-    "forest-walk-3",
     "coastal-walk",
     "bike-dirt-road",
     "forest-walk-2",
-    "bike-cyclist"
+    "bike-cyclist",
+    "wildflowers"
   ],
-  "last_run_at": "2026-10-10T00:13:15.275Z"
+  "last_run_at": "2026-10-11T01:39:20.557Z"
 }
