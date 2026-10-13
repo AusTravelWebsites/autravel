@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "wh-lesmurdie-falls",
     "fw-elizabeth-quay",
     "hg-kattamordo-trail",
     "gp-transport-to-trailheads",
@@ -44,21 +43,22 @@
     "wh-guildford-heritage",
     "bt-munda-biddi-perth-hills",
     "sg-wildflower-season",
-    "cc-kalamunda-vs-mundaring"
+    "cc-kalamunda-vs-mundaring",
+    "wh-araluen-botanic"
   ],
   "recent_personas": [
-    "dylan-cho",
     "tess-marlowe",
     "dylan-cho",
     "nina-forrest",
-    "dylan-cho"
+    "dylan-cho",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "bike-dirt-road",
     "forest-walk-2",
     "bike-cyclist",
     "wildflowers",
-    "bike-group"
+    "bike-group",
+    "forest-walk-1"
   ],
-  "last_run_at": "2026-10-12T01:36:36.696Z"
+  "last_run_at": "2026-10-13T00:09:26.753Z"
 }
