@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "hg-kattamordo-trail",
     "gp-transport-to-trailheads",
     "wh-john-forrest-np",
     "gt-kayak-bike-combo",
@@ -44,21 +43,22 @@
     "sg-wildflower-season",
     "cc-kalamunda-vs-mundaring",
     "wh-araluen-botanic",
-    "gt-segway-tours"
+    "gt-segway-tours",
+    "bt-swan-valley-wine-ride"
   ],
   "recent_personas": [
-    "dylan-cho",
     "nina-forrest",
     "dylan-cho",
     "tess-marlowe",
-    "mick-gallagher"
+    "mick-gallagher",
+    "nina-forrest"
   ],
   "recent_images": [
-    "bike-cyclist",
     "wildflowers",
     "bike-group",
     "forest-walk-1",
-    "forest-walk-3"
+    "forest-walk-3",
+    "bike-dirt-road"
   ],
-  "last_run_at": "2026-10-13T23:15:44.609Z"
+  "last_run_at": "2026-10-15T01:56:08.562Z"
 }
