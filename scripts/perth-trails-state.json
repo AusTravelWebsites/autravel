@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "wh-john-forrest-np",
     "gt-kayak-bike-combo",
     "wh-bold-park",
     "gp-freo-after-a-ride",
@@ -44,21 +43,22 @@
     "wh-araluen-botanic",
     "gt-segway-tours",
     "bt-swan-valley-wine-ride",
-    "wh-lesmurdie-falls"
+    "wh-lesmurdie-falls",
+    "gp-transport-to-trailheads"
   ],
   "recent_personas": [
-    "dylan-cho",
     "tess-marlowe",
     "mick-gallagher",
     "nina-forrest",
-    "tess-marlowe"
+    "tess-marlowe",
+    "nina-forrest"
   ],
   "recent_images": [
-    "bike-group",
     "forest-walk-1",
     "forest-walk-3",
     "bike-dirt-road",
-    "forest-walk-2"
+    "forest-walk-2",
+    "coastal-walk"
   ],
-  "last_run_at": "2026-10-15T23:33:38.420Z"
+  "last_run_at": "2026-10-16T23:02:19.837Z"
 }
