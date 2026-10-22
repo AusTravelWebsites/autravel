@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "gc-tyres-surfaces",
     "fw-south-perth-foreshore",
     "gt-rottnest-tour-options",
     "bp-reid-highway-loop",
@@ -44,21 +43,22 @@
     "gp-transport-to-trailheads",
     "wh-john-forrest-np",
     "gt-kayak-bike-combo",
-    "cp-caravan-parks-trailheads"
+    "cp-caravan-parks-trailheads",
+    "bp-psp-network"
   ],
   "recent_personas": [
-    "tess-marlowe",
     "nina-forrest",
     "tess-marlowe",
     "mick-gallagher",
-    "beth-hartley"
+    "beth-hartley",
+    "dylan-cho"
   ],
   "recent_images": [
-    "forest-walk-2",
     "coastal-walk",
     "bike-cyclist",
     "bike-group",
-    "wildflowers"
+    "wildflowers",
+    "bike-dirt-road"
   ],
-  "last_run_at": "2026-10-20T23:51:31.200Z"
+  "last_run_at": "2026-10-21T23:07:31.240Z"
 }
