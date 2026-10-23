@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "fw-south-perth-foreshore",
     "gt-rottnest-tour-options",
     "bp-reid-highway-loop",
     "gt-guided-hills-walks",
@@ -44,21 +43,22 @@
     "wh-john-forrest-np",
     "gt-kayak-bike-combo",
     "cp-caravan-parks-trailheads",
-    "bp-psp-network"
+    "bp-psp-network",
+    "hg-manning-park"
   ],
   "recent_personas": [
-    "nina-forrest",
     "tess-marlowe",
     "mick-gallagher",
     "beth-hartley",
-    "dylan-cho"
+    "dylan-cho",
+    "nina-forrest"
   ],
   "recent_images": [
-    "coastal-walk",
     "bike-cyclist",
     "bike-group",
     "wildflowers",
-    "bike-dirt-road"
+    "bike-dirt-road",
+    "forest-walk-1"
   ],
-  "last_run_at": "2026-10-21T23:07:31.240Z"
+  "last_run_at": "2026-10-22T22:10:22.233Z"
 }
