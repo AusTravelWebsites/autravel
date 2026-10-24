@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "gt-rottnest-tour-options",
     "bp-reid-highway-loop",
     "gt-guided-hills-walks",
     "sg-tide-dependent-coast",
@@ -44,21 +43,22 @@
     "gt-kayak-bike-combo",
     "cp-caravan-parks-trailheads",
     "bp-psp-network",
-    "hg-manning-park"
+    "hg-manning-park",
+    "bp-point-walter"
   ],
   "recent_personas": [
-    "tess-marlowe",
     "mick-gallagher",
     "beth-hartley",
     "dylan-cho",
-    "nina-forrest"
+    "nina-forrest",
+    "dylan-cho"
   ],
   "recent_images": [
-    "bike-cyclist",
     "bike-group",
     "wildflowers",
     "bike-dirt-road",
-    "forest-walk-1"
+    "forest-walk-1",
+    "coastal-walk"
   ],
-  "last_run_at": "2026-10-22T22:10:22.233Z"
+  "last_run_at": "2026-10-23T23:19:07.643Z"
 }
