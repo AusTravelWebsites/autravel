@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "bp-reid-highway-loop",
     "gt-guided-hills-walks",
     "sg-tide-dependent-coast",
     "wh-bibbulmun-kalamunda",
@@ -44,21 +43,22 @@
     "cp-caravan-parks-trailheads",
     "bp-psp-network",
     "hg-manning-park",
-    "bp-point-walter"
+    "bp-point-walter",
+    "wh-hovea-falls"
   ],
   "recent_personas": [
-    "mick-gallagher",
     "beth-hartley",
     "dylan-cho",
     "nina-forrest",
-    "dylan-cho"
+    "dylan-cho",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "bike-group",
     "wildflowers",
     "bike-dirt-road",
     "forest-walk-1",
-    "coastal-walk"
+    "coastal-walk",
+    "forest-walk-2"
   ],
-  "last_run_at": "2026-10-23T23:19:07.643Z"
+  "last_run_at": "2026-10-24T23:12:21.304Z"
 }
