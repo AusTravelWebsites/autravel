@@ -1,0 +1,1196 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:file((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/]+\\.\\w+)/",
+      "destination": "/:file",
+      "internal": true,
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-nextjs-data"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?:/((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/]+\\.\\w+))/$"
+    },
+    {
+      "source": "/:notfile((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/\\.]+)",
+      "destination": "/:notfile/",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/\\.]+))$"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/icon.svg",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/favicon\\.ico(?:/)?$"
+    },
+    {
+      "source": "/wp-admin",
+      "destination": "/",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/wp-admin(?:/)?$"
+    },
+    {
+      "source": "/wp-admin/:path*",
+      "destination": "/",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/wp-admin(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+    },
+    {
+      "source": "/wp-login.php",
+      "destination": "/login",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/wp-login\\.php(?:/)?$"
+    },
+    {
+      "source": "/wp-json/:path*",
+      "destination": "/",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/wp-json(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+    },
+    {
+      "source": "/wp-:file.php",
+      "destination": "/",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/wp-([^/]+?)\\.php(?:/)?$"
+    },
+    {
+      "source": "/image-files/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?new-forest-national-park\\.com"
+        }
+      ],
+      "destination": "https://media.bugbitten.com/autravel/newforest/image-files/:path*",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/image-files(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?new-forest-national-park\\.com"
+        }
+      ],
+      "destination": "/wp-content/uploads/nfnp-apple-touch-icon.png",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/apple-touch-icon\\.png(?:/)?$"
+    },
+    {
+      "source": "/apple-touch-icon-precomposed.png",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?new-forest-national-park\\.com"
+        }
+      ],
+      "destination": "/wp-content/uploads/nfnp-apple-touch-icon.png",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/apple-touch-icon-precomposed\\.png(?:/)?$"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), payment=(self), geolocation=(self), interest-cohort=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://www.gstatic.com https://apis.google.com https://unpkg.com https://maps.googleapis.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google https://*.google.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://media.bugbitten.com https://images.unsplash.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com https://*.g.doubleclick.net https://api.qrserver.com https://*.tripadvisor.com https://cache.graphicslib.viator.com https://*.viator.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://maps.googleapis.com https://*.adtrafficquality.google; connect-src 'self' https://media.bugbitten.com https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.firebaseapp.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://api.qrserver.com https://unpkg.com https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google https://*.google.com; frame-src https://*.firebaseapp.com https://accounts.google.com https://www.youtube.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.adtrafficquality.google; frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests; report-uri /api/csp-report"
+        }
+      ],
+      "regex": "^(?:/(.*))(?:/)?$"
+    }
+  ],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/admin/articles/[id]/edit",
+      "regex": "^/admin/articles/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/admin/articles/(?<nxtPid>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/admin/mockups/country-guide-a/[country]",
+      "regex": "^/admin/mockups/country\\-guide\\-a/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry"
+      },
+      "namedRegex": "^/admin/mockups/country\\-guide\\-a/(?<nxtPcountry>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/mockups/country-guide-b/[country]",
+      "regex": "^/admin/mockups/country\\-guide\\-b/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry"
+      },
+      "namedRegex": "^/admin/mockups/country\\-guide\\-b/(?<nxtPcountry>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/mockups/country-guide-c/[country]",
+      "regex": "^/admin/mockups/country\\-guide\\-c/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry"
+      },
+      "namedRegex": "^/admin/mockups/country\\-guide\\-c/(?<nxtPcountry>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/tours/[id]/edit",
+      "regex": "^/admin/tours/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/admin/tours/(?<nxtPid>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/api/admin/articles/[id]",
+      "regex": "^/api/admin/articles/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/articles/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/admin/tours/[id]",
+      "regex": "^/api/admin/tours/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/tours/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/blog/[slug]",
+      "regex": "^/api/blog/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/blog/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/blog/[slug]/comments",
+      "regex": "^/api/blog/([^/]+?)/comments(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/blog/(?<nxtPslug>[^/]+?)/comments(?:/)?$"
+    },
+    {
+      "page": "/api/blog/[slug]/view",
+      "regex": "^/api/blog/([^/]+?)/view(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/blog/(?<nxtPslug>[^/]+?)/view(?:/)?$"
+    },
+    {
+      "page": "/api/channels/[slug]",
+      "regex": "^/api/channels/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/channels/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/channels/[slug]/messages",
+      "regex": "^/api/channels/([^/]+?)/messages(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/channels/(?<nxtPslug>[^/]+?)/messages(?:/)?$"
+    },
+    {
+      "page": "/api/conversations/[id]",
+      "regex": "^/api/conversations/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/conversations/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/conversations/[id]/members",
+      "regex": "^/api/conversations/([^/]+?)/members(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/conversations/(?<nxtPid>[^/]+?)/members(?:/)?$"
+    },
+    {
+      "page": "/api/conversations/[id]/members/[userId]",
+      "regex": "^/api/conversations/([^/]+?)/members/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid",
+        "nxtPuserId": "nxtPuserId"
+      },
+      "namedRegex": "^/api/conversations/(?<nxtPid>[^/]+?)/members/(?<nxtPuserId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/conversations/[id]/messages",
+      "regex": "^/api/conversations/([^/]+?)/messages(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/conversations/(?<nxtPid>[^/]+?)/messages(?:/)?$"
+    },
+    {
+      "page": "/api/journal-entries/[id]/like",
+      "regex": "^/api/journal\\-entries/([^/]+?)/like(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/journal\\-entries/(?<nxtPid>[^/]+?)/like(?:/)?$"
+    },
+    {
+      "page": "/api/meetup-ratings/[meetupId]",
+      "regex": "^/api/meetup\\-ratings/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPmeetupId": "nxtPmeetupId"
+      },
+      "namedRegex": "^/api/meetup\\-ratings/(?<nxtPmeetupId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/meetup-ratings/[meetupId]/mine",
+      "regex": "^/api/meetup\\-ratings/([^/]+?)/mine(?:/)?$",
+      "routeKeys": {
+        "nxtPmeetupId": "nxtPmeetupId"
+      },
+      "namedRegex": "^/api/meetup\\-ratings/(?<nxtPmeetupId>[^/]+?)/mine(?:/)?$"
+    },
+    {
+      "page": "/api/meetups/[id]",
+      "regex": "^/api/meetups/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/meetups/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/meetups/[id]/approve",
+      "regex": "^/api/meetups/([^/]+?)/approve(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/meetups/(?<nxtPid>[^/]+?)/approve(?:/)?$"
+    },
+    {
+      "page": "/api/meetups/[id]/attend",
+      "regex": "^/api/meetups/([^/]+?)/attend(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/meetups/(?<nxtPid>[^/]+?)/attend(?:/)?$"
+    },
+    {
+      "page": "/api/meetups/[id]/comments",
+      "regex": "^/api/meetups/([^/]+?)/comments(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/meetups/(?<nxtPid>[^/]+?)/comments(?:/)?$"
+    },
+    {
+      "page": "/api/meetups/[id]/gallery",
+      "regex": "^/api/meetups/([^/]+?)/gallery(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/meetups/(?<nxtPid>[^/]+?)/gallery(?:/)?$"
+    },
+    {
+      "page": "/api/meetups/[id]/invite",
+      "regex": "^/api/meetups/([^/]+?)/invite(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/meetups/(?<nxtPid>[^/]+?)/invite(?:/)?$"
+    },
+    {
+      "page": "/api/travels/[iso2]",
+      "regex": "^/api/travels/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPiso2": "nxtPiso2"
+      },
+      "namedRegex": "^/api/travels/(?<nxtPiso2>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/users/[username]/rate",
+      "regex": "^/api/users/([^/]+?)/rate(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/api/users/(?<nxtPusername>[^/]+?)/rate(?:/)?$"
+    },
+    {
+      "page": "/articles/[slug]",
+      "regex": "^/articles/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/articles/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/authors/[slug]",
+      "regex": "^/authors/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/authors/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/blog/[slug]",
+      "regex": "^/blog/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/blog/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/blog/[slug]/edit",
+      "regex": "^/blog/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/blog/(?<nxtPslug>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/category/[...slug]",
+      "regex": "^/category/(.+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/category/(?<nxtPslug>.+?)(?:/)?$"
+    },
+    {
+      "page": "/channels/[slug]",
+      "regex": "^/channels/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/channels/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/country/[country]",
+      "regex": "^/country/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry"
+      },
+      "namedRegex": "^/country/(?<nxtPcountry>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/country/[country]/guide",
+      "regex": "^/country/([^/]+?)/guide(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry"
+      },
+      "namedRegex": "^/country/(?<nxtPcountry>[^/]+?)/guide(?:/)?$"
+    },
+    {
+      "page": "/destinations/[slug]",
+      "regex": "^/destinations/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/destinations/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/distances/[state]/[pair]",
+      "regex": "^/distances/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPstate": "nxtPstate",
+        "nxtPpair": "nxtPpair"
+      },
+      "namedRegex": "^/distances/(?<nxtPstate>[^/]+?)/(?<nxtPpair>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/journal-entries/[id]",
+      "regex": "^/journal\\-entries/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/journal\\-entries/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/meetups/[id]",
+      "regex": "^/meetups/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/meetups/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/meetups/[id]/edit",
+      "regex": "^/meetups/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/meetups/(?<nxtPid>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/messages/groups/[id]",
+      "regex": "^/messages/groups/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/messages/groups/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/off-road-tracks/[slug]",
+      "regex": "^/off\\-road\\-tracks/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/off\\-road\\-tracks/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/park-maps/[slug]",
+      "regex": "^/park\\-maps/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/park\\-maps/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/parks/[slug]",
+      "regex": "^/parks/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/parks/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/places/city/[country]/[city]",
+      "regex": "^/places/city/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry",
+        "nxtPcity": "nxtPcity"
+      },
+      "namedRegex": "^/places/city/(?<nxtPcountry>[^/]+?)/(?<nxtPcity>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/places/[slug]",
+      "regex": "^/places/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/places/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/poi/[slug]",
+      "regex": "^/poi/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/poi/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/tours/[slug]",
+      "regex": "^/tours/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/tours/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/trains/[slug]",
+      "regex": "^/trains/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/trains/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/trips/[id]",
+      "regex": "^/trips/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/trips/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/trips/[id]/edit",
+      "regex": "^/trips/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/trips/(?<nxtPid>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/u/[username]/travels",
+      "regex": "^/u/([^/]+?)/travels(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/u/(?<nxtPusername>[^/]+?)/travels(?:/)?$"
+    },
+    {
+      "page": "/u/[username]/travels/[iso2]",
+      "regex": "^/u/([^/]+?)/travels/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername",
+        "nxtPiso2": "nxtPiso2"
+      },
+      "namedRegex": "^/u/(?<nxtPusername>[^/]+?)/travels/(?<nxtPiso2>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/wp-content/uploads/[...path]",
+      "regex": "^/wp\\-content/uploads/(.+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpath": "nxtPpath"
+      },
+      "namedRegex": "^/wp\\-content/uploads/(?<nxtPpath>.+?)(?:/)?$"
+    },
+    {
+      "page": "/[username]",
+      "regex": "^/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/[username]/followers",
+      "regex": "^/([^/]+?)/followers(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/followers(?:/)?$"
+    },
+    {
+      "page": "/[username]/following",
+      "regex": "^/([^/]+?)/following(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/following(?:/)?$"
+    },
+    {
+      "page": "/[username]/locations",
+      "regex": "^/([^/]+?)/locations(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/locations(?:/)?$"
+    },
+    {
+      "page": "/[username]/posts",
+      "regex": "^/([^/]+?)/posts(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/posts(?:/)?$"
+    },
+    {
+      "page": "/[username]/reviews",
+      "regex": "^/([^/]+?)/reviews(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/reviews(?:/)?$"
+    },
+    {
+      "page": "/[username]/trips",
+      "regex": "^/([^/]+?)/trips(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/trips(?:/)?$"
+    },
+    {
+      "page": "/[username]/trips/[slug]",
+      "regex": "^/([^/]+?)/trips/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername",
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/trips/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/[username]/trips/[slug]/edit",
+      "regex": "^/([^/]+?)/trips/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPusername": "nxtPusername",
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/(?<nxtPusername>[^/]+?)/trips/(?<nxtPslug>[^/]+?)/edit(?:/)?$"
+    },
+    {
+      "page": "/[...legacy]",
+      "regex": "^/(.+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPlegacy": "nxtPlegacy"
+      },
+      "namedRegex": "^/(?<nxtPlegacy>.+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/about",
+      "regex": "^/about(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/about(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/admin/404s",
+      "regex": "^/admin/404s(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/404s(?:/)?$"
+    },
+    {
+      "page": "/admin/actions",
+      "regex": "^/admin/actions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/actions(?:/)?$"
+    },
+    {
+      "page": "/admin/admins",
+      "regex": "^/admin/admins(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/admins(?:/)?$"
+    },
+    {
+      "page": "/admin/articles",
+      "regex": "^/admin/articles(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/articles(?:/)?$"
+    },
+    {
+      "page": "/admin/authors",
+      "regex": "^/admin/authors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/authors(?:/)?$"
+    },
+    {
+      "page": "/admin/auto-meetups",
+      "regex": "^/admin/auto\\-meetups(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/auto\\-meetups(?:/)?$"
+    },
+    {
+      "page": "/admin/blocklist",
+      "regex": "^/admin/blocklist(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/blocklist(?:/)?$"
+    },
+    {
+      "page": "/admin/channels",
+      "regex": "^/admin/channels(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/channels(?:/)?$"
+    },
+    {
+      "page": "/admin/client-errors",
+      "regex": "^/admin/client\\-errors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/client\\-errors(?:/)?$"
+    },
+    {
+      "page": "/admin/csp-violations",
+      "regex": "^/admin/csp\\-violations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/csp\\-violations(?:/)?$"
+    },
+    {
+      "page": "/admin/destinations",
+      "regex": "^/admin/destinations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/destinations(?:/)?$"
+    },
+    {
+      "page": "/admin/forgot-password",
+      "regex": "^/admin/forgot\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/forgot\\-password(?:/)?$"
+    },
+    {
+      "page": "/admin/login",
+      "regex": "^/admin/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/login(?:/)?$"
+    },
+    {
+      "page": "/admin/mockups/travel-map",
+      "regex": "^/admin/mockups/travel\\-map(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/mockups/travel\\-map(?:/)?$"
+    },
+    {
+      "page": "/admin/moderation",
+      "regex": "^/admin/moderation(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/moderation(?:/)?$"
+    },
+    {
+      "page": "/admin/monitor",
+      "regex": "^/admin/monitor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/monitor(?:/)?$"
+    },
+    {
+      "page": "/admin/online",
+      "regex": "^/admin/online(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/online(?:/)?$"
+    },
+    {
+      "page": "/admin/parks",
+      "regex": "^/admin/parks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/parks(?:/)?$"
+    },
+    {
+      "page": "/admin/places",
+      "regex": "^/admin/places(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/places(?:/)?$"
+    },
+    {
+      "page": "/admin/redirects",
+      "regex": "^/admin/redirects(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/redirects(?:/)?$"
+    },
+    {
+      "page": "/admin/reports",
+      "regex": "^/admin/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/reports(?:/)?$"
+    },
+    {
+      "page": "/admin/reset-password",
+      "regex": "^/admin/reset\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/reset\\-password(?:/)?$"
+    },
+    {
+      "page": "/admin/settings",
+      "regex": "^/admin/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/settings(?:/)?$"
+    },
+    {
+      "page": "/admin/signins",
+      "regex": "^/admin/signins(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/signins(?:/)?$"
+    },
+    {
+      "page": "/admin/snippets",
+      "regex": "^/admin/snippets(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/snippets(?:/)?$"
+    },
+    {
+      "page": "/admin/tours",
+      "regex": "^/admin/tours(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/tours(?:/)?$"
+    },
+    {
+      "page": "/admin/users",
+      "regex": "^/admin/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/users(?:/)?$"
+    },
+    {
+      "page": "/ads.txt",
+      "regex": "^/ads\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ads\\.txt(?:/)?$"
+    },
+    {
+      "page": "/articles",
+      "regex": "^/articles(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/articles(?:/)?$"
+    },
+    {
+      "page": "/authors",
+      "regex": "^/authors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/authors(?:/)?$"
+    },
+    {
+      "page": "/auto-meetups",
+      "regex": "^/auto\\-meetups(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auto\\-meetups(?:/)?$"
+    },
+    {
+      "page": "/billing/cancel",
+      "regex": "^/billing/cancel(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/billing/cancel(?:/)?$"
+    },
+    {
+      "page": "/billing/success",
+      "regex": "^/billing/success(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/billing/success(?:/)?$"
+    },
+    {
+      "page": "/blog",
+      "regex": "^/blog(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/blog(?:/)?$"
+    },
+    {
+      "page": "/blog/feed.xml",
+      "regex": "^/blog/feed\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/blog/feed\\.xml(?:/)?$"
+    },
+    {
+      "page": "/blog/new",
+      "regex": "^/blog/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/blog/new(?:/)?$"
+    },
+    {
+      "page": "/caravan-park-finder",
+      "regex": "^/caravan\\-park\\-finder(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/caravan\\-park\\-finder(?:/)?$"
+    },
+    {
+      "page": "/caravan-parks",
+      "regex": "^/caravan\\-parks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/caravan\\-parks(?:/)?$"
+    },
+    {
+      "page": "/channels",
+      "regex": "^/channels(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/channels(?:/)?$"
+    },
+    {
+      "page": "/check-in",
+      "regex": "^/check\\-in(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/check\\-in(?:/)?$"
+    },
+    {
+      "page": "/contact",
+      "regex": "^/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/contact(?:/)?$"
+    },
+    {
+      "page": "/cookies",
+      "regex": "^/cookies(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cookies(?:/)?$"
+    },
+    {
+      "page": "/destinations",
+      "regex": "^/destinations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/destinations(?:/)?$"
+    },
+    {
+      "page": "/distances",
+      "regex": "^/distances(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/distances(?:/)?$"
+    },
+    {
+      "page": "/explore",
+      "regex": "^/explore(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/explore(?:/)?$"
+    },
+    {
+      "page": "/favourites",
+      "regex": "^/favourites(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favourites(?:/)?$"
+    },
+    {
+      "page": "/feed",
+      "regex": "^/feed(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/feed(?:/)?$"
+    },
+    {
+      "page": "/feed.xml",
+      "regex": "^/feed\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/feed\\.xml(?:/)?$"
+    },
+    {
+      "page": "/friends",
+      "regex": "^/friends(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/friends(?:/)?$"
+    },
+    {
+      "page": "/icon.svg",
+      "regex": "^/icon\\.svg(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/icon\\.svg(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/manifest.webmanifest",
+      "regex": "^/manifest\\.webmanifest(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/manifest\\.webmanifest(?:/)?$"
+    },
+    {
+      "page": "/meetups",
+      "regex": "^/meetups(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/meetups(?:/)?$"
+    },
+    {
+      "page": "/meetups/new",
+      "regex": "^/meetups/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/meetups/new(?:/)?$"
+    },
+    {
+      "page": "/messages",
+      "regex": "^/messages(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/messages(?:/)?$"
+    },
+    {
+      "page": "/messages/groups",
+      "regex": "^/messages/groups(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/messages/groups(?:/)?$"
+    },
+    {
+      "page": "/my-reviews",
+      "regex": "^/my\\-reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-reviews(?:/)?$"
+    },
+    {
+      "page": "/notifications",
+      "regex": "^/notifications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/notifications(?:/)?$"
+    },
+    {
+      "page": "/off-road-tracks",
+      "regex": "^/off\\-road\\-tracks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/off\\-road\\-tracks(?:/)?$"
+    },
+    {
+      "page": "/onboarding",
+      "regex": "^/onboarding(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/onboarding(?:/)?$"
+    },
+    {
+      "page": "/park-maps",
+      "regex": "^/park\\-maps(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/park\\-maps(?:/)?$"
+    },
+    {
+      "page": "/parks",
+      "regex": "^/parks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parks(?:/)?$"
+    },
+    {
+      "page": "/places",
+      "regex": "^/places(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/places(?:/)?$"
+    },
+    {
+      "page": "/places/random",
+      "regex": "^/places/random(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/places/random(?:/)?$"
+    },
+    {
+      "page": "/privacy",
+      "regex": "^/privacy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy(?:/)?$"
+    },
+    {
+      "page": "/reviews/new",
+      "regex": "^/reviews/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/reviews/new(?:/)?$"
+    },
+    {
+      "page": "/robots.txt",
+      "regex": "^/robots\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/robots\\.txt(?:/)?$"
+    },
+    {
+      "page": "/saved",
+      "regex": "^/saved(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/saved(?:/)?$"
+    },
+    {
+      "page": "/search",
+      "regex": "^/search(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/search(?:/)?$"
+    },
+    {
+      "page": "/settings",
+      "regex": "^/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings(?:/)?$"
+    },
+    {
+      "page": "/signup",
+      "regex": "^/signup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/signup(?:/)?$"
+    },
+    {
+      "page": "/sitemap.xml",
+      "regex": "^/sitemap\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    },
+    {
+      "page": "/states",
+      "regex": "^/states(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/states(?:/)?$"
+    },
+    {
+      "page": "/terms",
+      "regex": "^/terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/terms(?:/)?$"
+    },
+    {
+      "page": "/tours",
+      "regex": "^/tours(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tours(?:/)?$"
+    },
+    {
+      "page": "/trains",
+      "regex": "^/trains(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/trains(?:/)?$"
+    },
+    {
+      "page": "/trips",
+      "regex": "^/trips(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/trips(?:/)?$"
+    },
+    {
+      "page": "/trips/discover",
+      "regex": "^/trips/discover(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/trips/discover(?:/)?$"
+    },
+    {
+      "page": "/trips/new",
+      "regex": "^/trips/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/trips/new(?:/)?$"
+    },
+    {
+      "page": "/unsubscribe",
+      "regex": "^/unsubscribe(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/unsubscribe(?:/)?$"
+    },
+    {
+      "page": "/user-data",
+      "regex": "^/user\\-data(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/user\\-data(?:/)?$"
+    },
+    {
+      "page": "/verify",
+      "regex": "^/verify(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/verify(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}
