@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "wh-bibbulmun-kalamunda",
     "fw-lake-monger",
     "bp-heritage-rail-trails",
     "fw-whiteman-park-walks",
@@ -44,21 +43,22 @@
     "bp-point-walter",
     "wh-hovea-falls",
     "bp-kep-track",
-    "gt-guided-hills-walks"
+    "gt-guided-hills-walks",
+    "sg-summer-coastal-walks"
   ],
   "recent_personas": [
-    "nina-forrest",
     "dylan-cho",
     "tess-marlowe",
     "dylan-cho",
-    "mick-gallagher"
+    "mick-gallagher",
+    "nina-forrest"
   ],
   "recent_images": [
-    "forest-walk-1",
     "coastal-walk",
     "forest-walk-2",
     "bike-cyclist",
-    "bike-group"
+    "bike-group",
+    "wildflowers"
   ],
-  "last_run_at": "2026-10-26T22:17:21.996Z"
+  "last_run_at": "2026-10-27T22:29:51.510Z"
 }
