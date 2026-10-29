@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "fw-lake-monger",
     "bp-heritage-rail-trails",
     "fw-whiteman-park-walks",
     "bp-kwinana-loop",
@@ -44,21 +43,22 @@
     "wh-hovea-falls",
     "bp-kep-track",
     "gt-guided-hills-walks",
-    "sg-summer-coastal-walks"
+    "sg-summer-coastal-walks",
+    "gt-rottnest-tour-options"
   ],
   "recent_personas": [
-    "dylan-cho",
     "tess-marlowe",
     "dylan-cho",
     "mick-gallagher",
-    "nina-forrest"
+    "nina-forrest",
+    "mick-gallagher"
   ],
   "recent_images": [
-    "coastal-walk",
     "forest-walk-2",
     "bike-cyclist",
     "bike-group",
-    "wildflowers"
+    "wildflowers",
+    "bike-dirt-road"
   ],
-  "last_run_at": "2026-10-27T22:29:51.510Z"
+  "last_run_at": "2026-10-29T00:48:24.497Z"
 }
