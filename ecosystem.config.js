@@ -21,7 +21,7 @@
 const base = {
   cwd: '/var/www/autravel',
   script: 'node_modules/.bin/next',
-  interpreter: '/root/.nvm/versions/node/v22.22.2/bin/node',
+  interpreter: '/root/.nvm/versions/node/v22.23.4/bin/node',
   exec_mode: 'fork',
   instances: 1,
   watch: false,
