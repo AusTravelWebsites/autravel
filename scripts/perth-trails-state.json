@@ -1,6 +1,5 @@
 {
   "recent_topic_ids": [
-    "fw-whiteman-park-walks",
     "bp-kwinana-loop",
     "sg-winter-waterfalls",
     "gc-summer-riding",
@@ -44,21 +43,22 @@
     "gt-guided-hills-walks",
     "sg-summer-coastal-walks",
     "gt-rottnest-tour-options",
-    "fw-lake-monger"
+    "fw-lake-monger",
+    "wh-bold-park"
   ],
   "recent_personas": [
-    "dylan-cho",
     "mick-gallagher",
     "nina-forrest",
     "mick-gallagher",
-    "nina-forrest"
+    "nina-forrest",
+    "tess-marlowe"
   ],
   "recent_images": [
-    "bike-cyclist",
     "bike-group",
     "wildflowers",
     "bike-dirt-road",
-    "forest-walk-3"
+    "forest-walk-3",
+    "forest-walk-1"
   ],
-  "last_run_at": "2026-10-29T23:30:02.775Z"
+  "last_run_at": "2026-10-30T22:32:03.917Z"
 }
